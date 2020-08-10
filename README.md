@@ -11,7 +11,8 @@
 
 ## Introduction
 ```
-This repository is used for managing deliverables of SWEN90007. All deliverables will be uploaded and managed here.
+This repository is used for managing deliverables of SWEN90007. 
+All deliverables will be uploaded and managed here.
 ```
 
 ## Contributors
