@@ -5,11 +5,12 @@
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 ![GitHub repo size](https://img.shields.io/github/repo-size/Olivia0012/SWEN90007_2020_SuperGirls)
 ![GitHub](https://img.shields.io/github/license/Olivia0012/SWEN90007_2020_SuperGirls)
+![Build Status](https://www.travis-ci.org/Olivia0012/SWEN90007_2020_SuperGirls.svg?branch=master)
 
 
 ## Introduction
 ```
-This repository is used for managing deliverables of SWEN90007.
+This repository is used for managing deliverables of SWEN90007. All deliverables will be uploaded and managed here.
 ```
 
 ## Contributors
@@ -61,12 +62,6 @@ This repository is used for managing deliverables of SWEN90007.
 
 # Deliverables: 
 
-## Introduction
-```
-1. harvest tweets from across the cities of Australia on the UniMelb Research Cloud
-2. and undertake a variety of social media data analytics scenarios that tell interesting stories of life in Australian cities
-3. and importantly how the Twitter data can be used alongside/compared with/augment the data available within the AURIN platform to improve our knowledge of life in the cities of Australia.
-```
 ## Deadlines
 ```
     Part 1 : 23/08/2020
