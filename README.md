@@ -5,7 +5,7 @@
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 ![GitHub repo size](https://img.shields.io/github/repo-size/Olivia0012/SWEN90007_2020_SuperGirls)
 ![GitHub](https://img.shields.io/github/license/Olivia0012/SWEN90007_2020_SuperGirls)
-![Build Status](https://www.travis-ci.org/Olivia0012/SWEN90007_2020_SuperGirls.svg?branch=master)
+
 
 
 
