@@ -6,9 +6,6 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/Olivia0012/SWEN90007_2020_SuperGirls)
 ![GitHub](https://img.shields.io/github/license/Olivia0012/SWEN90007_2020_SuperGirls)
 
-
-
-
 ## Introduction
 ```
 This repository is used for managing deliverables of SWEN90007. 
