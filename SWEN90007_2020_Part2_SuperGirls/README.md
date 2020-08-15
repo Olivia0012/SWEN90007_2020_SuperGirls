@@ -22,15 +22,14 @@ This repository is used for the managing the delivery part2.
       - licence of the project
 ```
 
-# How to run: 
+## How to run: 
 
 ```
     1. Run on Server 9 :
     2. Visit: localhost:8080/SWEN90007_2020_Part2_SuperGirls/HelloServlet
 ```
-# Dev Environment:
+## Dev Environment:
 
-## 
 ```
   1. Eclipse:
     Eclipse IDE for Java Developers (includes Incubating components)
@@ -43,5 +42,8 @@ This repository is used for the managing the delivery part2.
 
   3. JRE:
     version: Java SE 12.0.2
+
+  4. PostgreSQL
+    version: postgresql-10.14-1
 ```
 
