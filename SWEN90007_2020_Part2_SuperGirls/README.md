@@ -17,9 +17,7 @@ This repository is used for the managing the delivery part2.
     /.settings
       - config files
     / WebContent 
-      - all contributers infomation
-    LICENSE
-      - licence of the project
+      - web content files
 ```
 
 ## How to run: 
