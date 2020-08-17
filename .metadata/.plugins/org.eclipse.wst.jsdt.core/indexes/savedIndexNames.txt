@@ -1,0 +1,7 @@
+INDEX VERSION 1.4+/Users/manlo/Documents/2020-S2/SWEN90007/SWEN90007_2020_SuperGirls/.metadata/.plugins/org.eclipse.wst.jsdt.core/indexes
+3173286422.index
+2767932677.index
+1609146087.index
+3208883669.index
+3092860364.index
+3052031750.index
