@@ -11,8 +11,8 @@
     <servlet-class>unimelb.swen90007.part2</servlet-class>  
   </servlet>  
   <servlet-mapping>  
-    <servlet-name>TestServlet</servlet-name>  
+    <servlet-name>HelloServlet</servlet-name>  
     <!-- access path -->  
-    <url-pattern>/SWEN90007_2020_Part2_SuperGirls/HelloServlet</url-pattern>  
+    <url-pattern>/SWEN90007_2020_SuperGirls/HelloServlet</url-pattern>  
     </servlet-mapping>  
 </web-app>
