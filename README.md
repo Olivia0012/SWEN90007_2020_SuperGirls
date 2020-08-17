@@ -41,22 +41,38 @@ All deliverables will be uploaded and managed here.
 
 ## Repository Structure
 ```
-| /.github 
-      - github app configure file
-    /Documentations
-      - all documents related to this subject
-        /Achitecure
-            - Architecture files
-        /Meetings
-            - Meeting minutes
-        /Testing 
-            - Testing documentations
-    /SWEN90007_2020_Part1_SuperGirls
-      - Deliverable 1
-    .all-contributorsrc 
-      - all contributers infomation
-    LICENSE
-      - licence of the project
+.
+├── LICENSE
+├── README.md
+├── WebContent  # Web files
+│   ├── META-INF
+│   │   └── MANIFEST.MF
+│   ├── WEB-INF
+│   │   ├── lib
+│   │   └── web.xml
+│   └── test.jsp
+├── build       # Compiled files
+│   └── classes
+│       └── unimelb
+│           └── swen90007
+│               └── part2
+│                   └── HelloServlet.class
+├── docs        # Documentations
+│   ├── Architecure
+│   │   └── SWEN90007_CIS-TMPLT-ARCH-1.docx
+│   ├── Meetings
+│   │   ├── README.md
+│   │   └── Week\ 2\ Minutes_Aug\ 10_Team\ Super\ Girls.pdf
+│   └── SWEN90007_2020_Part1_SuperGirls
+│       └── README.md
+├── src         # Source files
+│   └── unimelb
+│       └── swen90007
+│           └── part2
+│               └── HelloServlet.java
+├── test        # Automated tests
+│   └── SWEN90007-CIS-SW-TSTD.doc
+└── tree.text   # repository tree file
 ```
 
 # Deliverables: 
