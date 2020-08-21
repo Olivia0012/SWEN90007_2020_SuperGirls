@@ -44,35 +44,39 @@ All deliverables will be uploaded and managed here.
 .
 ├── LICENSE
 ├── README.md
-├── WebContent  # Web files
+├── WebContent      # Web files
 │   ├── META-INF
 │   │   └── MANIFEST.MF
 │   ├── WEB-INF
 │   │   ├── lib
 │   │   └── web.xml
 │   └── test.jsp
-├── build       # Compiled files
+├── build           # Compiled files
 │   └── classes
 │       └── unimelb
 │           └── swen90007
 │               └── part2
 │                   └── HelloServlet.class
-├── docs        # Documentations
-│   ├── Architecure
+├── docs            # Documentations
+│   ├── architecture
 │   │   └── SWEN90007_CIS-TMPLT-ARCH-1.docx
-│   ├── Meetings
+│   ├── meetings
 │   │   ├── README.md
-│   │   └── Week\ 2\ Minutes_Aug\ 10_Team\ Super\ Girls.pdf
-│   └── SWEN90007_2020_Part1_SuperGirls
-│       └── README.md
-├── src         # Source files
+│   │   ├── Week\ 2\ Minutes_Aug\ 10_Team\ Super\ Girls.pdf
+│   │   └── Week\ 3\ Minutes_Aug\ 17_Team\ Super\ Girls.pdf
+│   └── part1
+│       ├── README.md
+│       ├── SWEN90007_2020_Part1_SuperGirls.pdf
+│       ├── [01.00-D05]SWEN90007_2020_Part1_SuperGirls.doc
+│       └── [01.00-D06]SWEN90007_2020_Part1_SuperGirls(1).doc
+├── src              # Source files
 │   └── unimelb
 │       └── swen90007
 │           └── part2
 │               └── HelloServlet.java
-├── test        # Automated tests
+├── test            # Automated tests
 │   └── SWEN90007-CIS-SW-TSTD.doc
-└── tree.text   # repository tree file
+└── tree.text       # repository structure tree file
 ```
 
 # Deliverables: 
