@@ -87,7 +87,7 @@ All deliverables will be uploaded and managed here.
 
 ### 1. Part 1
 
-- [ ] A report, in pdf format, including
+- [X] A report, in pdf format, including
     - [ ] team’s name, team members’ names, student ids, unimelb usernames and emails. 
     - [ ]  A use case diagram
     - [ ]  A detailed description (see Appendix B for a sample template) of each use case. Each use case must contain: the list of actors associated with the use case, a high-level description of the use case, the typical course of events, and the main alternative courses of action.
