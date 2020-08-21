@@ -1,0 +1,5 @@
+INDEX VERSION 1.131
+/Users/manlo/Documents/2020-S2/SWEN90007/SWEN90007_2020_SuperGirls/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/1057345152.index
+/Test/src
+/Users/manlo/Documents/2020-S2/SWEN90007/SWEN90007_2020_SuperGirls/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/3138365298.index
+/SWEN90007_2020_Part2_SuperGirls/src

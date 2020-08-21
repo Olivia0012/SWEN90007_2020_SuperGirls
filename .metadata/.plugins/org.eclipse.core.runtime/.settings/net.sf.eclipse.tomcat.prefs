@@ -1,0 +1,11 @@
+computeSourcePath=true
+contextsDir=/Users/manlo/Documents/2020-S2/SWEN90007/apache-tomcat-10.0.0/conf/Catalina/localhost
+eclipse.preferences.version=1
+managerUrl=http\://localhost\:8080/manager
+projectsInCp=SWEN90007_2020_Part2_SuperGirls;Servers;
+projectsInSourcePath=aaa;
+tomcatBase=/Users/manlo/Documents/2020-S2/SWEN90007/apache-tomcat-9.0.37
+tomcatConfigFile=/Users/manlo/Documents/2020-S2/SWEN90007/apache-tomcat-10.0.0/conf/server.xml
+tomcatDir=/Users/manlo/Documents/2020-S2/SWEN90007/apache-tomcat-10.0.0
+tomcatJRE=com.oracle.java.12.0.2.jdk
+tomcatVersion=tomcatV9

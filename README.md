@@ -87,14 +87,14 @@ All deliverables will be uploaded and managed here.
 
 ### 1. Part 1
 
-- [ ] A report, in pdf format, including
-    - [ ] team’s name, team members’ names, student ids, unimelb usernames and emails. 
-    - [ ]  A use case diagram
-    - [ ]  A detailed description (see Appendix B for a sample template) of each use case. Each use case must contain: the list of actors associated with the use case, a high-level description of the use case, the typical course of events, and the main alternative courses of action.
-    - [ ]  A link to your private Git repository. Before the submission deadline, all the teaching team must have read and write access to your repository. A copy of this stage’s report should already be stored in your repository. 
-    - [ ]  A Git release tag:
-        - [ ] create a release tag in your Git repository for this deliverable in the following format: ``SWEN90007_2020_Part1_<team name>``
-        - [ ] The created release tag must be added to your report.
+- [X] A report, in pdf format, including
+    - [X] team’s name, team members’ names, student ids, unimelb usernames and emails. 
+    - [X]  A use case diagram
+    - [X]  A detailed description (see Appendix B for a sample template) of each use case. Each use case must contain: the list of actors associated with the use case, a high-level description of the use case, the typical course of events, and the main alternative courses of action.
+    - [X]  A link to your private Git repository. Before the submission deadline, all the teaching team must have read and write access to your repository. A copy of this stage’s report should already be stored in your repository. 
+    - [X]  A Git release tag:
+        - [X] create a release tag in your Git repository for this deliverable in the following format: ``SWEN90007_2020_Part1_<team name>``
+        - [X] The created release tag must be added to your report.
 
 ### 2. Part 2
 ```
