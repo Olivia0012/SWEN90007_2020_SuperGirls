@@ -155,8 +155,33 @@ All deliverables will be uploaded and managed here.
         - [X] The created release tag must be added to your report.
 
 ### 2. Part 2
-```
-```
+- [ ] The application coded and deployed. 
+    - [ ] The source code of your application must be committed to your Git repository. 
+    - [ ] The application must be deployed in Heroku.
+- [ ] You must create a tag in your Git repository for this deliverable in the following format: 
+SWEN90007_2020_Part2_<team name>. The tag must be created before the submission 
+deadline as this will be used to assess your deliverable (no exceptions).
+- [ ]  A Software Architecture Design (SAD) report with the following items:
+    - [ ] The domain model of your application. 
+    - [ ] The class diagram of your application. 
+    - [ ] A description of all patterns used. The description must be contextualized, this means 
+it must include details of how the pattern was implemented as part of your particular 
+application design. A sequence diagram illustrating the use of the pattern in your 
+application must be included as part of your description. 
+    - [ ] Design rationale for unit of work and lazy load: an explanation on where the patterns 
+were used and why. 
+    - [ ] A link to your Heroku deployed app, including a populated database with a range of 
+realistic data samples/information that are necessary for the teaching team to test 
+your application. You also need to provide additional instructions on how to use the 
+existing data that you created in your system, for example: the administrator 
+username and password. We do not expect to create any test data from scratch.
+Again, this is your project. Make sure you test your deliverable before your submission
+and that you have real/appropriate data in the deployed system. Meaningless data 
+such as abc, 123, blah blah, subject ASDFG and so on will compromise the assessment 
+of your project (and your final marks). See Appendix D for more details. 
+  - [ ] The Git release tag.
+
+    
 ### 3. Part 3
 ```
 ```
