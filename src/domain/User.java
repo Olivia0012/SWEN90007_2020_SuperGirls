@@ -3,7 +3,8 @@ import java.util.List;
 
 import enumeration.Role;
 
-public abstract class User extends DomainObject{
+
+public class User extends DomainObject{
 	private String userName;
 	private String passWord;
 	private Role role;
@@ -18,6 +19,11 @@ public abstract class User extends DomainObject{
 	}
 	
 	
+	public User() {
+		super();
+	}
+
+
 	/**
 	 * @return the userName
 	 */
