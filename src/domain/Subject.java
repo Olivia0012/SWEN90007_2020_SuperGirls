@@ -12,12 +12,15 @@ import java.util.ArrayList;
 public class Subject extends DomainObject{
 	private String title;
 	private String subjectCode;
-	private ArrayList<Exam> examList;
-	private ArrayList<User> userList;
 
 	public Subject(int Id, String title, String subjectCode) {
 		super(Id);
-		this.title = title;
+		this.setTitle(title);
+		this.setSubjectCode(subjectCode);
+	}
+
+	public Subject() {
+		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -49,33 +52,7 @@ public class Subject extends DomainObject{
 		this.subjectCode = subjectCode;
 	}
 
-	/**
-	 * @return the examList
-	 */
-	public ArrayList<Exam> getExamList() {
-		return examList;
-	}
 
-	/**
-	 * @param examList the examList to set
-	 */
-	public void setExamList(ArrayList<Exam> examList) {
-		this.examList = examList;
-	}
-
-	/**
-	 * @return the userList
-	 */
-	public ArrayList<User> getUserList() {
-		return userList;
-	}
-
-	/**
-	 * @param userList the userList to set
-	 */
-	public void setUserList(ArrayList<User> userList) {
-		this.userList = userList;
-	}
 
 	
 

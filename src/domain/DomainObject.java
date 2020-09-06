@@ -17,6 +17,10 @@ public abstract class DomainObject {
 		this.Id = Id;
 	}
 
+	public DomainObject() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public int getId() {
 		return Id;
 	}

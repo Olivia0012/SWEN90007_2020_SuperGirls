@@ -1,12 +1,13 @@
 package domain;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import enumeration.Role;
 
 public class Student extends User{
-	private List<Submission> submission;
-	private Answer answer;
+	private ArrayList<Submission> submission;
+	private ArrayList<Exam> Exams;
+	
 
 	public Student(int uId, String userName, String passWord) {
 		super(uId, passWord, passWord, Role.STUDENT);

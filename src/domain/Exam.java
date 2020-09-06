@@ -6,23 +6,23 @@ import java.util.Date;
 import enumeration.ExamStatus;
 
 public class Exam extends DomainObject{
-	private int subjectId;
-	private int creatorId;
-	private int updatorId;
+	private Subject subject;
+	private User creator;
 	private Date createdTime;
 	private Date updatedTime;
 	private String title;
 	private ExamStatus status;
 	private boolean isLocked;
-	private ArrayList<User> userList;
-	private ArrayList<Submission> submissionList;
+	private ArrayList<Question> questionList;
 	
+	public Exam() {
+		super();
+	}
 
-	public Exam(int Id, int subjectId, int creatorId,Date createdTime, int updatorId,Date updatedTime,String title, ExamStatus status,boolean isLocked) {
+	public Exam(int Id, Subject subject, User creator,Date createdTime,Date updatedTime,String title, ExamStatus status,boolean isLocked) {
 		super(Id);
-		this.setSubjectId(subjectId);
-		this.setCreatorId(creatorId);
-		this.setUpdatorId(updatorId);
+		this.setSubject(subject);
+		this.setCreator(creator);
 		this.setCreatedTime(createdTime);
 		this.setUpdatedTime(updatedTime);
 		this.setTitle(title);
@@ -32,18 +32,34 @@ public class Exam extends DomainObject{
 
 
 	/**
-	 * @return the subjectId
+	 * @return the subject
 	 */
-	public int getSubjectId() {
-		return subjectId;
+	public Subject getSubject() {
+		return subject;
 	}
 
 
 	/**
-	 * @param subjectId the subjectId to set
+	 * @param subject the subject to set
 	 */
-	public void setSubjectId(int subjectId) {
-		this.subjectId = subjectId;
+	public void setSubject(Subject subject) {
+		this.subject = subject;
+	}
+
+
+	/**
+	 * @return the creator
+	 */
+	public User getCreator() {
+		return creator;
+	}
+
+
+	/**
+	 * @param creator the creator to set
+	 */
+	public void setCreator(User creator) {
+		this.creator = creator;
 	}
 
 
@@ -127,68 +143,21 @@ public class Exam extends DomainObject{
 		this.isLocked = isLocked;
 	}
 
+	/**
+	 * @return the questionList
+	 */
+	public ArrayList<Question> getQuestionList() {
+		return questionList;
+	}
 
 	/**
-	 * @return the creatorId
+	 * @param questionList the questionList to set
 	 */
-	public int getCreatorId() {
-		return creatorId;
+	public void setQuestionList(ArrayList<Question> questionList) {
+		this.questionList = questionList;
 	}
 
 
-	/**
-	 * @param creatorId the creatorId to set
-	 */
-	public void setCreatorId(int creatorId) {
-		this.creatorId = creatorId;
-	}
-
-
-	/**
-	 * @return the updatorId
-	 */
-	public int getUpdatorId() {
-		return updatorId;
-	}
-
-
-	/**
-	 * @param updatorId the updatorId to set
-	 */
-	public void setUpdatorId(int updatorId) {
-		this.updatorId = updatorId;
-	}
-
-
-	/**
-	 * @return the userList
-	 */
-	public ArrayList<User> getUserList() {
-		return userList;
-	}
-
-
-	/**
-	 * @param userList the userList to set
-	 */
-	public void setUserList(ArrayList<User> userList) {
-		this.userList = userList;
-	}
-
-
-	/**
-	 * @return the submissionList
-	 */
-	public ArrayList<Submission> getSubmissionList() {
-		return submissionList;
-	}
-
-
-	/**
-	 * @param submissionList the submissionList to set
-	 */
-	public void setSubmissionList(ArrayList<Submission> submissionList) {
-		this.submissionList = submissionList;
-	}
+	
 
 }
