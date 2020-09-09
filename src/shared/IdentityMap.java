@@ -6,6 +6,8 @@ package shared;
 import java.util.HashMap;
 import java.util.Map;
 
+import domain.Subject;
+
 
 /**
  * @author manlo
@@ -35,5 +37,6 @@ public class IdentityMap<E> {
 	public E get(long id) {
 		return map.get(id);
 	}
+
 
 }

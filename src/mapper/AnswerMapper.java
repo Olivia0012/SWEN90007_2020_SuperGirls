@@ -1,0 +1,27 @@
+/**
+ * 
+ */
+package mapper;
+
+/**
+ * @author manlo
+ *
+ */
+public class AnswerMapper {
+
+	/**
+	 * 
+	 */
+	public AnswerMapper() {
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

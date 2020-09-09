@@ -8,10 +8,10 @@ public abstract class DataMapper {
 		// TODO Auto-generated constructor stub
 	}
 	
-	protected abstract Boolean insert(DomainObject obj);
-	protected abstract Boolean update(DomainObject obj);
-	protected abstract Boolean delete(DomainObject obj);
-	protected abstract DomainObject findById(int id);
+	public abstract Boolean insert(DomainObject obj);
+	public abstract Boolean update(DomainObject obj);
+	public abstract Boolean delete(DomainObject obj);
+	public abstract DomainObject findById(int id);
 		
 
 }
