@@ -44,97 +44,6 @@ All deliverables will be uploaded and managed here.
 .
 ├── LICENSE
 ├── README.md
-├── WebContent      # Web files
-│   ├── META-INF
-│   │   └── MANIFEST.MF
-│   ├── WEB-INF
-│   │   ├── lib
-│   │   └── web.xml
-│   └── test.jsp
-├── build           # Compiled files
-│   └── classes
-│       └── unimelb
-│           └── swen90007
-│               └── part2
-│                   └── HelloServlet.class
-├── docs            # Documentations
-│   ├── architecture
-│   │   └── SWEN90007_CIS-TMPLT-ARCH-1.docx
-│   ├── meetings
-│   │   ├── README.md
-│   │   ├── Week\ 2\ Minutes_Aug\ 10_Team\ Super\ Girls.pdf
-│   │   └── Week\ 3\ Minutes_Aug\ 17_Team\ Super\ Girls.pdf
-│   └── part1
-│       ├── README.md
-│       ├── SWEN90007_2020_Part1_SuperGirls.pdf
-│       ├── [01.00-D05]SWEN90007_2020_Part1_SuperGirls.doc
-│       └── [01.00-D06]SWEN90007_2020_Part1_SuperGirls(1).doc
-├── src              # Source files
-│   └── unimelb
-│       └── swen90007
-│           └── part2
-│               └── HelloServlet.java
-├── test            # Automated tests
-│   └── SWEN90007-CIS-SW-TSTD.doc
-└── tree.text       # repository structure tree file
-```
-
-## Git Workflow
-
-### 1. Development set up
-#### 　Clone the repository
-    git clone git@github.com:Olivia0012/SWEN90007_2020_SuperGirls.git
-### 2. Branch naming
-#### 　Create a new branch
-    git branch <new-branch> 
-#### 　Change the current working branch to the new branch
-    git checkout <new-branch> 
-#### 　Push the new branch 
-    git push origin <new-branch> 
-#### 　Branch naming standard 
-    <end>/<tag>/<description>
-     · <application> can be one of backend or frontend.
-     · <tag> element matches the tags for the commit standards.
-     · <description> should be limited to a small number of works.
-    Examples:　frontend/feature/student-login
-               backend/test/instructor-logout
-               backend/fix/view-exams 
-### 3. Commit standards 
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<table>
-  <tr>
-    <td align="center"><b>Tag</b></td>
-    <td align="center"><b>Description</b></td>
-  </tr>
-  <tr>
-    <td align="center">feature</td>
-    <td align="center">A new feature</td>
-  </tr>
-   <tr>
-    <td align="center">fix</td>
-    <td align="center">Fix a bug</td>
-  </tr>  
-  <tr>
-    <td align="center">test</td>
-    <td align="center">Unit testing/ integration testing</td>
-  </tr>
-</table>
-
-<!-- markdownlint-enable -->
-<!-- prettier-ignore-end -->
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-### 4. Merge changes
-    · Create a pull request 
-    · Do code review with team members 
-    · Merge the change 
-
-# File Structure
-```
-.
-├── LICENSE
-├── README.md
 ├── WebContent
 │   ├── META-INF
 │   │   └── MANIFEST.MF
@@ -226,6 +135,57 @@ All deliverables will be uploaded and managed here.
 │   └── SWEN90007-CIS-SW-TSTD.doc
 └── tree.text
 ```
+
+## Git Workflow
+
+### 1. Development set up
+#### 　Clone the repository
+    git clone git@github.com:Olivia0012/SWEN90007_2020_SuperGirls.git
+### 2. Branch naming
+#### 　Create a new branch
+    git branch <new-branch> 
+#### 　Change the current working branch to the new branch
+    git checkout <new-branch> 
+#### 　Push the new branch 
+    git push origin <new-branch> 
+#### 　Branch naming standard 
+    <end>/<tag>/<description>
+     · <application> can be one of backend or frontend.
+     · <tag> element matches the tags for the commit standards.
+     · <description> should be limited to a small number of works.
+    Examples:　frontend/feature/student-login
+               backend/test/instructor-logout
+               backend/fix/view-exams 
+### 3. Commit standards 
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><b>Tag</b></td>
+    <td align="center"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td align="center">feature</td>
+    <td align="center">A new feature</td>
+  </tr>
+   <tr>
+    <td align="center">fix</td>
+    <td align="center">Fix a bug</td>
+  </tr>  
+  <tr>
+    <td align="center">test</td>
+    <td align="center">Unit testing/ integration testing</td>
+  </tr>
+</table>
+
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+### 4. Merge changes
+    · Create a pull request 
+    · Do code review with team members 
+    · Merge the change 
 
 
 # Deliverables: 
