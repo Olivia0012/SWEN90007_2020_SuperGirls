@@ -4,6 +4,7 @@
 package domain;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import enumeration.QuestionType;
 
@@ -16,13 +17,25 @@ public class Question extends DomainObject{
 	private QuestionType qType;
 	private String qDescription;
 	private Double qMark;
+	private Exam exam;
 	private ArrayList<String> choices;
 
 	/**
 	 * 
 	 */
 	public Question() {
-		// TODO Auto-generated constructor stub
+		super();
+	}
+
+	public Question(int id, int questionnum, QuestionType questionType, String questiondes, Double questionmark, Exam exam, List<String> choice) {
+		super(id);
+		this.setQuestionNum(questionNum);
+		this.setqType(questionType);
+		this.setqDescription(questiondes);
+		this.setExam(exam);
+		this.setqMark(questionmark);
+		this.setChoices(choices);
+		
 	}
 
 	/**
@@ -94,5 +107,21 @@ public class Question extends DomainObject{
 	public void setChoices(ArrayList<String> choices) {
 		this.choices = choices;
 	}
+
+	/**
+	 * @return the exam
+	 */
+	public Exam getExam() {
+		return exam;
+	}
+
+	/**
+	 * @param exam the exam to set
+	 */
+	public void setExam(Exam exam) {
+		this.exam = exam;
+	}
+
+	
 
 }

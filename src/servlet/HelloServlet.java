@@ -32,7 +32,8 @@ public class HelloServlet extends HttpServlet {
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
- 
+    	response.setHeader("Access-Control-Allow-Origin", "*");   // 有效，前端可以访问
+        response.setContentType("text/json;charset=UTF-8");
         response.getWriter().write("Hello from Servlet !");
     }
 
