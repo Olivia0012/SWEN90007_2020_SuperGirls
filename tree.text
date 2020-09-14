@@ -1,38 +1,95 @@
 .
 ├── LICENSE
 ├── README.md
-├── WebContent      # Web files
+├── WebContent
 │   ├── META-INF
 │   │   └── MANIFEST.MF
 │   ├── WEB-INF
 │   │   ├── lib
 │   │   └── web.xml
 │   └── test.jsp
-├── build           # Compiled files
+├── build
 │   └── classes
-│       └── unimelb
-│           └── swen90007
-│               └── part2
-│                   └── HelloServlet.class
-├── docs            # Documentations
+│       ├── database
+│       │   └── DatabaseConnection.class
+│       ├── domain
+│       │   ├── Admin.class
+│       │   ├── Answer.class
+│       │   ├── DomainObject.class
+│       │   ├── Exam.class
+│       │   ├── Instructor.class
+│       │   ├── Question.class
+│       │   ├── Student.class
+│       │   ├── Subject.class
+│       │   ├── Submission.class
+│       │   └── User.class
+│       ├── enumeration
+│       │   ├── ExamStatus.class
+│       │   ├── QuestionType.class
+│       │   └── Role.class
+│       ├── mapper
+│       │   ├── AnswerMapper.class
+│       │   ├── DataMapper.class
+│       │   ├── ExamMapper.class
+│       │   ├── QuestionMapper.class
+│       │   ├── SubjectMapper.class
+│       │   ├── SubmissionMapper.class
+│       │   └── UserMapper.class
+│       ├── servlet
+│       │   └── HelloServlet.class
+│       └── shared
+│           ├── IdentityMap.class
+│           ├── LazyLoad.class
+│           └── UnitOfWork.class
+├── docs
 │   ├── architecture
 │   │   └── SWEN90007_CIS-TMPLT-ARCH-1.docx
 │   ├── meetings
 │   │   ├── README.md
 │   │   ├── Week\ 2\ Minutes_Aug\ 10_Team\ Super\ Girls.pdf
-│   │   └── Week\ 3\ Minutes_Aug\ 17_Team\ Super\ Girls.pdf
+│   │   ├── Week\ 3\ Minutes_Aug\ 17_Team\ Super\ Girls.pdf
+│   │   └── Week\ 4\ Minutes_Aug\ 24_Team\ Super\ Girls.pdf
 │   └── part1
 │       ├── README.md
 │       ├── SWEN90007_2020_Part1_SuperGirls.pdf
 │       ├── [01.00-D05]SWEN90007_2020_Part1_SuperGirls.doc
 │       └── [01.00-D06]SWEN90007_2020_Part1_SuperGirls(1).doc
-├── src              # Source files
-│   └── unimelb
-│       └── swen90007
-│           └── part2
-│               └── HelloServlet.java
-├── test            # Automated tests
+├── lib
+│   └── postgresql-42.2.14.jar
+├── src
+│   ├── database
+│   │   └── DatabaseConnection.java
+│   ├── domain
+│   │   ├── Admin.java
+│   │   ├── Answer.java
+│   │   ├── DomainObject.java
+│   │   ├── Exam.java
+│   │   ├── Instructor.java
+│   │   ├── Question.java
+│   │   ├── Student.java
+│   │   ├── Subject.java
+│   │   ├── Submission.java
+│   │   └── User.java
+│   ├── enumeration
+│   │   ├── ExamStatus.java
+│   │   ├── QuestionType.java
+│   │   └── Role.java
+│   ├── mapper
+│   │   ├── AnswerMapper.java
+│   │   ├── DataMapper.java
+│   │   ├── ExamMapper.java
+│   │   ├── QuestionMapper.java
+│   │   ├── SubjectMapper.java
+│   │   ├── SubmissionMapper.java
+│   │   └── UserMapper.java
+│   ├── servlet
+│   │   └── HelloServlet.java
+│   └── shared
+│       ├── IdentityMap.java
+│       ├── LazyLoad.java
+│       └── UnitOfWork.java
+├── test
 │   └── SWEN90007-CIS-SW-TSTD.doc
-└── tree.text       # repository structure tree file
+└── tree.text
 
-18 directories, 17 files
+25 directories, 67 files

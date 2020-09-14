@@ -2,6 +2,7 @@ package domain;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import enumeration.ExamStatus;
 
@@ -13,13 +14,14 @@ public class Exam extends DomainObject{
 	private String title;
 	private ExamStatus status;
 	private boolean isLocked;
-	private ArrayList<Question> questionList;
+	private List<Question> questionList = new ArrayList<Question>();
 	
 	public Exam() {
 		super();
 	}
 
-	public Exam(int Id, Subject subject, User creator,Date createdTime,Date updatedTime,String title, ExamStatus status,boolean isLocked) {
+
+	public Exam(int Id, Subject subject, User creator,Date createdTime,Date updatedTime,String title, ExamStatus status,boolean isLocked, List<Question> questionList) {
 		super(Id);
 		this.setSubject(subject);
 		this.setCreator(creator);
@@ -28,8 +30,8 @@ public class Exam extends DomainObject{
 		this.setTitle(title);
 		this.setStatus(status);
 		this.setLocked(isLocked);
+		this.setQuestionList(questionList);
 	}
-
 
 	/**
 	 * @return the subject
@@ -146,18 +148,26 @@ public class Exam extends DomainObject{
 	/**
 	 * @return the questionList
 	 */
-	public ArrayList<Question> getQuestionList() {
-		return questionList;
+	public List<Question> getQuestionList() {
+		return new ArrayList<Question>(this.questionList); 
 	}
 
 	/**
 	 * @param questionList the questionList to set
 	 */
-	public void setQuestionList(ArrayList<Question> questionList) {
-		this.questionList = questionList;
+	public void setQuestionList(List<Question> questionList) {
+	//	if(questionList != null) {
+	//		for(int i = 0; i < questionList.size(); i++)
+		//		System.out.println(questionList.get(i).getqDescription());
+	//	}
+	//	this.questionList = questionList;
+		this.questionList = new ArrayList<Question>(questionList); 
+		
+		for(int i = 0; i < this.getQuestionList().size(); i++) {
+			System.out.println(this.getQuestionList().get(i).getQuestionDescription());
+	}
 	}
 
 
-	
 
 }

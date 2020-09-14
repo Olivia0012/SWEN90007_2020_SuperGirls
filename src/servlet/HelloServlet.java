@@ -42,7 +42,11 @@ public class HelloServlet extends HttpServlet {
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // TODO Auto-generated method stub
-        doGet(request, response);
+     //   doGet(request, response);
+    	System.out.println("post");
+		response.setHeader("Access-Control-Allow-Origin", "*");  
+        response.setContentType("text/json;charset=UTF-8");
+		response.getWriter().write("testing");
     }
 
 }

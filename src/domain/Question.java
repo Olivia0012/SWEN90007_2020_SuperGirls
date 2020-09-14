@@ -14,11 +14,10 @@ import enumeration.QuestionType;
  */
 public class Question extends DomainObject{
 	private int questionNum;
-	private QuestionType qType;
-	private String qDescription;
-	private Double qMark;
-	private Exam exam;
-	private ArrayList<String> choices;
+	private QuestionType questionType;
+	private String questionDescription;
+	private Double questionMark;
+	private List<String> choices;
 
 	/**
 	 * 
@@ -27,16 +26,16 @@ public class Question extends DomainObject{
 		super();
 	}
 
-	public Question(int id, int questionnum, QuestionType questionType, String questiondes, Double questionmark, Exam exam, List<String> choice) {
+	public Question(int id, int questionnum, QuestionType questionType, String questiondes, Double questionmark, List<String> choice) {
 		super(id);
-		this.setQuestionNum(questionNum);
-		this.setqType(questionType);
-		this.setqDescription(questiondes);
-		this.setExam(exam);
-		this.setqMark(questionmark);
-		this.setChoices(choices);
-		
+		this.setQuestionNum(questionnum);
+		this.setQuestionType(questionType);
+		this.setQuestionDescription(questiondes);
+		this.setQuestionMark(questionmark);
+		this.setChoices(choice);
 	}
+
+
 
 	/**
 	 * @return the questionNum
@@ -52,76 +51,62 @@ public class Question extends DomainObject{
 		this.questionNum = questionNum;
 	}
 
-	/**
-	 * @return the qType
-	 */
-	public QuestionType getqType() {
-		return qType;
-	}
-
-	/**
-	 * @param qType the qType to set
-	 */
-	public void setqType(QuestionType qType) {
-		this.qType = qType;
-	}
-
-	/**
-	 * @return the qDescription
-	 */
-	public String getqDescription() {
-		return qDescription;
-	}
-
-	/**
-	 * @param qDescription the qDescription to set
-	 */
-	public void setqDescription(String qDescription) {
-		this.qDescription = qDescription;
-	}
-
-	/**
-	 * @return the qMark
-	 */
-	public Double getqMark() {
-		return qMark;
-	}
-
-	/**
-	 * @param qMark the qMark to set
-	 */
-	public void setqMark(Double qMark) {
-		this.qMark = qMark;
-	}
 
 	/**
 	 * @return the choices
 	 */
-	public ArrayList<String> getChoices() {
+	public List<String> getChoices() {
 		return choices;
 	}
 
 	/**
 	 * @param choices the choices to set
 	 */
-	public void setChoices(ArrayList<String> choices) {
+	public void setChoices(List<String> choices) {
 		this.choices = choices;
 	}
 
 	/**
-	 * @return the exam
+	 * @return the questionType
 	 */
-	public Exam getExam() {
-		return exam;
+	public QuestionType getQuestionType() {
+		return questionType;
 	}
 
 	/**
-	 * @param exam the exam to set
+	 * @param questionType the questionType to set
 	 */
-	public void setExam(Exam exam) {
-		this.exam = exam;
+	public void setQuestionType(QuestionType questionType) {
+		this.questionType = questionType;
 	}
 
-	
+	/**
+	 * @return the questionDescription
+	 */
+	public String getQuestionDescription() {
+		return questionDescription;
+	}
+
+	/**
+	 * @param questionDescription the questionDescription to set
+	 */
+	public void setQuestionDescription(String questionDescription) {
+		this.questionDescription = questionDescription;
+	}
+
+	/**
+	 * @return the questionMark
+	 */
+	public Double getQuestionMark() {
+		return questionMark;
+	}
+
+	/**
+	 * @param questionMark the questionMark to set
+	 */
+	public void setQuestionMark(Double questionMark) {
+		this.questionMark = questionMark;
+	}
+
 
 }
