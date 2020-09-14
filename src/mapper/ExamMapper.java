@@ -16,6 +16,7 @@ import java.util.List;
 
 import database.DatabaseConnection;
 import domain.Exam;
+import domain.Question;
 import domain.Subject;
 import domain.User;
 import enumeration.ExamStatus;
@@ -161,6 +162,7 @@ public class ExamMapper extends DataMapper {
 		IdentityMap<Exam> examMap = IdentityMap.getInstance(exam);
 		exam = examMap.get(examId);
 		SubjectMapper subjectMapper = new SubjectMapper();
+		QuestionMapper questisonMapper = new QuestionMapper();
 		UserMapper instructorMapper = new UserMapper();
 
 		// find from the DB when it is not in the identity map.
@@ -183,13 +185,33 @@ public class ExamMapper extends DataMapper {
 					String title = rs.getString(6);
 					String status = rs.getString(7);
 					boolean isLocked = rs.getBoolean(8);
-
+					
+					List<Question> questionList =  questisonMapper.findQuestionByExamId(id);
 					Subject subject = subjectMapper.findById(subjectId);
 					User instrctor = instructorMapper.findById(instructorId);
 					exam = new Exam(id, subject, instrctor, createTime, updateTime, title, ExamStatus.valueOf(status),
-							isLocked);
+							isLocked,questionList);
 					result.add(exam);
 				}
+				
+				if(result.size() > 0) {
+					for (int i = 0; i < result.size(); i++) {
+						Exam s = examMap.get(result.get(i).getId());
+						if (s == null) {
+							examMap.put(result.get(i).getId(), result.get(i));
+						}
+						if(result.get(i).getQuestionList() != null)
+						System.out.println(result.get(i).getId() + "," + result.get(i).getTitle() + ","
+								+ result.get(i).getStatus() + "," + result.get(i).getSubject().getSubjectCode()+ ","
+										+ result.get(i).getQuestionList().get(0).getQuestionDescription());
+						else {
+							System.out.println(result.get(i).getId() + "," + result.get(i).getTitle() + ","
+									+ result.get(i).getStatus() + "," + result.get(i).getSubject().getSubjectCode());
+											
+						}
+					}
+				}
+				
 				rs.close();
 				stmt.close();
 			} catch (Exception e) {
@@ -219,6 +241,7 @@ public class ExamMapper extends DataMapper {
 		String queryAllExamStm = "SELECT * FROM exam"; // query all subjects
 		IdentityMap<Exam> examMap = IdentityMap.getInstance(exam);
 		List<Exam> result = new ArrayList<Exam>();
+		QuestionMapper questisonMapper = new QuestionMapper();
 		SubjectMapper subjectMapper = new SubjectMapper();
 		UserMapper instructorMapper = new UserMapper();
 		
@@ -237,10 +260,11 @@ public class ExamMapper extends DataMapper {
 				String status = rs.getString("examStatus");
 				boolean isLocked = rs.getBoolean("isLock");
 
+				List<Question> questionList =  questisonMapper.findQuestionByExamId(id);
 				Subject subject = subjectMapper.findById(subjectId);
 				User instrctor = instructorMapper.findById(instructorId);
 				exam = new Exam(id, subject, instrctor, createTime, updateTime, title, ExamStatus.valueOf(status),
-						isLocked);
+						isLocked,questionList);
 				result.add(exam);
 			}
 
@@ -251,7 +275,8 @@ public class ExamMapper extends DataMapper {
 						examMap.put(result.get(i).getId(), result.get(i));
 					}
 					System.out.println(result.get(i).getId() + "," + result.get(i).getTitle() + ","
-							+ result.get(i).getStatus() + "," + result.get(i).getSubject().getSubjectCode());
+							+ result.get(i).getStatus() + "," + result.get(i).getSubject().getSubjectCode()+ ","
+									+ result.get(i).getQuestionList());
 				}
 				
 			}
@@ -271,7 +296,7 @@ public class ExamMapper extends DataMapper {
 	// test
 	public static void main(String args[]) {
 		ExamMapper em = new ExamMapper();
-		em.FindAllExams();
+	//	em.FindAllExams();
 		em.findById(1);
 	}
 

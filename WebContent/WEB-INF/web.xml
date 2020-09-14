@@ -1,18 +1,32 @@
-<?xml version="1.0" encoding="UTF-8"?>  
-<web-app version="2.5"   
-    xmlns="http://java.sun.com/xml/ns/javaee"   
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   
-    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee   
-    http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">  
-  <servlet>  
-     <!-- class name -->  
-    <servlet-name>HelloServlet</servlet-name>  
-    <!-- package name -->  
-    <servlet-class>unimelb.swen90007.part2</servlet-class>  
-  </servlet>  
-  <servlet-mapping>  
-    <servlet-name>HelloServlet</servlet-name>  
-    <!-- access path -->  
-    <url-pattern>/SWEN90007_2020_SuperGirls/HelloServlet</url-pattern>  
-    </servlet-mapping>  
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee   
+    http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	<servlet>
+		<!-- class name -->
+		<servlet-name>HelloServlet</servlet-name>
+		<!-- package name -->
+		<servlet-class>servlet/HelloServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>HelloServlet</servlet-name>
+		<!-- access path -->
+		<url-pattern>/hello</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<!-- class name -->
+		<servlet-name>ExamController</servlet-name>
+		<!-- package name -->
+		<servlet-class>servlet/ExamController
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ExamController</servlet-name>
+		<!-- access path -->
+		<url-pattern>/exam/viewall</url-pattern>
+		<url-pattern>/exam/viewone</url-pattern>
+	</servlet-mapping>
+
 </web-app>

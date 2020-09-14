@@ -231,6 +231,56 @@ public class SubjectMapper extends DataMapper {
 		}
 		return result;
 	}
+	
+	/**
+	 * find all subjects record in the subject table
+	 * 
+	 *
+	 * @return all the subject records.
+	 * */
+	public List<Subject> FindAllSubjectByUserId(int userId) {
+		Subject subject = new Subject();
+		// query all subjects by user Id
+		String queryAllSubjectStm = "SELECT * FROM userandsubject WHERE userid = ?"; 
+		IdentityMap<Subject> subjectMap = IdentityMap.getInstance(subject);
+		SubjectMapper subjectMapper = new SubjectMapper();
+		List<Subject> result = new ArrayList<Subject>();
+		
+		try {
+			PreparedStatement stmt = DatabaseConnection.prepare(queryAllSubjectStm);
+			stmt.setInt(1, userId);
+			ResultSet rs = stmt.executeQuery();
+		//	Subject subject = new Subject();
+
+			while (rs.next()) {
+				Integer id = rs.getInt("subjectId");
+				subject = subjectMapper.findById(id);
+				result.add(subject);
+			}
+
+			if(result.size() > 0) {
+				for (int i = 0; i < result.size(); i++) {
+					Subject s = subjectMap.get(result.get(i).getId());
+					if (s == null) {
+						subjectMap.put(result.get(i).getId(), result.get(i));
+					}
+					System.out.println(
+							result.get(i).getId() + "," + result.get(i).getTitle() + "," + result.get(i).getSubjectCode());
+				}
+				
+			}
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} finally {
+			DatabaseConnection.closeConnection();
+		}
+		return result;
+	}
+	
 
 	// Testing the subject mapper.
 	public static void main(String args[]) {
@@ -239,8 +289,9 @@ public class SubjectMapper extends DataMapper {
 		newSubject.setSubjectCode("SWEN90013");
 		newSubject.setTitle("Year Long Project");
 		// sm.insert(newSubject);
-		sm.findById(1);
-		sm.FindAllSubject();
+	//	sm.findById(1);
+	//	sm.FindAllSubject();
+		sm.FindAllSubjectByUserId(4);
 
 	}
 

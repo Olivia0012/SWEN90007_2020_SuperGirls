@@ -40,7 +40,7 @@ public class DatabaseConnection {
 			System.exit(0);
 			return false;
 		}
-	//	System.out.println("Opened database successfully");
+		System.out.println("Opened database successfully");
 		return true;
 	}
 

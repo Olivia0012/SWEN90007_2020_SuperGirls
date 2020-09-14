@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.fastjson.JSONObject;
+
 import database.DatabaseConnection;
 import domain.DomainObject;
 import domain.Exam;
@@ -39,10 +41,9 @@ public class QuestionMapper extends DataMapper {
 		try {
 			PreparedStatement stmt = DatabaseConnection.prepare(addNewQuestionStm);
 			stmt.setInt(1, question.getQuestionNum());
-			stmt.setString(2, question.getqType() + "");
-			stmt.setString(3, question.getqDescription());
-			stmt.setDouble(4, question.getqMark());
-			stmt.setInt(5, question.getExam().getId());
+			stmt.setString(2, question.getQuestionType() + "");
+			stmt.setString(3, question.getQuestionDescription());
+			stmt.setDouble(4, question.getQuestionMark());
 
 			stmt.executeUpdate();
 			ResultSet keys = stmt.getGeneratedKeys();
@@ -81,10 +82,9 @@ public class QuestionMapper extends DataMapper {
 		try {
 			PreparedStatement stmt = DatabaseConnection.prepare(updateQuestionStm);
 			stmt.setInt(1, question.getQuestionNum());
-			stmt.setString(2, question.getqType() + "");
-			stmt.setString(3, question.getqDescription());
-			stmt.setDouble(4, question.getqMark());
-			stmt.setInt(5, question.getExam().getId());
+			stmt.setString(2, question.getQuestionType() + "");
+			stmt.setString(3, question.getQuestionDescription());
+			stmt.setDouble(4, question.getQuestionMark());
 
 			stmt.executeUpdate();
 
@@ -184,9 +184,7 @@ public class QuestionMapper extends DataMapper {
 					choices.add(choice3);
 					choices.add(choice4);
 					
-					ExamMapper examMapper = new ExamMapper();
-					Exam exam = examMapper.findById(examId);
-					question = new Question(id,questionnum,QuestionType.valueOf(questionType),questiondes,questionmark,exam,choices);
+					question = new Question(id,questionnum,QuestionType.valueOf(questionType),questiondes,questionmark,choices);
 					result.add(question);
 				}
 				rs.close();
@@ -243,10 +241,10 @@ public class QuestionMapper extends DataMapper {
 				choices.add(choice3);
 				choices.add(choice4);
 				
-				ExamMapper examMapper = new ExamMapper();
-				Exam exam = examMapper.findById(examId);
+			//	ExamMapper examMapper = new ExamMapper();
+			//	Exam exam = examMapper.findById(examId);
 
-				question = new Question(id,questionnum,QuestionType.valueOf(questionType),questiondes,questionmark,exam,choices);
+				question = new Question(id,questionnum,QuestionType.valueOf(questionType),questiondes,questionmark, choices);
 				result.add(question);
 			}
 
@@ -257,7 +255,7 @@ public class QuestionMapper extends DataMapper {
 						questionMap.put(result.get(i).getId(), result.get(i));
 					}
 					System.out.println(
-							result.get(i).getId() + "," + result.get(i).getQuestionNum() + "," + result.get(i).getqType()+"," + result.get(i).getqDescription());
+							result.get(i).getId() + "," + result.get(i).getQuestionNum() + "," + result.get(i).getQuestionType()+"," + result.get(i).getQuestionDescription());
 				}
 
 			}
@@ -273,17 +271,80 @@ public class QuestionMapper extends DataMapper {
 		return result;
 	}
 
+	public List<Question> findQuestionByExamId(Integer examId) {
+		String queryAllQuestion = "select * from question where examid=?"; // query all users
+
+		Question question = new Question();
+		// query all questions
+
+		IdentityMap<Question> questionMap = IdentityMap.getInstance(question);
+		List<Question> result = new ArrayList<Question>();
+
+		try {
+			PreparedStatement stmt = DatabaseConnection.prepare(queryAllQuestion);
+			stmt.setInt(1, examId);
+			ResultSet rs = stmt.executeQuery();
+			// Subject subject = new Subject();
+
+			while (rs.next()) {
+				String questionType = rs.getString(1);
+				Integer id = rs.getInt(2);
+				int questionnum = rs.getInt(4);
+				String questiondes = rs.getString(5);
+				Double questionmark = (double) rs.getFloat(6);
+				String choice1 = rs.getString(7);
+				String choice2 = rs.getString(8);
+				String choice3 = rs.getString(9);
+				String choice4 = rs.getString(10);
+
+				List<String> choices = new ArrayList<String>();
+				choices.add(choice1);
+				choices.add(choice2);
+				choices.add(choice3);
+				choices.add(choice4);
+				
+				question = new Question(id,questionnum,QuestionType.valueOf(questionType),questiondes,questionmark,choices);
+				result.add(question);
+			}
+
+			if (result.size() > 0) {
+				for (int i = 0; i < result.size(); i++) {
+					Question s = questionMap.get(result.get(i).getId());
+					if (s == null) {
+						questionMap.put(result.get(i).getId(), result.get(i));
+					}
+					System.out.println(
+							result.get(i).getId() + "," + result.get(i).getQuestionNum() + "," + result.get(i).getQuestionType()+"," + result.get(i).getQuestionDescription());
+				}
+			}
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} finally {
+			DatabaseConnection.closeConnection();
+		}
+		return result;
+	}
 	
 	public static void main(String args[]) {
 		QuestionMapper sm = new QuestionMapper();
-		Question question = new Question();
+		Question question = new Question(1, 1, QuestionType.ANSWER, "111", 1.3, null);
+			//	(Question) sm.findById(1);
 	//	newUser.setUserName("Olivia");
 	//	newUser.setPassWord("123");
 		// newUser.setRole(role);
 		// sm.insert(newUser);
-		sm.FindAllQuestion();
-		sm.findById(1);
+//		sm.FindAllQuestion();
+	//	question = 
+	//	sm.findQuestionByExamId(1);
+		String result = JSONObject.toJSONString(question);
+		System.out.println(result);
 
 	}
+
+	
 
 }
