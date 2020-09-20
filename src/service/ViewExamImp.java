@@ -19,9 +19,12 @@ public class ViewExamImp implements ViewExam {
 	}
 
 	@Override
-	public Exam findExamById(int examId) {
-		// TODO Auto-generated method stub
-		return null;
+	public String findExamById(int examId) {
+		Exam exam = new Exam();
+		ExamMapper examMapper = new ExamMapper();
+		Exam e = examMapper.findById(examId);
+		String result = JSONObject.toJSONString(e);
+		return result;
 	}
 
 	@Override

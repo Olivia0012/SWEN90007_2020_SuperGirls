@@ -12,7 +12,7 @@ import domain.Exam;
  *
  */
 public interface ViewExam {
-	public Exam findExamById(int examId);
+	public String findExamById(int examId);
 	public String findAllExams();
 
 }

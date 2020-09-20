@@ -21,6 +21,7 @@ import domain.Subject;
 import domain.User;
 import enumeration.ExamStatus;
 import shared.IdentityMap;
+import shared.UnitOfWorkImp;
 
 /**
  * This class is the data mapper for exam.
@@ -82,6 +83,7 @@ public class ExamMapper extends DataMapper {
 	 */
 	@Override
 	public Boolean update(DomainObject obj) {
+		UnitOfWorkImp.newCurrent();
 		Exam exam = (Exam) obj;
 		LocalDateTime updateTime = LocalDateTime.now();
 
@@ -103,6 +105,7 @@ public class ExamMapper extends DataMapper {
 			if (examInMap == null) {
 				examMap.put(exam.getId(), exam);
 			}
+			UnitOfWorkImp.getCurrent().commit();
 			stmt.close();
 			return true;
 		} catch (SQLException e) {
@@ -122,6 +125,7 @@ public class ExamMapper extends DataMapper {
 	 */
 	@Override
 	public Boolean delete(DomainObject obj) {
+		UnitOfWorkImp.newCurrent();
 		Exam exam = (Exam) obj;
 
 		String deleteSubjectStm = "DELETE FROM exam WHERE examid = ?";
@@ -137,6 +141,7 @@ public class ExamMapper extends DataMapper {
 				examMap.put(exam.getId(), null);
 			}
 
+			UnitOfWorkImp.getCurrent().commit();
 			stmt.close();
 			return true;
 		} catch (SQLException e) {
@@ -202,8 +207,8 @@ public class ExamMapper extends DataMapper {
 						}
 						if(result.get(i).getQuestionList() != null)
 						System.out.println(result.get(i).getId() + "," + result.get(i).getTitle() + ","
-								+ result.get(i).getStatus() + "," + result.get(i).getSubject().getSubjectCode()+ ","
-										+ result.get(i).getQuestionList().get(0).getQuestionDescription());
+								+ result.get(i).getStatus() + "," + result.get(i).getSubject().getSubjectCode()+ ",");
+								//		+ result.get(i).getQuestionList().get(0).getQuestionDescription());
 						else {
 							System.out.println(result.get(i).getId() + "," + result.get(i).getTitle() + ","
 									+ result.get(i).getStatus() + "," + result.get(i).getSubject().getSubjectCode());
@@ -278,6 +283,72 @@ public class ExamMapper extends DataMapper {
 							+ result.get(i).getStatus() + "," + result.get(i).getSubject().getSubjectCode()+ ","
 									+ result.get(i).getQuestionList());
 				}
+				
+			}
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} finally {
+			DatabaseConnection.closeConnection();
+		}
+		return result;
+		
+	}
+	
+	/**
+	 * find all exams by subject Id
+	 * 
+	 *
+	 * @return all the exams records.
+	 * */
+	public List<Exam> FindAllExamsBySubjectId(int subjectid) {
+		Exam exam = new Exam();
+
+		
+		
+		String queryAllExamBySubjetIdStm = "SELECT * FROM exam WHERE subjectid=?"; // query all exams by subjectId
+		IdentityMap<Exam> examMap = IdentityMap.getInstance(exam);
+		List<Exam> result = new ArrayList<Exam>();
+		QuestionMapper questisonMapper = new QuestionMapper();
+		SubjectMapper subjectMapper = new SubjectMapper();
+		UserMapper instructorMapper = new UserMapper();
+		
+		try {
+			PreparedStatement stmt = DatabaseConnection.prepare(queryAllExamBySubjetIdStm);
+			stmt.setInt(1, subjectid);
+			ResultSet rs = stmt.executeQuery();
+
+			while (rs.next()) {
+				Integer id = rs.getInt("examId");
+				Integer subjectId = rs.getInt("subjectId");
+				Integer instructorId = rs.getInt("instructorId");
+				Date createTime = rs.getDate("createTime");
+				Date updateTime = rs.getDate("updateTime");
+				String title = rs.getString("examTitle");
+				String status = rs.getString("examStatus");
+				boolean isLocked = rs.getBoolean("isLock");
+
+			//	List<Question> questionList =  questisonMapper.findQuestionByExamId(id);
+				Subject subject = subjectMapper.findById(subjectId);
+				User instrctor = instructorMapper.findById(instructorId);
+				exam = new Exam(id, subject, instrctor, createTime, updateTime, title, ExamStatus.valueOf(status),
+						isLocked,null);
+				result.add(exam);
+			}
+
+			if(result.size() > 0) {
+				for (int i = 0; i < result.size(); i++) {
+					Exam s = examMap.get(result.get(i).getId());
+					if (s == null) {
+						examMap.put(result.get(i).getId(), result.get(i));
+					}
+				/*	System.out.println(result.get(i).getId() + "," + result.get(i).getTitle() + ","
+							+ result.get(i).getStatus() + "," + result.get(i).getSubject().getSubjectCode()+ ","
+									+ result.get(i).getQuestionList());
+				*/}
 				
 			}
 			rs.close();
