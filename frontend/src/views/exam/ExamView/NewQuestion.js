@@ -1,23 +1,18 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { green } from '@material-ui/core/colors';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
-import EditIcon from '@material-ui/icons/Edit';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import { QuestionContent, Editable } from './index';
+import { NewQuestionCon } from './index';
 
 import {
 	Box,
 	Card,
 	Collapse,
-	Button,
 	IconButton,
 	TextField,
 	InputLabel,
 	Select,
 	MenuItem,
 	CardContent,
-	CardHeader,
 	Divider,
 	Grid,
 	Typography,
@@ -33,15 +28,14 @@ const useStyles = makeStyles({
 });
 
 const NewQuestion = ({ className, ...rest }) => {
-	//	const classes = useStyles();
+	const classes = useStyles();
 	//	const [ editable, setEditable ] = React.useState(false);
 	const [ isOpen, setOpen ] = React.useState(false);
 	const [ values, setValues ] = React.useState({
-		type: '',
-		mark: '',
-		description: ''
+		questionType: '',
+		questionMark: '',
+		questionDescription: ''
 	});
-
 	const [ choices, setChoices ] = React.useState({
 		choice1: '',
 		choice2: '',
@@ -49,110 +43,20 @@ const NewQuestion = ({ className, ...rest }) => {
 		choice4: ''
 	});
 
+	let { newquestion, setNewquestion } = useContext(NewQuestionCon);
+	console.log(newquestion);
+
 	//  console.log(t)
-	console.log(choices);
+	console.log(values.description);
 
 	const handleChange = (prop) => (event) => {
 		setValues({ ...values, [prop]: event.target.value });
+		setNewquestion({ ...newquestion, [prop]: event.target.value });
+		//	setChoices({ ...choices, [prop]: event.target.value });
+		//	setNewquestion({...newquestion, choices:choices});
 	};
 
-	const handleEditChoice = (event, index) => {
-		console.log(event.target.value);
-		console.log(index);
-	};
-
-	function FirstLine() {
-		return (
-			<React.Fragment>
-				<Grid item xs={12} sm={4}>
-					<InputLabel id="demo-simple-select-label">Type</InputLabel>
-					<Select
-						labelId="demo-simple-select-label"
-						id="demo-simple-select"
-						value={values.type}
-						fullWidth
-						onChange={handleChange('type')}
-					>
-						<MenuItem value={'ANSWER'}>Short-Answer</MenuItem>
-						<MenuItem value={'CHOICE'}>Multi-Choice</MenuItem>
-					</Select>
-				</Grid>
-				<Grid item xs={12} sm={4}>
-					<TextField
-						id="outlined-multiline-flexible"
-						fullWidth
-						value={values.mark}
-						onChange={handleChange('mark')}
-						label="Mark"
-					/>
-				</Grid>
-			</React.Fragment>
-		);
-	}
-
-	function SecondLine() {
-		return (
-			<React.Fragment>
-				<Grid item xs={12}>
-					<Box p={1}>
-						<Typography color="textPrimary" gutterBottom variant="h5">
-							Choices :
-						</Typography>
-					</Box>
-				</Grid>
-
-				<Grid item xs={12}>
-					<Box p={1}>
-						<TextField
-							id="standard-basic"
-							defaultValue={choices.choice1}
-							fullWidth
-							onChange={(event) => {
-								//	handleEditChoice(event, index);
-							}}
-						/>
-					</Box>
-				</Grid>
-				<Grid item xs={12}>
-					<Box p={1}>
-						<TextField
-							id="standard-basic"
-							defaultValue={choices.choice2}
-							fullWidth
-							onChange={(event) => {
-								//	handleEditChoice(event, index);
-							}}
-						/>
-					</Box>
-				</Grid>
-				<Grid item xs={12}>
-					<Box p={1}>
-						<TextField
-							id="standard-basic"
-							defaultValue={choices.choice3}
-							fullWidth
-							onChange={(event) => {
-								//	handleEditChoice(event, index);
-							}}
-						/>
-					</Box>
-				</Grid>
-				<Grid item xs={12}>
-					<Box p={1}>
-						<TextField
-							id="standard-basic"
-							defaultValue={choices.choice4}
-							fullWidth
-							onChange={(event) => {
-								//	handleEditChoice(event, index);
-							}}
-						/>
-					</Box>
-				</Grid>
-			</React.Fragment>
-		);
-	}
-
+	
 	return (
 		<Card>
 			<CardContent>
@@ -168,21 +72,8 @@ const NewQuestion = ({ className, ...rest }) => {
 								id="standard-basic"
 								defaultValue={values.description}
 								fullWidth
-								onChange={(event) => {
-									//	handleEditChoice(event, index);
-								}}
+								onChange={handleChange('questionDescription')}
 							/>
-						</Grid>
-						<Grid item xs={1} lg={1}>
-							<IconButton aria-label="add an alarm">
-								<HighlightOffIcon
-									color="primary"
-									size="small"
-									onClick={() => {
-										alert("Please input 'DELETE' to  delete this question.");
-									}}
-								/>
-							</IconButton>
 						</Grid>
 					</Grid>
 				</Grid>
@@ -193,12 +84,80 @@ const NewQuestion = ({ className, ...rest }) => {
 					<Box p={3}>
 						<Grid container spacing={5} direction="column" justify="flex-start" alignItems="center">
 							<Grid container direction="row" justify="space-between" alignItems="center" spacing={2}>
-								<FirstLine />
+								<Grid item xs={12} sm={4}>
+									<InputLabel id="demo-simple-select-label">Type</InputLabel>
+									<Select
+										labelId="demo-simple-select-label"
+										id="demo-simple-select"
+										value={newquestion.questionType}
+										fullWidth
+										onChange={handleChange('questionType')}
+									>
+										<MenuItem value={'ANSWER'}>Short-Answer</MenuItem>
+										<MenuItem value={'CHOICE'}>Multi-Choice</MenuItem>
+									</Select>
+								</Grid>
+								<Grid item xs={12} sm={4}>
+									<TextField
+										id="standard-basic"
+										defaultValue={values.mark}
+										fullWidth
+										onChange={handleChange('questionMark')}
+										label="Mark"
+									/>
+								</Grid>
 							</Grid>
 							<Box p={1} />
-							<Collapse in={values.type == 'CHOICE' ? true : false}>
+							<Collapse in={newquestion.questionType == 'CHOICE' ? true : false}>
 								<Grid container>
-									<SecondLine />
+									<Grid item xs={12}>
+										<Box p={1}>
+											<Typography color="textPrimary" gutterBottom variant="h5">
+												Choices :
+											</Typography>
+										</Box>
+									</Grid>
+
+									<Grid item xs={12}>
+										<Box p={1}>
+											<TextField
+												id="standard-basic"
+												defaultValue={newquestion.choice1}
+												fullWidth
+												onChange={handleChange('choice1')}
+											/>
+										</Box>
+									</Grid>
+									<Grid item xs={12}>
+										<Box p={1}>
+											<TextField
+												id="standard-basic"
+												defaultValue={newquestion.choice2}
+												fullWidth
+												onChange={handleChange('choice2')}
+											/>
+										</Box>
+									</Grid>
+									<Grid item xs={12}>
+										<Box p={1}>
+											<TextField
+												id="standard-basic"
+												defaultValue={newquestion.choice3}
+												fullWidth
+												onChange={handleChange('choice3')}
+											/>
+										</Box>
+									</Grid>
+									<Grid item xs={12}>
+										<Box p={1}>
+											<TextField
+												id="standard-basic"
+												defaultValue={newquestion.choice4}
+												fullWidth
+												onChange={handleChange('choice4')}
+											/>
+										</Box>
+									</Grid>
 								</Grid>
 							</Collapse>
 						</Grid>

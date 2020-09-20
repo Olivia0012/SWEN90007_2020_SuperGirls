@@ -47,7 +47,7 @@ const QuestionCard = ({ className, ...rest }) => {
 	const [ choices, setChoices ] = React.useState(question.choices);
 
 	//  console.log(t)
-	console.log(choices);
+//	console.log(choices);
 
 	const handleChange = (prop) => (event) => {
 		setValues({ ...values, [prop]: event.target.value });
