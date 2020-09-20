@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import moment from 'moment';
@@ -19,6 +19,7 @@ import {
 	Button
 } from '@material-ui/core';
 import getInitials from '../../../utils/getInitials';
+import { SubjectContext } from './index';
 
 const useStyles = makeStyles((theme) => ({
 	root: {},
@@ -27,11 +28,12 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-const Results = ({ className, customers, ...rest }) => {
+const Exam = ({ className, customers, ...rest }) => {
 	const classes = useStyles();
 	const [ selectedCustomerIds, setSelectedCustomerIds ] = useState([]);
 	const [ limit, setLimit ] = useState(10);
 	const [ page, setPage ] = useState(0);
+	let {subjects, setSubjects} = useContext(SubjectContext);
 
 	const handleSelectAll = (event) => {
 		let newSelectedCustomerIds;
@@ -73,6 +75,12 @@ const Results = ({ className, customers, ...rest }) => {
 		setPage(newPage);
 	};
 
+	const handleViewExam = (item,event) =>{
+		window.location.href="./exam?examId="+item.id;
+		console.log(item);
+		console.log(event);
+	}
+
 	return (
 		<Card className={clsx(classes.root, className)} {...rest}>
 			<PerfectScrollbar>
@@ -91,17 +99,18 @@ const Results = ({ className, customers, ...rest }) => {
 										onChange={handleSelectAll}
 									/>
 								</TableCell>
-								<TableCell>Student Name</TableCell>
+								<TableCell>Subject Code</TableCell>
+								<TableCell>Subject Title</TableCell>
 								<TableCell>Exams</TableCell>
-								<TableCell> </TableCell>
-								<TableCell>Submission</TableCell>
+                				<TableCell>New Exam</TableCell>
+								<TableCell>Students</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
 							{customers.slice(0, limit).map((customer) => (
 								<TableRow
 									hover
-									key={customer.userName}
+									key={customer.title}
 									selected={selectedCustomerIds.indexOf(customer.id) !== -1}
 								>
 									<TableCell padding="checkbox">
@@ -114,31 +123,25 @@ const Results = ({ className, customers, ...rest }) => {
 									<TableCell>
 										<Box alignItems="center" display="flex">
 											<Typography color="textPrimary" variant="body1">
-												{customer.userName}
+												{customer.subjectCode}
 											</Typography>
 										</Box>
 									</TableCell>
-
-									{customer.examList.map((item) => (
-										<TableCell>
-											<TableRow>
-												<TableCell>{item.title} </TableCell>
-											</TableRow>
-											<TableRow>
-												{customer.submissionList.map(
-													(sub) =>
-														sub.exam.title == item.title ? (
-															<div>{sub.totalMark}</div>
-														) : (
-															<div />
-														)
-												)}
-											</TableRow>
-										</TableCell>
-									))}
-
+									<TableCell>{customer.title}</TableCell>
 									<TableCell>
-										<Button href="#text-buttons" color="primary">
+										{customer.exams.map((item) => (
+											<Button color="primary" name={item.id} onClick={(item,event) => (handleViewExam(item,event))}>
+												{item.title}{item.examId}
+											</Button>
+										))}
+									</TableCell>
+                  <TableCell>
+										<Button color="primary" variant="contained">
+											Add
+										</Button>
+									</TableCell>
+									<TableCell>
+										<Button color="primary" variant="contained">
 											View
 										</Button>
 									</TableCell>
@@ -161,9 +164,9 @@ const Results = ({ className, customers, ...rest }) => {
 	);
 };
 
-Results.propTypes = {
+Exam.propTypes = {
 	className: PropTypes.string,
 	customers: PropTypes.array.isRequired
 };
 
-export default Results;
+export default Exam;

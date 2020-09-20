@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, createContext } from 'react';
 import { Box, Container, makeStyles } from '@material-ui/core';
 import Page from 'src/components/Page';
 import Results from './Results';
 import Toolbar from './Toolbar';
-import { getAllStudentsBySubjectId } from '../../../api/instructorAPI';
+import Exam from './Exam';
+import { getSubjectsByUserId } from '../../../api/examAPI';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -14,16 +15,20 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-const StudentListView = () => {
+export const SubjectContext = createContext();
+
+const SubjectListView = () => {
 	const classes = useStyles();
 	const [ data, setData ] = useState([]);
-	const [ isLoading, setLoading ] = useState(false);
+  const [ isLoading, setLoading ] = useState(false);
+  const [subjects, setSubjects] = useState();
 
 	useEffect(() => {
 		const fetchData = async () => {
 			setLoading(true);
-			const result = await getAllStudentsBySubjectId(1);
-			setData(result.data);
+			const result = await getSubjectsByUserId(4);
+      setData(result.data);
+      setSubjects(result.data)
 			setLoading(false);
 			console.log(data);
 			console.log(isLoading);
@@ -36,14 +41,14 @@ const StudentListView = () => {
 		<Page className={classes.root} title="Customers">
 			<Container maxWidth={false}>
 				<Toolbar />
-				{data.map((item) => (
+				<SubjectContext.Provider value={subjects, setSubjects}>
 					<Box mt={3}>
-						<Results exam={item} customers={data}/>
+						<Results customers={data} />
 					</Box>
-				))}
+				</SubjectContext.Provider>
 			</Container>
 		</Page>
 	);
 };
 
-export default StudentListView;
+export default SubjectListView;

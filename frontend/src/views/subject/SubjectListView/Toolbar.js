@@ -9,8 +9,7 @@ import {
   TextField,
   InputAdornment,
   SvgIcon,
-  makeStyles,
-  Typography
+  makeStyles
 } from '@material-ui/core';
 import { Search as SearchIcon } from 'react-feather';
 
@@ -46,14 +45,30 @@ const Toolbar = ({ className, ...rest }) => {
           color="primary"
           variant="contained"
         >
-          Add 
+          Add customer
         </Button>
       </Box>
       <Box mt={3}>
         <Card>
           <CardContent>
             <Box maxWidth={500}>
-              <Typography>Subject Code + title</Typography>
+              <TextField
+                fullWidth
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SvgIcon
+                        fontSize="small"
+                        color="action"
+                      >
+                        <SearchIcon />
+                      </SvgIcon>
+                    </InputAdornment>
+                  )
+                }}
+                placeholder="Search customer"
+                variant="outlined"
+              />
             </Box>
           </CardContent>
         </Card>

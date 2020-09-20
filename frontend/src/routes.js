@@ -1,6 +1,7 @@
 import React from 'react';
 import DashboardLayout from 'src/layouts/DashboardLayout';
-import CustomerListView from 'src/views/student/UserListView';
+import SubjectListView from 'src/views/subject/SubjectListView';
+import StudentListView from 'src/views/student/UserListView';
 import Exam from 'src/views/exam/ExamView';
 
 const routes = [
@@ -8,8 +9,10 @@ const routes = [
     path: '/',
     element: <DashboardLayout />,
     children: [
-      { path: 'subjects', element: <CustomerListView /> },
-      { path: 'exams', element: <Exam /> }
+      { path: 'subjects', element: <SubjectListView /> },
+      { path: 'students', element: <StudentListView /> },
+    //  { path: 'exams', element: <Exam /> },
+      { path: `exam/id=:id`, element: <Exam />},
     ]
   }
 ];

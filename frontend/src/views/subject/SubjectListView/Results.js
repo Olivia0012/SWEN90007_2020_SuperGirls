@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
-	Avatar,
+	Link,
 	Box,
 	Card,
 	Checkbox,
@@ -73,6 +73,13 @@ const Results = ({ className, customers, ...rest }) => {
 		setPage(newPage);
 	};
 
+	const handleViewExam = (event) => {
+		//	event.preventDefault();
+		//	console.log(item);
+		console.log(event);
+		//	window.location.href="./exam?id="+item.id;
+	};
+
 	return (
 		<Card className={clsx(classes.root, className)} {...rest}>
 			<PerfectScrollbar>
@@ -91,17 +98,18 @@ const Results = ({ className, customers, ...rest }) => {
 										onChange={handleSelectAll}
 									/>
 								</TableCell>
-								<TableCell>Student Name</TableCell>
+								<TableCell>Subject Code</TableCell>
+								<TableCell>Subject Title</TableCell>
 								<TableCell>Exams</TableCell>
-								<TableCell> </TableCell>
-								<TableCell>Submission</TableCell>
+								<TableCell>New Exam</TableCell>
+								<TableCell>Students</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
 							{customers.slice(0, limit).map((customer) => (
 								<TableRow
 									hover
-									key={customer.userName}
+									key={customer.title}
 									selected={selectedCustomerIds.indexOf(customer.id) !== -1}
 								>
 									<TableCell padding="checkbox">
@@ -114,31 +122,26 @@ const Results = ({ className, customers, ...rest }) => {
 									<TableCell>
 										<Box alignItems="center" display="flex">
 											<Typography color="textPrimary" variant="body1">
-												{customer.userName}
+												{customer.subjectCode}
 											</Typography>
 										</Box>
 									</TableCell>
-
-									{customer.examList.map((item) => (
-										<TableCell>
-											<TableRow>
-												<TableCell>{item.title} </TableCell>
-											</TableRow>
-											<TableRow>
-												{customer.submissionList.map(
-													(sub) =>
-														sub.exam.title == item.title ? (
-															<div>{sub.totalMark}</div>
-														) : (
-															<div />
-														)
-												)}
-											</TableRow>
-										</TableCell>
-									))}
-
+									<TableCell>{customer.title}</TableCell>
 									<TableCell>
-										<Button href="#text-buttons" color="primary">
+										{customer.exams.map((item) => (
+											<Link href={'./exam/id=' + item.id}>
+												{item.title}
+												{item.id}
+											</Link>
+										))}
+									</TableCell>
+									<TableCell>
+										<Button color="primary" variant="contained">
+											Add
+										</Button>
+									</TableCell>
+									<TableCell>
+										<Button color="primary" variant="contained">
 											View
 										</Button>
 									</TableCell>

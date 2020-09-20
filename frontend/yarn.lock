@@ -5292,6 +5292,11 @@ hoist-non-react-statics@^3.3.0, hoist-non-react-statics@^3.3.2:
   dependencies:
     react-is "^16.7.0"
 
+hookrouter@^1.2.3:
+  version "1.2.3"
+  resolved "https://r.cnpmjs.org/hookrouter/download/hookrouter-1.2.3.tgz#a65599a1be376b51734caf7c4f7f8aba59bb2c77"
+  integrity sha1-plWZob43a1FzTK98T3+Kulm7LHc=
+
 hosted-git-info@^2.1.4:
   version "2.8.8"
   resolved "https://r.cnpmjs.org/hosted-git-info/download/hosted-git-info-2.8.8.tgz#7539bd4bc1e0e0a895815a2e0262420b12858488"
