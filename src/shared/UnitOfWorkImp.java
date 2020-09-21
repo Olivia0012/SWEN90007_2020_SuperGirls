@@ -49,8 +49,21 @@ public class UnitOfWorkImp implements UnitOfWork<DomainObject> {
 	}
 
 	private boolean objectInAnyList(DomainObject obj) {
-		// TODO Auto-generated method stub
+		for (DomainObject dobj : newObjects) {
+			if (dobj == obj)
+				return true;
+
+		}
+		for (DomainObject dobj : dirtyObjects) {
+			if (dobj == obj)
+				return true;
+		}
+		for (DomainObject dobj : deletedObjects) {
+			if (dobj == obj)
+				return true;
+		}
 		return false;
+
 	}
 
 	@Override
@@ -98,12 +111,11 @@ public class UnitOfWorkImp implements UnitOfWork<DomainObject> {
 				// get the mapper for the object
 				DataMapper mapper = (DataMapper) Class.forName("mapper." + obj.getClass().getSimpleName() + "Mapper")
 						.getDeclaredConstructor().newInstance();
-				
-				//make a locking mapper
+
+				// make a locking mapper
 				LockingMapper lckMapper = new LockingMapper(mapper);
 				result = lckMapper.update(obj);
-				
-				
+
 				// if one of the insert failed, do not proceed with the rest
 				if (!result) {
 					return false;
@@ -133,7 +145,7 @@ public class UnitOfWorkImp implements UnitOfWork<DomainObject> {
 				return false;
 			}
 		}
-		
+
 		return result;
 
 	}

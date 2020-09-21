@@ -12,12 +12,13 @@ import enumeration.QuestionType;
  * @author manlo
  *
  */
-public class Question extends DomainObject{
+public class Question extends DomainObject {
 	private int questionNum;
 	private QuestionType questionType;
 	private String questionDescription;
 	private Double questionMark;
-	private List<String> choices;
+	private int examId;
+	private List<String> choices = new ArrayList<String>();
 
 	/**
 	 * 
@@ -26,16 +27,16 @@ public class Question extends DomainObject{
 		super();
 	}
 
-	public Question(int id, int questionnum, QuestionType questionType, String questiondes, Double questionmark, List<String> choice) {
+	public Question(int id, int questionnum, QuestionType questionType, String questiondes, Double questionmark,
+			List<String> choice, int examId) {
 		super(id);
 		this.setQuestionNum(questionnum);
 		this.setQuestionType(questionType);
 		this.setQuestionDescription(questiondes);
 		this.setQuestionMark(questionmark);
 		this.setChoices(choice);
+		this.setExamId(examId);
 	}
-
-
 
 	/**
 	 * @return the questionNum
@@ -51,7 +52,6 @@ public class Question extends DomainObject{
 		this.questionNum = questionNum;
 	}
 
-
 	/**
 	 * @return the choices
 	 */
@@ -63,7 +63,22 @@ public class Question extends DomainObject{
 	 * @param choices the choices to set
 	 */
 	public void setChoices(List<String> choices) {
-		this.choices = choices;
+		if (this.getQuestionType() == QuestionType.ANSWER) {
+			for (int i = 0; i < 4; i++) {
+
+				String choice = "";
+				this.choices.add(choice);
+
+			}
+		} else {
+			this.choices = choices;
+			for (int i = 0; i < 4; i++) {
+				if (choices.get(i) == null) {
+					String choice = "";
+					this.choices.add(choice);
+				}
+			}
+		}
 	}
 
 	/**
@@ -108,5 +123,18 @@ public class Question extends DomainObject{
 		this.questionMark = questionMark;
 	}
 
+	/**
+	 * @return the examId
+	 */
+	public int getExamId() {
+		return examId;
+	}
+
+	/**
+	 * @param examId the examId to set
+	 */
+	public void setExamId(int examId) {
+		this.examId = examId;
+	}
 
 }

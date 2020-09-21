@@ -44,10 +44,10 @@ const NewQuestion = ({ className, ...rest }) => {
 	});
 
 	let { newquestion, setNewquestion } = useContext(NewQuestionCon);
-	console.log(newquestion);
+//	console.log(newquestion);
 
 	//  console.log(t)
-	console.log(values.description);
+//	console.log(values.description);
 
 	const handleChange = (prop) => (event) => {
 		setValues({ ...values, [prop]: event.target.value });
@@ -122,7 +122,7 @@ const NewQuestion = ({ className, ...rest }) => {
 										<Box p={1}>
 											<TextField
 												id="standard-basic"
-												defaultValue={newquestion.choice1}
+												defaultValue={choices.choice1}
 												fullWidth
 												onChange={handleChange('choice1')}
 											/>
@@ -132,7 +132,7 @@ const NewQuestion = ({ className, ...rest }) => {
 										<Box p={1}>
 											<TextField
 												id="standard-basic"
-												defaultValue={newquestion.choice2}
+												defaultValue={choices.choice2}
 												fullWidth
 												onChange={handleChange('choice2')}
 											/>
@@ -142,7 +142,7 @@ const NewQuestion = ({ className, ...rest }) => {
 										<Box p={1}>
 											<TextField
 												id="standard-basic"
-												defaultValue={newquestion.choice3}
+												defaultValue={choices.choice3}
 												fullWidth
 												onChange={handleChange('choice3')}
 											/>
@@ -152,7 +152,7 @@ const NewQuestion = ({ className, ...rest }) => {
 										<Box p={1}>
 											<TextField
 												id="standard-basic"
-												defaultValue={newquestion.choice4}
+												defaultValue={choices.choice4}
 												fullWidth
 												onChange={handleChange('choice4')}
 											/>

@@ -10,6 +10,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.alibaba.fastjson.JSONObject;
+
 import database.DatabaseConnection;
 import domain.DomainObject;
 import domain.Exam;
@@ -273,9 +276,9 @@ public class SubjectMapper extends DataMapper {
 					if (s == null) {
 						subjectMap.put(result.get(i).getId(), result.get(i));
 					}
-					System.out.println(
-							result.get(i).getId() + "," + result.get(i).getTitle() + "," + result.get(i).getSubjectCode());
 				}
+				String result1 = JSONObject.toJSONString(result);
+				System.out.println(result1);
 				
 			}
 			rs.close();

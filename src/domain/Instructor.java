@@ -1,17 +1,17 @@
 package domain;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import enumeration.Role;
 
-public class Instructor {
-	private ArrayList<Exam> Exams;
+public class Instructor extends User{
+	private List<Exam> exams = new ArrayList<Exam>();
+	private List<Subject> subjects = new ArrayList<Subject>();
 
-	public Instructor(int uId, String userName, String passWord, String role) {
-	//	super(uId, userName, passWord, Role.INSTRUCTOR);
-	//	this.setSubjectId(subjectId);
-	//	this.setExamId(examId);
-	//	this.setSubmissionId(submissionId);
+	public Instructor(User user, List<Exam> exams, List<Subject> subjects) {
+		super(user.getId(), user.getUserName(), user.getPassWord(), user.getRole());
+		this.setSubjects(subjects);
+		this.setExams(exams);
 	}
 
 	public Instructor() {
@@ -22,15 +22,31 @@ public class Instructor {
 	/**
 	 * @return the exams
 	 */
-	public ArrayList<Exam> getExams() {
-		return Exams;
+	public List<Exam> getExams() {
+		return exams;
 	}
 
 	/**
 	 * @param exams the exams to set
 	 */
-	public void setExams(ArrayList<Exam> exams) {
-		Exams = exams;
+	public void setExams(List<Exam> exams) {
+		this.exams = exams;
 	}
+
+	/**
+	 * @return the subjects
+	 */
+	public List<Subject> getSubjects() {
+		return subjects;
+	}
+
+	/**
+	 * @param subjects the subjects to set
+	 */
+	public void setSubjects(List<Subject> subjects) {
+		this.subjects = subjects;
+	}
+
+	
 
 }

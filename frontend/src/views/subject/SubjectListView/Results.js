@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import moment from 'moment';
+import { addNewExam } from '../../../api/examAPI';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
 	Link,
@@ -16,9 +16,17 @@ import {
 	TableRow,
 	Typography,
 	makeStyles,
-	Button
+	Button,
+	Collapse,
+	CardActions,
+	DialogActions,
+	Dialog,
+	DialogTitle,
+	DialogContent,
+	DialogContentText,
+	TextField
 } from '@material-ui/core';
-import getInitials from '../../../utils/getInitials';
+import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
 	root: {},
@@ -31,7 +39,31 @@ const Results = ({ className, customers, ...rest }) => {
 	const classes = useStyles();
 	const [ selectedCustomerIds, setSelectedCustomerIds ] = useState([]);
 	const [ limit, setLimit ] = useState(10);
+	const [ isLoading, setLoading ] = useState(false);
 	const [ page, setPage ] = useState(0);
+	const [ openAlert, setOpen ] = React.useState(false);
+	const [ openGreen, setOpenGreen ] = React.useState(false);
+	const [ error, setError ] = React.useState();
+	const [ open, setDMOpen ] = React.useState(false);
+	const [ values, setValues ] = React.useState({
+		title: '',
+		subjectTitle: ''
+	});
+	const handleChange = (prop) => (event) => {
+		setValues({ ...values, [prop]: event.target.value });
+	};
+
+	const [ subject, setSubject ] = React.useState();
+	const handleOpen = (event, subject) => {
+		setDMOpen(true);
+		console.log(subject);
+		setSubject(subject);
+		setValues({ ...values, subjectTitle: subject.title });
+	};
+
+	const handleClose = () => {
+		setDMOpen(false);
+	};
 
 	const handleSelectAll = (event) => {
 		let newSelectedCustomerIds;
@@ -73,11 +105,38 @@ const Results = ({ className, customers, ...rest }) => {
 		setPage(newPage);
 	};
 
-	const handleViewExam = (event) => {
-		//	event.preventDefault();
-		//	console.log(item);
-		console.log(event);
-		//	window.location.href="./exam?id="+item.id;
+	const AddNewExam = async () => {
+		if (openGreen) {
+			window.location.href = './subjects';
+		} else {
+			console.log(values);
+			setLoading(true);
+			//	alert("Adding new exam!");
+			const newExam = {
+				createdTime: '2020-09-21:04:14:30',
+				updatedTime: '',
+				creator: { id: 4, passWord: '', userName: '', role: '' },
+				id: -1,
+				locked: false,
+				questionList: [],
+				status: 'CREATED',
+				subject: { id: subject.id, title: '', subjectCode: '' },
+				title: values.title
+			};
+			const a = await addNewExam(newExam)
+				.then(() => {
+					setLoading(false);
+					setOpenGreen(true);
+					//	alert("adding...");
+				})
+				.catch((error) => {
+					setLoading(false);
+					setOpen(true);
+					setError(error + '');
+					//			alert('Error from processDataAsycn() with async( When promise gets rejected ): ' + error);
+				});
+			console.log(a);
+		}
 	};
 
 	return (
@@ -129,14 +188,16 @@ const Results = ({ className, customers, ...rest }) => {
 									<TableCell>{customer.title}</TableCell>
 									<TableCell>
 										{customer.exams.map((item) => (
-											<Link href={'./exam/id=' + item.id}>
-												{item.title}
-												{item.id}
-											</Link>
+											<TableRow><Link href={'./exam/id=' + item.id}>{item.title}</Link></TableRow>
 										))}
+										<br />
 									</TableCell>
 									<TableCell>
-										<Button color="primary" variant="contained">
+										<Button
+											color="primary"
+											variant="contained"
+											onClick={(event) => handleOpen(event, customer)}
+										>
 											Add
 										</Button>
 									</TableCell>
@@ -160,6 +221,44 @@ const Results = ({ className, customers, ...rest }) => {
 				rowsPerPage={limit}
 				rowsPerPageOptions={[ 5, 10, 25 ]}
 			/>
+			<Dialog open={open} onClose={handleClose} aria-labelledby="max-width-dialog-title" maxWidth="lg" fullWidth>
+				<DialogTitle id="form-dialog-title">New Exam</DialogTitle>
+				<DialogContent>
+					<Collapse in={!openGreen}>
+						<DialogContentText>
+							{new Date().toLocaleTimeString()}Please input the title for the new exam to the subject{' '}
+							{values.subjectTitle}.
+						</DialogContentText>
+						<TextField
+							id="outlined-multiline-flexible"
+							required
+							fullWidth
+							value={values.title}
+							onChange={handleChange('title')}
+							label="Title"
+							variant="outlined"
+						/>
+					</Collapse>
+				</DialogContent>
+				<DialogContent>
+					<Collapse in={openAlert}>
+						<Alert severity="error">{error}</Alert>
+					</Collapse>
+					<Collapse in={openGreen}>
+						<Alert severity="success">Add New Exam Successfully!</Alert>
+					</Collapse>
+				</DialogContent>
+				<DialogActions>
+					<Collapse in={!openGreen}>
+						<Button onClick={handleClose} color="primary">
+							Cancel
+						</Button>
+					</Collapse>
+					<Button onClick={AddNewExam} color="primary" type="submit">
+						Confirm
+					</Button>
+				</DialogActions>
+			</Dialog>
 		</Card>
 	);
 };

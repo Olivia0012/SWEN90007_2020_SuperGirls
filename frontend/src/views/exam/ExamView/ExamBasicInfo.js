@@ -44,7 +44,7 @@ const ExamBasicInfo = ({ className, ...rest }) => {
 						</Typography>
 					}
 					title={
-						examBasicInfo.subjectCode + ' - ' + examBasicInfo.subjectTitle + ' - ' + examBasicInfo.examTitle
+						'Subject Code: '+examBasicInfo.subjectCode + ' -  Subject: ' + examBasicInfo.subjectTitle 
 					}
 				/>
 				<Divider />
@@ -52,13 +52,13 @@ const ExamBasicInfo = ({ className, ...rest }) => {
 					<Grid container container direction="row" xs={12} justify="space-between" alignItems="center" spacing={2}>
 						<TextField
 							id="standard-basic"
-							label="title"
-							defaultValue={a}
+							value={examBasicInfo.examTitle}
 							onChange={(event) => {
 								handleEditTitle(event);
 							}}
 							disabled={!editable}
 						/>
+						
 						<Typography color="textPrimary" gutterBottom variant="h5">
 							Creator : {examBasicInfo.creator} 
 						</Typography>

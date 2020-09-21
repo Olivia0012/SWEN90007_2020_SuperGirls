@@ -10,7 +10,7 @@ import shared.UnitOfWorkImp;
 public class Exam extends DomainObject{
 	private Subject subject;
 	private User creator;
-	private Date createdTime;
+	private String createdTime;
 	private Date updatedTime;
 	private String title;
 	private ExamStatus status;
@@ -24,22 +24,24 @@ public class Exam extends DomainObject{
 	}
 
 
-	public Exam(int Id, Subject subject, User creator,Date createdTime,Date updatedTime,String title, ExamStatus status,boolean isLocked, List<Question> questionList) {
+	public Exam(int Id, Subject subject, User creator,String createTime,Date updatedTime,String title, ExamStatus status,boolean isLocked, List<Question> questionList) {
 		super(Id);
 		this.setSubject(subject);
 		this.setCreator(creator);
-		this.setCreatedTime(createdTime);
+		this.setCreatedTime(createTime);
 		this.setUpdatedTime(updatedTime);
 		this.setTitle(title);
 		this.setStatus(status);
 		this.setLocked(isLocked);
 		this.setQuestionList(questionList);
+		UnitOfWorkImp.newCurrent();
 		UnitOfWorkImp.getCurrent().registerNew(this);
 	}
 
 	public Exam(Integer id, String title) {
 		super(id);
 		this.setTitle(title);
+		UnitOfWorkImp.newCurrent();
 		UnitOfWorkImp.getCurrent().registerNew(this);
 	}
 
@@ -82,7 +84,7 @@ public class Exam extends DomainObject{
 	/**
 	 * @return the createdTime
 	 */
-	public Date getCreatedTime() {
+	public String getCreatedTime() {
 		return createdTime;
 	}
 
@@ -90,7 +92,7 @@ public class Exam extends DomainObject{
 	/**
 	 * @param createdTime the createdTime to set
 	 */
-	public void setCreatedTime(Date createdTime) {
+	public void setCreatedTime(String createdTime) {
 		this.createdTime = createdTime;
 		UnitOfWorkImp.getCurrent().registerDirty(this);
 	}

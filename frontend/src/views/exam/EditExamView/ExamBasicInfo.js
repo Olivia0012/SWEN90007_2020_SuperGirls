@@ -6,7 +6,7 @@ import { getExams } from '../../../api/examAPI';
 import { Box, Button, Card, TextField, CardContent, CardHeader, Divider, makeStyles, Grid } from '@material-ui/core';
 
 import { grid } from '@material-ui/system';
-import QuestionCard from './QuestionCard';
+import QuestionCard from './NewQuestion';
 
 const useStyles = makeStyles({
 	root: {},
@@ -42,12 +42,6 @@ const Notifications = ({ className, ...rest }) => {
 		<form className={clsx(classes.root, className)} {...rest}>
 			<Card>
 				<CardHeader
-					action={
-						<Button color="primary" variant="contained">
-							Edit
-						</Button>
-					}
-					//   subheader="Description"
 					title="[ SWEN90007 ] Software Architecture Desgin "
 				/>
 				<Divider />
@@ -60,8 +54,8 @@ const Notifications = ({ className, ...rest }) => {
 									fullWidth
 									value={values.title}
 									onChange={handleChange('title')}
-									placeholder="Exam 1 / Quiz 1"
-									label="Title"
+									placeholder="e.g. Exam 1 / Quiz 1"
+									label="Exam Title"
 									variant="outlined"
 								/>
 						</Grid>

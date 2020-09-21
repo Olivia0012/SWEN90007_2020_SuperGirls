@@ -25,9 +25,34 @@
 	<servlet-mapping>
 		<servlet-name>ExamController</servlet-name>
 		<!-- access path -->
-		<url-pattern>/exam/viewall</url-pattern>
 		<url-pattern>/exam</url-pattern>
-		<url-pattern>/exam/addnew</url-pattern>
+		<url-pattern>/exam/addnewquestion</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<!-- class name -->
+		<servlet-name>AddExamController</servlet-name>
+		<!-- package name -->
+		<servlet-class>servlet/AddExamController
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AddExamController</servlet-name>
+		<!-- access path -->
+		<url-pattern>/addexam</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<!-- class name -->
+		<servlet-name>DeleteExamController</servlet-name>
+		<!-- package name -->
+		<servlet-class>servlet/DeleteExamController
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DeleteExamController</servlet-name>
+		<!-- access path -->
+		<url-pattern>/exam/delete</url-pattern>
 	</servlet-mapping>
 	
 	<servlet>
@@ -56,6 +81,20 @@
 		<!-- access path -->
 		<url-pattern>/student/viewall</url-pattern>
 		<url-pattern>/student</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<!-- class name -->
+		<servlet-name>DeleteQuestionController</servlet-name>
+		<!-- package name -->
+		<servlet-class>servlet/DeleteQuestionController
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DeleteQuestionController</servlet-name>
+		<!-- access path -->
+		<url-pattern>/question</url-pattern>
+		<url-pattern>/question/delete</url-pattern>
 	</servlet-mapping>
 
 </web-app>

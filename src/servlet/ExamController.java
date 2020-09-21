@@ -1,6 +1,7 @@
 package servlet;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,11 +12,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import domain.Exam;
 import mapper.ExamMapper;
-import service.ViewExamImp;
+import service.ExamServiceImp;
 
 import java.io.BufferedReader;
 
@@ -41,7 +43,7 @@ public class ExamController extends HttpServlet {
 		String data =new String(request.getParameter("examId").getBytes("ISO-8859-1"),"UTF-8");
 	    int examId = Integer. valueOf(data);
 		
-		ViewExamImp a = new ViewExamImp();
+		ExamServiceImp a = new ExamServiceImp();
 		String result = a.findExamById(examId);
 		response.setHeader("Access-Control-Allow-Origin", "*");  
         response.setContentType("text/json;charset=UTF-8");
@@ -52,28 +54,27 @@ public class ExamController extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println(request+"---");
-		String param= null; 
-		try {
-			BufferedReader streamReader = new BufferedReader( new InputStreamReader(request.getInputStream(), "UTF-8"));
-			StringBuilder responseStrBuilder = new StringBuilder();
-			String inputStr;
-			while ((inputStr = streamReader.readLine()) != null)
-				responseStrBuilder.append(inputStr);
-			
-			JSONObject jsonObject = JSONObject.parseObject(responseStrBuilder.toString());
-			param= jsonObject.toJSONString();
-			System.out.println(param+"=====");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		
-	//	String data =new String(request.getParameter("examId").getBytes("ISO-8859-1"),"UTF-8");
-	  //  int examId = Integer. valueOf(data);
-		
-		ViewExamImp a = new ViewExamImp();
-		String result = a.findExamById(1);
+		// read params from post request
+		BufferedReader reader = request.getReader();
+	    StringBuilder sb = new StringBuilder();
+	    String line = reader.readLine();
+	    while (line != null) {
+	      sb.append(line + "\n");
+	      line = reader.readLine();
+	    }
+	    reader.close();
+	    String params = sb.toString();
+	    String[] _params = params.split("&");
+	    Exam exam = new Exam();
+	    for (String param : _params) {
+	      System.out.println("params(POST)-->" + param);
+	      JSONObject jsonObject = JSONObject.parseObject(param);
+	      exam = JSON.toJavaObject(jsonObject,Exam.class);
+	    }
+	    ExamServiceImp updateExam = new ExamServiceImp();
+	    updateExam.updateExam(exam);
+	    
+	    String result = JSONObject.toJSONString(exam);
 		response.setHeader("Access-Control-Allow-Origin", "*");  
         response.setContentType("text/json;charset=UTF-8");
 		response.getWriter().write(result);

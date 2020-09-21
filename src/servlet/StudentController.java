@@ -13,7 +13,7 @@ import com.alibaba.fastjson.JSON;
 
 import service.StudentServiceImp;
 import service.SubjectServiceImp;
-import service.ViewExamImp;
+import service.ExamServiceImp;
 
 /**
  * Servlet implementation class SubjectController
