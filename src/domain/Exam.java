@@ -5,11 +5,12 @@ import java.util.Date;
 import java.util.List;
 
 import enumeration.ExamStatus;
+import shared.UnitOfWorkImp;
 
 public class Exam extends DomainObject{
 	private Subject subject;
 	private User creator;
-	private Date createdTime;
+	private String createdTime;
 	private Date updatedTime;
 	private String title;
 	private ExamStatus status;
@@ -18,20 +19,32 @@ public class Exam extends DomainObject{
 	
 	public Exam() {
 		super();
+		UnitOfWorkImp.newCurrent();
+		UnitOfWorkImp.getCurrent().registerNew(this);
 	}
 
 
-	public Exam(int Id, Subject subject, User creator,Date createdTime,Date updatedTime,String title, ExamStatus status,boolean isLocked, List<Question> questionList) {
+	public Exam(int Id, Subject subject, User creator,String createTime,Date updatedTime,String title, ExamStatus status,boolean isLocked, List<Question> questionList) {
 		super(Id);
 		this.setSubject(subject);
 		this.setCreator(creator);
-		this.setCreatedTime(createdTime);
+		this.setCreatedTime(createTime);
 		this.setUpdatedTime(updatedTime);
 		this.setTitle(title);
 		this.setStatus(status);
 		this.setLocked(isLocked);
 		this.setQuestionList(questionList);
+		UnitOfWorkImp.newCurrent();
+		UnitOfWorkImp.getCurrent().registerNew(this);
 	}
+
+	public Exam(Integer id, String title) {
+		super(id);
+		this.setTitle(title);
+		UnitOfWorkImp.newCurrent();
+		UnitOfWorkImp.getCurrent().registerNew(this);
+	}
+
 
 	/**
 	 * @return the subject
@@ -46,6 +59,7 @@ public class Exam extends DomainObject{
 	 */
 	public void setSubject(Subject subject) {
 		this.subject = subject;
+		UnitOfWorkImp.getCurrent().registerDirty(this);
 	}
 
 
@@ -62,6 +76,7 @@ public class Exam extends DomainObject{
 	 */
 	public void setCreator(User creator) {
 		this.creator = creator;
+		UnitOfWorkImp.getCurrent().registerDirty(this);
 	}
 
 
@@ -69,7 +84,7 @@ public class Exam extends DomainObject{
 	/**
 	 * @return the createdTime
 	 */
-	public Date getCreatedTime() {
+	public String getCreatedTime() {
 		return createdTime;
 	}
 
@@ -77,8 +92,9 @@ public class Exam extends DomainObject{
 	/**
 	 * @param createdTime the createdTime to set
 	 */
-	public void setCreatedTime(Date createdTime) {
+	public void setCreatedTime(String createdTime) {
 		this.createdTime = createdTime;
+		UnitOfWorkImp.getCurrent().registerDirty(this);
 	}
 
 
@@ -95,6 +111,7 @@ public class Exam extends DomainObject{
 	 */
 	public void setUpdatedTime(Date updatedTime) {
 		this.updatedTime = updatedTime;
+		UnitOfWorkImp.getCurrent().registerDirty(this);
 	}
 
 
@@ -111,6 +128,7 @@ public class Exam extends DomainObject{
 	 */
 	public void setTitle(String title) {
 		this.title = title;
+		UnitOfWorkImp.getCurrent().registerDirty(this);
 	}
 
 
@@ -127,6 +145,7 @@ public class Exam extends DomainObject{
 	 */
 	public void setStatus(ExamStatus status) {
 		this.status = status;
+		UnitOfWorkImp.getCurrent().registerDirty(this);
 	}
 
 
@@ -143,29 +162,22 @@ public class Exam extends DomainObject{
 	 */
 	public void setLocked(boolean isLocked) {
 		this.isLocked = isLocked;
+		UnitOfWorkImp.getCurrent().registerDirty(this);
 	}
 
 	/**
 	 * @return the questionList
 	 */
 	public List<Question> getQuestionList() {
-		return new ArrayList<Question>(this.questionList); 
+		return this.questionList; 
 	}
 
 	/**
 	 * @param questionList the questionList to set
 	 */
 	public void setQuestionList(List<Question> questionList) {
-	//	if(questionList != null) {
-	//		for(int i = 0; i < questionList.size(); i++)
-		//		System.out.println(questionList.get(i).getqDescription());
-	//	}
-	//	this.questionList = questionList;
-		this.questionList = new ArrayList<Question>(questionList); 
-		
-		for(int i = 0; i < this.getQuestionList().size(); i++) {
-			System.out.println(this.getQuestionList().get(i).getQuestionDescription());
-	}
+		this.questionList = questionList;
+		UnitOfWorkImp.getCurrent().registerDirty(this);
 	}
 
 

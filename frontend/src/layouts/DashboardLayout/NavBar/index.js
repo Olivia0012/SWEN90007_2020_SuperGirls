@@ -39,6 +39,11 @@ const items = [
     href: '/exams',
     icon: SettingsIcon,
     title: 'Adding Exam'
+  },
+  {
+    href: '/students',
+    icon: SettingsIcon,
+    title: 'Students'
   }
 ];
 

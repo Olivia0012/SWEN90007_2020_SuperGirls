@@ -13,7 +13,9 @@ import java.util.List;
 
 import database.DatabaseConnection;
 import domain.DomainObject;
+import domain.Student;
 import domain.Subject;
+import domain.Submission;
 import domain.User;
 import enumeration.ExamStatus;
 import enumeration.Role;
@@ -249,6 +251,53 @@ public class UserMapper extends DataMapper {
 		sm.FindAllInstructor();
 		sm.findById(1);
 
+	}
+
+	public List<User> FindAllStudentsBySubjectId(int subjectId) {
+		String queryAllUser = "SELECT * FROM userandsubject WHERE subjectid=?"; // query all users
+
+		User user = new User();
+		// query all subjects
+
+		UserMapper userMap = new UserMapper();
+		List<User> result = new ArrayList<User>();
+
+		try {
+			PreparedStatement stmt = DatabaseConnection.prepare(queryAllUser);
+			stmt.setInt(1, subjectId);
+			ResultSet rs = stmt.executeQuery();
+			// Subject subject = new Subject();
+
+			while (rs.next()) {
+				Integer id = rs.getInt(1);
+				
+				User userResult = userMap.findById(id);
+				if(userResult.getRole() == Role.STUDENT) {
+					user = new User(id, userResult.getUserName(), null, userResult.getRole());
+					result.add(user);
+				}
+			}
+
+			if (result.size() > 0) {
+				for (int i = 0; i < result.size(); i++) {
+				//	if (s == null) {
+					//	userMap.put(result.get(i).getId(), result.get(i));
+				//	}
+				//	System.out.println(
+				//			result.get(i).getId() + "," + result.get(i).getUserName() + "," + result.get(i).getRole());
+				}
+
+			}
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} finally {
+			DatabaseConnection.closeConnection();
+		}
+		return result;
 	}
 
 }

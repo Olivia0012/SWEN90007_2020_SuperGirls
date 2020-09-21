@@ -7,7 +7,7 @@ package enumeration;
  */
 
 public enum ExamStatus {
-	CREATED, PUBLISHED, CLOSED, RELEASED;
+	CREATED, PUBLISHED, CLOSED,OPEN, RELEASED;
 
 }
 

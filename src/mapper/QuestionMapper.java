@@ -35,8 +35,8 @@ public class QuestionMapper extends DataMapper {
 	@Override
 	public Boolean insert(DomainObject obj) {
 		Question question = (Question) obj;
-		String addNewQuestionStm = "INSERT INTO QUESTION (questionnum,questionType,questiondes,questionmark,examid) "
-				+ "VALUES (?,?,?,?,?)";// insert new subject 1
+		String addNewQuestionStm = "INSERT INTO QUESTION (questionnum,questionType,questiondes,questionmark,examid, choice1, choice2, choice3, choice4) "
+				+ "VALUES (?,?,?,?,?,?,?,?,?)";// insert new subject 1
 		// into subject table
 		try {
 			PreparedStatement stmt = DatabaseConnection.prepare(addNewQuestionStm);
@@ -44,16 +44,20 @@ public class QuestionMapper extends DataMapper {
 			stmt.setString(2, question.getQuestionType() + "");
 			stmt.setString(3, question.getQuestionDescription());
 			stmt.setDouble(4, question.getQuestionMark());
+			stmt.setInt(5, question.getExamId());
+			stmt.setString(6, question.getChoices().get(0));
+			stmt.setString(7, question.getChoices().get(1));
+			stmt.setString(8, question.getChoices().get(2));
+			stmt.setString(9, question.getChoices().get(3));
 
 			stmt.executeUpdate();
 			ResultSet keys = stmt.getGeneratedKeys();
 			keys.next();
 			int id = keys.getInt(1);
-
 			question.setId(id);
-
 			IdentityMap<Question> questionMap = IdentityMap.getInstance(question);
 			questionMap.put(question.getId(), question);
+
 			keys.close();
 			stmt.close();
 			return true;
@@ -85,6 +89,12 @@ public class QuestionMapper extends DataMapper {
 			stmt.setString(2, question.getQuestionType() + "");
 			stmt.setString(3, question.getQuestionDescription());
 			stmt.setDouble(4, question.getQuestionMark());
+			stmt.setInt(5, question.getExamId());
+			stmt.setString(6, question.getChoices().get(0));
+			stmt.setString(7, question.getChoices().get(1));
+			stmt.setString(8, question.getChoices().get(2));
+			stmt.setString(9, question.getChoices().get(3));
+			stmt.setDouble(10, question.getId());
 
 			stmt.executeUpdate();
 
@@ -117,7 +127,7 @@ public class QuestionMapper extends DataMapper {
 	public Boolean delete(DomainObject obj) {
 		Question question = (Question) obj;
 
-		String deleteUserStm = "DELETE FROM users WHERE userid = ?";
+		String deleteUserStm = "DELETE FROM question WHERE questionid = ?";
 
 		try {
 			PreparedStatement stmt = DatabaseConnection.prepare(deleteUserStm);
@@ -148,7 +158,7 @@ public class QuestionMapper extends DataMapper {
 	 * @return user with the id.
 	 */
 	@Override
-	public DomainObject findById(int questionid) {
+	public Question findById(int questionid) {
 		// find the subject in the identity map.
 		Question question = new Question();
 
@@ -167,24 +177,25 @@ public class QuestionMapper extends DataMapper {
 				ResultSet rs = stmt.executeQuery();
 
 				while (rs.next()) {
-					String questionType = rs.getString(1);
-					Integer id = rs.getInt(2);
-					int questionnum = rs.getInt(4);
-					String questiondes = rs.getString(5);
-					Double questionmark = (double) rs.getFloat(6);
-					int examId = rs.getInt(3);
-					String choice1 = rs.getString(7);
-					String choice2 = rs.getString(8);
-					String choice3 = rs.getString(9);
-					String choice4 = rs.getString(10);
+					Integer id = rs.getInt(1);
+					Integer examId = rs.getInt(2);
+					int questionnum = rs.getInt(3);
+					String questiondes = rs.getString(4);
+					Double questionmark = (double) rs.getFloat(5);
+					String choice1 = rs.getString(6);
+					String choice2 = rs.getString(7);
+					String choice3 = rs.getString(8);
+					String choice4 = rs.getString(9);
+					String questionType = rs.getString(10);
 
 					List<String> choices = new ArrayList<String>();
 					choices.add(choice1);
 					choices.add(choice2);
 					choices.add(choice3);
 					choices.add(choice4);
-					
-					question = new Question(id,questionnum,QuestionType.valueOf(questionType),questiondes,questionmark,choices);
+
+					question = new Question(id, questionnum, QuestionType.valueOf(questionType), questiondes,
+							questionmark, choices, examId);
 					result.add(question);
 				}
 				rs.close();
@@ -224,27 +235,25 @@ public class QuestionMapper extends DataMapper {
 			// Subject subject = new Subject();
 
 			while (rs.next()) {
-				String questionType = rs.getString(1);
-				Integer id = rs.getInt(2);
-				int questionnum = rs.getInt(4);
-				String questiondes = rs.getString(5);
-				Double questionmark = (double) rs.getFloat(6);
-				int examId = rs.getInt(3);
-				String choice1 = rs.getString(7);
-				String choice2 = rs.getString(8);
-				String choice3 = rs.getString(9);
-				String choice4 = rs.getString(10);
+				Integer id = rs.getInt(1);
+				Integer examId = rs.getInt(2);
+				int questionnum = rs.getInt(3);
+				String questiondes = rs.getString(4);
+				Double questionmark = (double) rs.getFloat(5);
+				String choice1 = rs.getString(6);
+				String choice2 = rs.getString(7);
+				String choice3 = rs.getString(8);
+				String choice4 = rs.getString(9);
+				String questionType = rs.getString(10);
 
 				List<String> choices = new ArrayList<String>();
 				choices.add(choice1);
 				choices.add(choice2);
 				choices.add(choice3);
 				choices.add(choice4);
-				
-			//	ExamMapper examMapper = new ExamMapper();
-			//	Exam exam = examMapper.findById(examId);
 
-				question = new Question(id,questionnum,QuestionType.valueOf(questionType),questiondes,questionmark, choices);
+				question = new Question(id, questionnum, QuestionType.valueOf(questionType), questiondes, questionmark,
+						choices, examId);
 				result.add(question);
 			}
 
@@ -254,8 +263,8 @@ public class QuestionMapper extends DataMapper {
 					if (s == null) {
 						questionMap.put(result.get(i).getId(), result.get(i));
 					}
-					System.out.println(
-							result.get(i).getId() + "," + result.get(i).getQuestionNum() + "," + result.get(i).getQuestionType()+"," + result.get(i).getQuestionDescription());
+					System.out.println(result.get(i).getId() + "," + result.get(i).getQuestionNum() + ","
+							+ result.get(i).getQuestionType() + "," + result.get(i).getQuestionDescription());
 				}
 
 			}
@@ -287,23 +296,25 @@ public class QuestionMapper extends DataMapper {
 			// Subject subject = new Subject();
 
 			while (rs.next()) {
-				String questionType = rs.getString(1);
-				Integer id = rs.getInt(2);
-				int questionnum = rs.getInt(4);
-				String questiondes = rs.getString(5);
-				Double questionmark = (double) rs.getFloat(6);
-				String choice1 = rs.getString(7);
-				String choice2 = rs.getString(8);
-				String choice3 = rs.getString(9);
-				String choice4 = rs.getString(10);
+				Integer id = rs.getInt(1);
+				Integer examid = rs.getInt(2);
+				int questionnum = rs.getInt(3);
+				String questiondes = rs.getString(4);
+				Double questionmark = (double) rs.getFloat(5);
+				String choice1 = rs.getString(6);
+				String choice2 = rs.getString(7);
+				String choice3 = rs.getString(8);
+				String choice4 = rs.getString(9);
+				String questionType = rs.getString(10);
 
 				List<String> choices = new ArrayList<String>();
 				choices.add(choice1);
 				choices.add(choice2);
 				choices.add(choice3);
 				choices.add(choice4);
-				
-				question = new Question(id,questionnum,QuestionType.valueOf(questionType),questiondes,questionmark,choices);
+
+				question = new Question(id, questionnum, QuestionType.valueOf(questionType), questiondes, questionmark,
+						choices, examId);
 				result.add(question);
 			}
 
@@ -313,8 +324,8 @@ public class QuestionMapper extends DataMapper {
 					if (s == null) {
 						questionMap.put(result.get(i).getId(), result.get(i));
 					}
-					System.out.println(
-							result.get(i).getId() + "," + result.get(i).getQuestionNum() + "," + result.get(i).getQuestionType()+"," + result.get(i).getQuestionDescription());
+					System.out.println(result.get(i).getId() + "," + result.get(i).getQuestionNum() + ","
+							+ result.get(i).getQuestionType() + "," + result.get(i).getQuestionDescription());
 				}
 			}
 			rs.close();
@@ -328,23 +339,24 @@ public class QuestionMapper extends DataMapper {
 		}
 		return result;
 	}
-	
+
 	public static void main(String args[]) {
 		QuestionMapper sm = new QuestionMapper();
-		Question question = new Question(1, 1, QuestionType.ANSWER, "111", 1.3, null);
-			//	(Question) sm.findById(1);
-	//	newUser.setUserName("Olivia");
-	//	newUser.setPassWord("123");
+		Question question = sm.findById(5);
+		// Question question = new Question(-1,1, QuestionType.ANSWER, "Insert a new
+		// question", 1.3, null,1);
+		// sm.insert(question);
+
+		// (Question) sm.findById(1);
+		// newUser.setUserName("Olivia");
+		// newUser.setPassWord("123");
 		// newUser.setRole(role);
 		// sm.insert(newUser);
 //		sm.FindAllQuestion();
-	//	question = 
-	//	sm.findQuestionByExamId(1);
+		List<Question> questions = sm.findQuestionByExamId(1);
 		String result = JSONObject.toJSONString(question);
 		System.out.println(result);
 
 	}
-
-	
 
 }

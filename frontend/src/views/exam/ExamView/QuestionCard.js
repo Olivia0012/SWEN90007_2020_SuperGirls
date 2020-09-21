@@ -5,6 +5,8 @@ import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import EditIcon from '@material-ui/icons/Edit';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { QuestionContent, Editable } from './index';
+import { deleteQuestion } from '../../../api/examAPI';
+import Loading from '../../../utils/loading';
 
 import {
 	Box,
@@ -35,6 +37,7 @@ const useStyles = makeStyles({
 const QuestionCard = ({ className, ...rest }) => {
 	//	const classes = useStyles();
 	//	const [ editable, setEditable ] = React.useState(false);
+	const [ isLoading, setLoading ] = React.useState(false);
 	const [ isOpen, setOpen ] = React.useState(false);
 	const question = useContext(QuestionContent);
 	const editable = useContext(Editable);
@@ -44,13 +47,26 @@ const QuestionCard = ({ className, ...rest }) => {
 		content: ''
 	});
 
-	const [ choices, setChoices ] = React.useState(question.choices);
+	//	const [ choices, setChoices ] = React.useState(question.choices);
 
 	//  console.log(t)
-	console.log(choices);
+	//	console.log(choices);
 
 	const handleChange = (prop) => (event) => {
 		setValues({ ...values, [prop]: event.target.value });
+	};
+
+	const handleDeleteQuestion = async () => {
+		setLoading(true);
+		await deleteQuestion(question.id).then((a) => {
+			setLoading(false);
+			alert('Deleted Successfully!');
+			window.location.href = './id=' + question.examId;
+		})
+		.catch((error) => {
+			setLoading(false);
+			alert('Error from processDataAsycn() with async( When promise gets rejected ): ' + error);
+		});
 	};
 
 	const handleEditChoice = (event, index) => {
@@ -119,7 +135,7 @@ const QuestionCard = ({ className, ...rest }) => {
 		);
 	}
 
-	return (
+	return !isLoading ? (
 		<Card>
 			<Collapse in={!editable}>
 				<CardHeader
@@ -150,15 +166,9 @@ const QuestionCard = ({ className, ...rest }) => {
 								/>
 							</Grid>
 							<Grid item xs={1} lg={1}>
-							<IconButton aria-label="add an alarm">
-								<HighlightOffIcon
-									color="primary"
-									size="small"
-									onClick={() => {
-										alert("Please input 'DELETE' to  delete this question.");
-									}}
-								/>
-							</IconButton>
+								<IconButton aria-label="add an alarm">
+									<HighlightOffIcon color="primary" size="small" onClick={handleDeleteQuestion} />
+								</IconButton>
 							</Grid>
 						</Grid>
 					</Grid>
@@ -183,6 +193,8 @@ const QuestionCard = ({ className, ...rest }) => {
 				</CardContent>
 			</Collapse>
 		</Card>
+	) : (
+		<Loading isLoading={isLoading} />
 	);
 };
 
