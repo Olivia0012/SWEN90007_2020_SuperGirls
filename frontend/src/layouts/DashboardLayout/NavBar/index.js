@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { Link as RouterLink, useLocation,useRoutes } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import routes from 'src/routes';
 import {
   Avatar,
   Box,
@@ -22,30 +23,11 @@ import {
   Users as UsersIcon
 } from 'react-feather';
 import NavItem from './NavItem';
+import {loginUser} from '../../../views/auth/LoginView';
+ 
 
-const user = {
-  avatar: '/static/images/avatars/avatar_6.png',
-  jobTitle: 'Administrator',
-  name: 'Olivia'
-};
 
-const items = [
-  {
-    href: '/subjects',
-    icon: ShoppingBagIcon,
-    title: 'Subjects'
-  },
-  {
-    href: '/exams',
-    icon: SettingsIcon,
-    title: 'Adding Exam'
-  },
-  {
-    href: '/students',
-    icon: SettingsIcon,
-    title: 'Students'
-  }
-];
+
 
 const useStyles = makeStyles(() => ({
   mobileDrawer: {
@@ -66,6 +48,49 @@ const useStyles = makeStyles(() => ({
 const NavBar = ({ onMobileClose, openMobile }) => {
   const classes = useStyles();
   const location = useLocation();
+  const routeResult = useRoutes(routes);
+  var name = '';
+  var jobTitle = '';
+  var session = '';
+  if(routeResult !== null){
+    const userInfo = routeResult.props.value.params;
+    name = userInfo.name;
+    jobTitle = userInfo.role;
+ }
+ 
+  console.log(location);
+  console.log(routeResult);
+  console.log(loginUser);
+  
+ 
+ 
+  
+  const [user,setUser] = React.useState({
+    avatar: '/static/images/avatars/avatar_6.png',
+	  jobTitle: jobTitle,
+	  name: name,
+    });
+  console.log(user);
+
+  const items = [
+    {
+      href: '../oea/subjects',
+      icon: ShoppingBagIcon,
+      title: 'Subjects'
+    },
+    {
+      href: './exams/user='+`${user.user}`,
+      icon: SettingsIcon,
+      title: 'Adding Exam'
+    },
+    {
+      href: './students/user='+`${user.user}`,
+      icon: SettingsIcon,
+      title: 'Students'
+    }
+  ];
+  
+  console.log(user);
 
   useEffect(() => {
     if (openMobile && onMobileClose) {

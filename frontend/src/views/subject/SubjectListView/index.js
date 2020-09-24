@@ -5,6 +5,8 @@ import Results from './Results';
 import Toolbar from './Toolbar';
 import Loading from '../../../utils/loading'
 import { getSubjectsByUserId } from '../../../api/examAPI';
+import {useRoutes } from 'react-router-dom';
+import routes from 'src/routes';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -22,15 +24,19 @@ const useStyles = makeStyles((theme) => ({
 export const SubjectContext = createContext();
 
 const SubjectListView = () => {
+	const routeResult = useRoutes(routes);
 	const classes = useStyles();
 	const [ data, setData ] = useState([]);
 	const [ isLoading, setLoading ] = useState(false);
 	const [ subjects, setSubjects ] = useState();
+	
 
 	useEffect(() => {
 		const fetchData = async () => {
 			setLoading(true);
-			const result = await getSubjectsByUserId(4);
+			const session = routeResult.props.value.params.user;
+			console.log(session);
+			const result = await getSubjectsByUserId(session);
 			setData(result.data);
 			setSubjects(result.data);
 			setLoading(false);

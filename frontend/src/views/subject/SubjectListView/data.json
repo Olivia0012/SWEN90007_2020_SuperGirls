@@ -1,422 +1,80 @@
-[
-  {
-    "exams": [
-      {
-        "createdTime": "2020-09-11 02:31:38",
-        "creator": {
-          "id": 4,
-          "passWord": "111",
-          "role": "STUDENT",
-          "userName": "Edu"
-        },
+{
+  "answers": [
+    {
+      "anwer": "a2",
+      "id": 2,
+      "mark": 6,
+      "question": {
+        "choices": [
+          "",
+          "",
+          "",
+          ""
+        ],
+        "examId": 1,
         "id": 3,
-        "locked": false,
-        "questionList": [],
-        "status": "OPEN",
-        "subject": {
-          "id": 1,
-          "subjectCode": "SDA",
-          "title": "SWEN90007"
-        },
-        "title": "SDA Quiz-3"
-      },
-      {
-        "createdTime": "2020-09-11 02:31:38",
-        "creator": {
-          "$ref": "$[1].exams.creator"
-        },
-        "id": 1,
-        "locked": false,
-        "questionList": [
-          {
-            "choices": [
-              "",
-              "",
-              "",
-              ""
-            ],
-            "examId": 1,
-            "id": 1,
-            "questionDescription": "What is Data Mapper?",
-            "questionMark": 50,
-            "questionNum": 1,
-            "questionType": "ANSWER"
-          },
-          {
-            "choices": [
-              "Lazy Load",
-              "Identity Field",
-              "Single table inheritance",
-              null,
-              ""
-            ],
-            "examId": 1,
-            "id": 2,
-            "questionDescription": "Which is the inverse of Unit of Work?",
-            "questionMark": 50,
-            "questionNum": 2,
-            "questionType": "CHOICE"
-          },
-          {
-            "choices": [
-              "",
-              "",
-              "",
-              ""
-            ],
-            "examId": 1,
-            "id": 10,
-            "questionDescription": "new question for the exam 1",
-            "questionMark": 20,
-            "questionNum": 0,
-            "questionType": "ANSWER"
-          }
+        "questionDescription": "q3",
+        "questionMark": 10,
+        "questionNum": 0,
+        "questionType": "ANSWER"
+      }
+    },
+    {
+      "anwer": "1",
+      "id": 1,
+      "mark": 10,
+      "question": {
+        "choices": [
+          "a",
+          "b",
+          "c",
+          "d"
         ],
-        "status": "CREATED",
-        "subject": {
-          "$ref": "$[1].exams.subject"
-        },
-        "title": "SDA Quiz-1"
-      },
-      {
-        "createdTime": "2020-09-21 02:31:38",
-        "creator": {
-          "id": 5,
-          "passWord": "111",
-          "role": "STUDENT",
-          "userName": "Maria"
-        },
+        "examId": 1,
         "id": 2,
-        "locked": false,
-        "questionList": [
-          {
-            "choices": [
-              "",
-              "",
-              "",
-              ""
-            ],
-            "examId": 2,
-            "id": 3,
-            "questionDescription": "What is Lazy Load?",
-            "questionMark": 50,
-            "questionNum": 1,
-            "questionType": "ANSWER"
-          },
-          {
-            "choices": [
-              "Ghost",
-              "Lazy Initialization",
-              "Identity Map",
-              "Virtual Proxy"
-            ],
-            "examId": 2,
-            "id": 4,
-            "questionDescription": "Which is not a way of lazy load?",
-            "questionMark": 50,
-            "questionNum": 2,
-            "questionType": "CHOICE"
-          },
-          {
-            "choices": [
-              "a",
-              "b",
-              "c",
-              "d"
-            ],
-            "examId": 2,
-            "id": 8,
-            "questionDescription": "q1",
-            "questionMark": 12,
-            "questionNum": 0,
-            "questionType": "CHOICE"
-          },
-          {
-            "choices": [
-              "",
-              "",
-              "",
-              ""
-            ],
-            "examId": 2,
-            "id": 13,
-            "questionDescription": "testing adding question",
-            "questionMark": 12,
-            "questionNum": 0,
-            "questionType": "ANSWER"
-          }
-        ],
-        "status": "PUBLISHED",
-        "subject": {
-          "$ref": "$[1].exams.subject"
-        },
-        "title": "SDA Quiz-2"
+        "questionDescription": "q2",
+        "questionMark": 10,
+        "questionNum": 0,
+        "questionType": "CHOICE"
       }
-    ],
+    }
+  ],
+  "exam": {
+    "createdTime": "Wed Sep 23 20:48:17 AEST 2020",
+    "creator": {
+      "id": 4,
+      "passWord": "111",
+      "role": "INSTRUCTOR",
+      "userName": "Tim"
+    },
     "id": 1,
-    "subjectCode": "SWEN90007",
-    "title": "SDA"
+    "locked": false,
+    "questionList": [
+      {
+        "$ref": "$.answers.question"
+      },
+      {
+        "$ref": "$.answers.question"
+      }
+    ],
+    "status": "CREATED",
+    "subject": {
+      "id": 1,
+      "subjectCode": "Software Design and Architecture",
+      "title": "SWEN90007"
+    },
+    "title": "Exam 1"
   },
-  {
-    "exams": [
-      {
-        "createdTime": "2020-09-16 02:31:38",
-        "creator": {
-          "$ref": "$[1].exams.creator"
-        },
-        "id": 4,
-        "locked": false,
-        "questionList": [],
-        "status": "CREATED",
-        "subject": {
-          "id": 4,
-          "subjectCode": "Year-Long Project",
-          "title": "SWEN90013"
-        },
-        "title": "SDA Quiz-4"
-      },
-      {
-        "createdTime": "Mon Sep 21 02:29:13 AEST 2020",
-        "creator": {
-          "$ref": "$[1].exams.creator"
-        },
-        "id": 10,
-        "locked": false,
-        "questionList": [],
-        "status": "CREATED",
-        "subject": {
-          "$ref": "$[1].exams.subject"
-        },
-        "title": "test exam1"
-      },
-      {
-        "createdTime": "Mon Sep 21 03:25:53 AEST 2020",
-        "creator": {
-          "$ref": "$[1].exams.creator"
-        },
-        "id": 12,
-        "locked": false,
-        "questionList": [],
-        "status": "CREATED",
-        "subject": {
-          "$ref": "$[1].exams.subject"
-        },
-        "title": "Test"
-      }
-    ],
-    "id": 4,
-    "subjectCode": "SWEN90013",
-    "title": "Year-Long Project"
-  }
-]
-[
-  {
-    "exams": [
-      {
-        "createdTime": "2020-09-11 02:31:38",
-        "creator": {
-          "id": 4,
-          "passWord": "111",
-          "role": "STUDENT",
-          "userName": "Edu"
-        },
-        "id": 3,
-        "locked": false,
-        "questionList": [],
-        "status": "OPEN",
-        "subject": {
-          "id": 1,
-          "subjectCode": "SDA",
-          "title": "SWEN90007"
-        },
-        "title": "SDA Quiz-3"
-      },
-      {
-        "createdTime": "2020-09-11 02:31:38",
-        "creator": {
-          "$ref": "$[1].exams.creator"
-        },
-        "id": 1,
-        "locked": false,
-        "questionList": [
-          {
-            "choices": [
-              "",
-              "",
-              "",
-              ""
-            ],
-            "examId": 1,
-            "id": 1,
-            "questionDescription": "What is Data Mapper?",
-            "questionMark": 50,
-            "questionNum": 1,
-            "questionType": "ANSWER"
-          },
-          {
-            "choices": [
-              "Lazy Load",
-              "Identity Field",
-              "Single table inheritance",
-              null,
-              ""
-            ],
-            "examId": 1,
-            "id": 2,
-            "questionDescription": "Which is the inverse of Unit of Work?",
-            "questionMark": 50,
-            "questionNum": 2,
-            "questionType": "CHOICE"
-          },
-          {
-            "choices": [
-              "",
-              "",
-              "",
-              ""
-            ],
-            "examId": 1,
-            "id": 10,
-            "questionDescription": "new question for the exam 1",
-            "questionMark": 20,
-            "questionNum": 0,
-            "questionType": "ANSWER"
-          }
-        ],
-        "status": "CREATED",
-        "subject": {
-          "$ref": "$[1].exams.subject"
-        },
-        "title": "SDA Quiz-1"
-      },
-      {
-        "createdTime": "2020-09-21 02:31:38",
-        "creator": {
-          "id": 5,
-          "passWord": "111",
-          "role": "STUDENT",
-          "userName": "Maria"
-        },
-        "id": 2,
-        "locked": false,
-        "questionList": [
-          {
-            "choices": [
-              "",
-              "",
-              "",
-              ""
-            ],
-            "examId": 2,
-            "id": 3,
-            "questionDescription": "What is Lazy Load?",
-            "questionMark": 50,
-            "questionNum": 1,
-            "questionType": "ANSWER"
-          },
-          {
-            "choices": [
-              "Ghost",
-              "Lazy Initialization",
-              "Identity Map",
-              "Virtual Proxy"
-            ],
-            "examId": 2,
-            "id": 4,
-            "questionDescription": "Which is not a way of lazy load?",
-            "questionMark": 50,
-            "questionNum": 2,
-            "questionType": "CHOICE"
-          },
-          {
-            "choices": [
-              "a",
-              "b",
-              "c",
-              "d"
-            ],
-            "examId": 2,
-            "id": 8,
-            "questionDescription": "q1",
-            "questionMark": 12,
-            "questionNum": 0,
-            "questionType": "CHOICE"
-          },
-          {
-            "choices": [
-              "",
-              "",
-              "",
-              ""
-            ],
-            "examId": 2,
-            "id": 13,
-            "questionDescription": "testing adding question",
-            "questionMark": 12,
-            "questionNum": 0,
-            "questionType": "ANSWER"
-          }
-        ],
-        "status": "PUBLISHED",
-        "subject": {
-          "$ref": "$[1].exams.subject"
-        },
-        "title": "SDA Quiz-2"
-      }
-    ],
-    "id": 1,
-    "subjectCode": "SWEN90007",
-    "title": "SDA"
+  "id": 1,
+  "lock": false,
+  "student": {
+    "id": 7,
+    "passWord": "111",
+    "role": "STUDENT",
+    "userName": "Olivia"
   },
-  {
-    "exams": [
-      {
-        "createdTime": "2020-09-16 02:31:38",
-        "creator": {
-          "$ref": "$[1].exams.creator"
-        },
-        "id": 4,
-        "locked": false,
-        "questionList": [],
-        "status": "CREATED",
-        "subject": {
-          "id": 4,
-          "subjectCode": "Year-Long Project",
-          "title": "SWEN90013"
-        },
-        "title": "SDA Quiz-4"
-      },
-      {
-        "createdTime": "Mon Sep 21 02:29:13 AEST 2020",
-        "creator": {
-          "$ref": "$[1].exams.creator"
-        },
-        "id": 10,
-        "locked": false,
-        "questionList": [],
-        "status": "CREATED",
-        "subject": {
-          "$ref": "$[1].exams.subject"
-        },
-        "title": "test exam1"
-      },
-      {
-        "createdTime": "Mon Sep 21 03:25:53 AEST 2020",
-        "creator": {
-          "$ref": "$[1].exams.creator"
-        },
-        "id": 12,
-        "locked": false,
-        "questionList": [],
-        "status": "CREATED",
-        "subject": {
-          "$ref": "$[1].exams.subject"
-        },
-        "title": "Test"
-      }
-    ],
-    "id": 4,
-    "subjectCode": "SWEN90013",
-    "title": "Year-Long Project"
-  }
-]
+  "subTime": "2020-09-21 ",
+  "totalMark": 0,
+  "comment": "Good Job!",
+  "markTime": "2020-09-25 01:03:28"
+}

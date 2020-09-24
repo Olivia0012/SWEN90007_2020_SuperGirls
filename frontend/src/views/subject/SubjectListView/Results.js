@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { addNewExam } from '../../../api/examAPI';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import { useNavigate } from 'react-router-dom';
 import {
 	Link,
 	Box,
@@ -37,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Results = ({ className, customers, ...rest }) => {
 	const classes = useStyles();
+	const navigate = useNavigate();
 	const [ selectedCustomerIds, setSelectedCustomerIds ] = useState([]);
 	const [ limit, setLimit ] = useState(10);
 	const [ isLoading, setLoading ] = useState(false);
@@ -146,68 +148,118 @@ const Results = ({ className, customers, ...rest }) => {
 					<Table>
 						<TableHead>
 							<TableRow>
-								<TableCell padding="checkbox">
-									<Checkbox
-										checked={selectedCustomerIds.length === customers.length}
-										color="primary"
-										indeterminate={
-											selectedCustomerIds.length > 0 &&
-											selectedCustomerIds.length < customers.length
-										}
-										onChange={handleSelectAll}
-									/>
+								<TableCell />
+								<TableCell />
+								<TableCell align="center" colSpan={4}>
+									Exams
 								</TableCell>
+								<TableCell />
+								<TableCell>New Exam</TableCell>
+							</TableRow>
+							<TableRow>
 								<TableCell>Subject Code</TableCell>
 								<TableCell>Subject Title</TableCell>
-								<TableCell>Exams</TableCell>
-								<TableCell>New Exam</TableCell>
+								<TableCell align="right">Title</TableCell>
+								<TableCell align="right">Status</TableCell>
+								<TableCell align="canter">Creator</TableCell>
+								<TableCell align="canter">CreatedTime</TableCell>
 								<TableCell>Students</TableCell>
+								<TableCell />
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{customers.slice(0, limit).map((customer) => (
-								<TableRow
-									hover
-									key={customer.title}
-									selected={selectedCustomerIds.indexOf(customer.id) !== -1}
-								>
-									<TableCell padding="checkbox">
-										<Checkbox
-											checked={selectedCustomerIds.indexOf(customer.id) !== -1}
-											onChange={(event) => handleSelectOne(event, customer.id)}
-											value="true"
-										/>
-									</TableCell>
-									<TableCell>
-										<Box alignItems="center" display="flex">
-											<Typography color="textPrimary" variant="body1">
-												{customer.subjectCode}
-											</Typography>
-										</Box>
-									</TableCell>
-									<TableCell>{customer.title}</TableCell>
-									<TableCell>
-										{customer.exams.map((item) => (
-											<TableRow><Link href={'./exam/id=' + item.id}>{item.title}</Link></TableRow>
-										))}
-										<br />
-									</TableCell>
-									<TableCell>
-										<Button
-											color="primary"
-											variant="contained"
-											onClick={(event) => handleOpen(event, customer)}
+							{customers.slice(0, limit).map(
+								(customer) =>
+									customer.exams.length !== 0 ? (
+										customer.exams.map((item, index) => (
+											<TableRow
+												hover
+												key={customer.title}
+												selected={selectedCustomerIds.indexOf(customer.id) !== -1}
+											>
+												<TableCell>
+													<Box alignItems="center" display="flex">
+														<Typography color="textPrimary" variant="body1">
+															{index == 0 ? customer.subjectCode : ''}
+														</Typography>
+													</Box>
+												</TableCell>
+												<TableCell>{index == 0 ? customer.title : ''}</TableCell>
+												<TableCell>
+													<Link href={'./exam/id=' + item.id}>{item.title}</Link>
+												</TableCell>
+												<TableCell>{item.status}</TableCell>
+												<TableCell>{item.creator.userName}</TableCell>
+												<TableCell>{item.createdTime}</TableCell>
+
+												<TableCell>
+													<Button
+														color="primary"
+														variant="contained"
+														onClick={() =>
+															navigate(
+																'/oea/students/subject=' +
+																	customer.id +
+																	'&exam=' +
+																	item.id,
+																{ replace: true }
+															)}
+													>
+														View
+													</Button>
+												</TableCell>
+												<TableCell>
+													{index == 0 ? (
+														<Button
+															color="primary"
+															variant="contained"
+															onClick={(event) => handleOpen(event, customer)}
+														>
+															Add
+														</Button>
+													) : (
+														<div />
+													)}
+												</TableCell>
+											</TableRow>
+										))
+									) : (
+										<TableRow
+											hover
+											key={customer.title}
+											selected={selectedCustomerIds.indexOf(customer.id) !== -1}
 										>
-											Add
-										</Button>
-									</TableCell>
-									<TableCell>
-										<Button color="primary" variant="contained">
-											View
-										</Button>
-									</TableCell>
-								</TableRow>
-							))}
+											<TableCell>
+												<Box alignItems="center" display="flex">
+													<Typography color="textPrimary" variant="body1">
+														{customer.subjectCode}
+													</Typography>
+												</Box>
+											</TableCell>
+											<TableCell>
+												<Box alignItems="center" display="flex">
+													<Typography color="textPrimary" variant="body1">
+														{customer.title}
+													</Typography>
+												</Box>
+											</TableCell>
+											<TableCell />
+											<TableCell />
+											<TableCell />
+											<TableCell />
+											<TableCell />
+											<TableCell>
+												<Button
+													color="primary"
+													variant="contained"
+													onClick={(event) => handleOpen(event, customer)}
+												>
+													Add
+												</Button>
+											</TableCell>
+										</TableRow>
+									)
+							)}
 						</TableBody>
 					</Table>
 				</Box>

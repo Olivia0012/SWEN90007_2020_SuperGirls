@@ -20,13 +20,14 @@ export async function getExams(examId) {
 	return dataFetched;
 }
 
-export async function getSubjectsByUserId(userId) {
-	const endpoint = `/subject?userId=` + userId; //subjectId=`+subjectId;
+export async function getSubjectsByUserId(user) {
+	const endpoint = "/subject"; //subjectId=`+subjectId;
 	const dataFetched = await axios({
 		url: endpoint, // send a request to the library API
 		//		method: "POST", // HTTP POST method
 		method: 'GET',
 		headers: {
+			'withCredentials' : true,
 			'Content-Type': 'application/json'
 		}
 	});

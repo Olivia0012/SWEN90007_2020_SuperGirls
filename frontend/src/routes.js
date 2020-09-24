@@ -3,17 +3,38 @@ import DashboardLayout from 'src/layouts/DashboardLayout';
 import SubjectListView from 'src/views/subject/SubjectListView';
 import StudentListView from 'src/views/student/UserListView';
 import Exam from 'src/views/exam/ExamView';
+import LoginView from 'src/views/auth/LoginView';
 import EditExam from 'src/views/exam/EditExamView';
+import MarkExamView from 'src/views/exam/MarkExamView';
+import MainLayout from 'src/layouts/MainLayout';
 
 const routes = [
   {
-    path: '/',
+    path: 'oea/name=:name&role=:role',
+    element: <DashboardLayout />,
+   /* children: [
+      { path: './subjects', element: <SubjectListView /> },
+      { path: './students', element: <StudentListView /> },
+      { path: './exams', element: <EditExam /> },
+      { path: `./exam/id=:id`, element: <Exam />},
+    ]*/
+  },
+  {
+    path: '/oea',
     element: <DashboardLayout />,
     children: [
-      { path: 'subjects', element: <SubjectListView /> },
-      { path: 'students', element: <StudentListView /> },
-      { path: 'exams', element: <EditExam /> },
-      { path: `exam/id=:id`, element: <Exam />},
+      { path: '/subjects', element: <SubjectListView /> },
+      { path: '/students/subject=:subject&exam=:exam', element: <StudentListView /> },
+      { path: `/exam?user=:user`, element: <EditExam /> },
+      { path: `/exam/id=:id`, element: <Exam />},
+      { path: `/students/submission=:submission`, element: <MarkExamView />},
+    ]
+  },
+  {
+    path: '/',
+    element: <MainLayout />,
+    children: [
+      { path: '', element: <LoginView /> },
     ]
   }
 ];

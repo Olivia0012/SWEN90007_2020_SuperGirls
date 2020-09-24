@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
-	Avatar,
+	Grid,
 	Box,
 	Card,
 	Checkbox,
@@ -32,6 +32,10 @@ const Results = ({ className, customers, ...rest }) => {
 	const [ selectedCustomerIds, setSelectedCustomerIds ] = useState([]);
 	const [ limit, setLimit ] = useState(10);
 	const [ page, setPage ] = useState(0);
+
+	customers.map((i) => {
+		console.log(i.userName);
+	});
 
 	const handleSelectAll = (event) => {
 		let newSelectedCustomerIds;
@@ -73,6 +77,7 @@ const Results = ({ className, customers, ...rest }) => {
 		setPage(newPage);
 	};
 
+
 	return (
 		<Card className={clsx(classes.root, className)} {...rest}>
 			<PerfectScrollbar>
@@ -92,13 +97,22 @@ const Results = ({ className, customers, ...rest }) => {
 									/>
 								</TableCell>
 								<TableCell>Student Name</TableCell>
-								<TableCell>Exams</TableCell>
-								<TableCell> </TableCell>
-								<TableCell>Submission</TableCell>
+								<TableCell align="center" colSpan={3}>
+									Exam
+								</TableCell>
+								<TableCell align="center">Action</TableCell>
+							</TableRow>
+							<TableRow align="center">
+								<TableCell padding="checkbox" />
+								<TableCell rowSpan={1} />
+								<TableCell colSpan={1} align="center">Total Mark</TableCell>
+								<TableCell align="center">Comment</TableCell>
+								<TableCell align="center">Marker</TableCell>
+								<TableCell />
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{customers.slice(0, limit).map((customer) => (
+							{customers.map((customer) => (
 								<TableRow
 									hover
 									key={customer.userName}
@@ -118,29 +132,15 @@ const Results = ({ className, customers, ...rest }) => {
 											</Typography>
 										</Box>
 									</TableCell>
-
-									{customer.examList.map((item) => (
-										<TableCell>
-											<TableRow>
-												<TableCell>{item.title} </TableCell>
-											</TableRow>
-											<TableRow>
-												{customer.submissionList.map(
-													(sub) =>
-														sub.exam.title == item.title ? (
-															<div>{sub.totalMark}</div>
-														) : (
-															<div />
-														)
-												)}
-											</TableRow>
-										</TableCell>
-									))}
-
-									<TableCell>
-										<Button href="#text-buttons" color="primary">
+									<TableCell align="center">{customer.submissions[0].id !==0? customer.submissions[0].totalMark:"-"}</TableCell>
+									<TableCell align="center">{customer.submissions[0].id !==0 && customer.submissions[0].comment? customer.submissions[0].comment:"-"}</TableCell>
+									<TableCell align="center">{customer.submissions[0].id !==0 && customer.submissions[0].marker? customer.submissions[0].marker.userName:"-"}</TableCell>
+									<TableCell align="center">
+										{ customer.submissions[0].id !== 0?
+										(<Button href={"./submission="+customer.submissions[0].id} color="primary" >
 											View
-										</Button>
+										</Button>):(<div>-</div>)
+										}
 									</TableCell>
 								</TableRow>
 							))}

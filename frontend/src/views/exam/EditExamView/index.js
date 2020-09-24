@@ -44,6 +44,7 @@ const EditExam = () => {
 	const routeResult = useRoutes(routes);
 	const examId = routeResult.props.value.params.id;
 	let questions = [];
+	console.log(routeResult);
 
 	const [ newquestion, setNewquestion ] = React.useState({
 		questionDescription: '',

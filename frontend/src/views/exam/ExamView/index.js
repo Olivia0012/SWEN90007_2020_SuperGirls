@@ -56,21 +56,24 @@ const Exam = () => {
 			setLoading(true);
 			const result = await getExams(examId);
 			console.log(result);
-			setData(result.data);
+			setData(JSON.parse(result.data));
+			const a = JSON.parse(result.data);
 			var readyData = {
-				subjectCode: result.data.subject.subjectCode,
-				subjectTitle: result.data.subject.title,
-				examTitle: result.data.title,
-				creator: result.data.creator.userName,
-				createTime: result.data.createdTime,
-				updateTime: result.data.updateTime,
-				status: result.data.status
+				subjectCode: a.subject.subjectCode,
+				subjectTitle: a.subject.title,
+				examTitle: a.title,
+				creator: a.creator.userName,
+				createTime: a.createdTime,
+				updateTime: a.updateTime,
+				status: a.status
 			};
 			setExamBasicInfo(readyData);
 			setLoading(false);
 		};
 		fetchData();
 	}, []);
+
+	console.log(data);
 
 	const handleAddNewQuestion = async () => {
 		//	setNewquestion({})
@@ -142,45 +145,28 @@ const Exam = () => {
 			});
 	};
 
-	// Add new quesiton
-	const handleSubmitNewQuestion = async () => {
-		/*		if (openGreen) {
-			window.location.href = './dashboard/survey';
-		}
-		//
-		var readyData = JSON.stringify({
-			surveyId: product.surveyId,
-			surveyTitle: values.title,
-			surveyIntroduction: values.descrpition,
-			surveyVersion: product.surveyVersion
-    });
-    handleUploadImg();
-		const feedBack = await editSurvey(readyData)
-			.then((data) => {
-				setOpenGreen(true);
-			})
-			.catch((error) => {
-				setOpen(true);
-				setError(error + '');
-				//			alert('Error from processDataAsycn() with async( When promise gets rejected ): ' + error);
-			});
-		return feedBack;*/
-	};
-
 	console.log(data);
 
 	return (
 		<Page className={classes.root} title="Exam">
 			{!isLoading ? (
 				<Container maxWidth="lg">
-					<Grid container direction="row" xs={12} justify="flex-end" alignItems="center" spacing={2}>
-						<Button color="primary" variant="contained" onClick={handleEdit}>
-							Edit
-						</Button>
-						<Box p={1} />
-						<Button color="primary" variant="contained" onClick={handleDeleteExam}>
-							Delete
-						</Button>
+					<Grid container direction="row" justify="flex-end" alignItems="center" spacing={2}>
+						<Grid item xs={9}>
+							<Button color="secondary" x onClick={handleDeleteExam}>
+								Delete
+							</Button>
+						</Grid>
+						<Grid item xs={1}>
+							<Button color="primary" variant="outlined" fullWidth  onClick={handleEdit}>
+								Edit
+							</Button>
+						</Grid>
+						<Grid item xs={2}>
+							<Button color="primary" variant="contained" fullWidth onClick={handleDeleteExam}>
+								Publish
+							</Button>
+						</Grid>
 					</Grid>
 					<Box p={1} />
 
