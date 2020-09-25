@@ -94,3 +94,43 @@ export async function deleteExam(examId) {
 	console.log(dataFetched);
 	return dataFetched;
 }
+
+export async function editExam(exam) {
+	const endpoint = '/editExam';
+	const dataFetched = await axios({
+		url: endpoint, // send a request to the library API
+		//		method: "POST", // HTTP POST method
+		method: 'POST',
+		mode: 'cors',
+		//请求时添加Cookie
+		credentials: 'include',
+		crossDomain: true,
+		headers: {
+			'Content-Type': 'application/json'
+			//  "Access-Control-Allow-Origin": "http://localhost:8080",
+		},
+		data: JSON.stringify(exam),
+	});
+	console.log(dataFetched);
+	return dataFetched;
+}
+
+
+export async function setExamStatus(examId) {
+	const endpoint = '/publishExam?id='+examId;
+	const dataFetched = await axios({
+		url: endpoint, // send a request to the library API
+		//		method: "POST", // HTTP POST method
+		method: 'GET',
+		mode: 'cors',
+		//请求时添加Cookie
+		credentials: 'include',
+		crossDomain: true,
+		headers: {
+			'Content-Type': 'application/json'
+			//  "Access-Control-Allow-Origin": "http://localhost:8080",
+		},
+	});
+	console.log(dataFetched);
+	return dataFetched;
+}

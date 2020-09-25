@@ -150,21 +150,21 @@ const Results = ({ className, customers, ...rest }) => {
 							<TableRow>
 								<TableCell />
 								<TableCell />
-								<TableCell align="center" colSpan={4}>
+								<TableCell />
+								<TableCell align="center" colSpan={5}>
 									Exams
 								</TableCell>
 								<TableCell />
-								<TableCell>New Exam</TableCell>
 							</TableRow>
 							<TableRow>
 								<TableCell>Subject Code</TableCell>
 								<TableCell>Subject Title</TableCell>
-								<TableCell align="right">Title</TableCell>
-								<TableCell align="right">Status</TableCell>
-								<TableCell align="canter">Creator</TableCell>
-								<TableCell align="canter">CreatedTime</TableCell>
+								<TableCell>New Exam</TableCell>
+								<TableCell align="center">Title</TableCell>
+								<TableCell>Status</TableCell>
+								<TableCell >Creator</TableCell>
+								<TableCell>CreatedTime</TableCell>
 								<TableCell>Students</TableCell>
-								<TableCell />
 							</TableRow>
 						</TableHead>
 						<TableBody>
@@ -185,7 +185,20 @@ const Results = ({ className, customers, ...rest }) => {
 													</Box>
 												</TableCell>
 												<TableCell>{index == 0 ? customer.title : ''}</TableCell>
-												<TableCell>
+												<TableCell >
+													{index == 0 ? (
+														<Button
+															color="primary"
+															variant="contained"
+															onClick={(event) => handleOpen(event, customer)}
+														>
+															Add
+														</Button>
+													) : (
+														<div />
+													)}
+												</TableCell>
+												<TableCell align="center">
 													<Link href={'./exam/id=' + item.id}>{item.title}</Link>
 												</TableCell>
 												<TableCell>{item.status}</TableCell>
@@ -207,19 +220,6 @@ const Results = ({ className, customers, ...rest }) => {
 													>
 														View
 													</Button>
-												</TableCell>
-												<TableCell>
-													{index == 0 ? (
-														<Button
-															color="primary"
-															variant="contained"
-															onClick={(event) => handleOpen(event, customer)}
-														>
-															Add
-														</Button>
-													) : (
-														<div />
-													)}
 												</TableCell>
 											</TableRow>
 										))

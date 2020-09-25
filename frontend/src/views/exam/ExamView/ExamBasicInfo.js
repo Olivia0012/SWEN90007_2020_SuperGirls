@@ -1,74 +1,55 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
-import { ExamBasicContent, Editable } from './index';
+import { Editable } from './index';
 
-import { Typography, Card, TextField, CardContent, makeStyles, Grid, CardHeader, Divider } from '@material-ui/core';
+import { Typography, Card, TextField, CardContent, Grid, CardHeader, Divider } from '@material-ui/core';
 
-import { grid } from '@material-ui/system';
-import QuestionCard from './QuestionCard';
-import { Divide } from 'react-feather';
 
-const useStyles = makeStyles({
-	root: {},
-	item: {
-		display: 'flex',
-		flexDirection: 'column'
-	}
-});
-
-const ExamBasicInfo = ({ className, ...rest }) => {
-	const classes = useStyles();
-	const examBasicInfo = useContext(ExamBasicContent);
+const ExamBasicInfo = (props) => {
+	const { handleTitle, examBasicInfo } = props;
 	const editable = useContext(Editable);
-	const [ value, setValue ] = React.useState('');
-	console.log(value);
-	var a = examBasicInfo.examTitle;
 
-	const handleChange = (prop) => (event) => {
-		//	setValues({ ...values, [prop]: event.target.value });
-		//   qN(event.target.value);
-	};
 	const handleEditTitle = (event) => {
-		console.log(event.target.value);
-		setValue(event.target.value);
+		handleTitle(event.target.value);
 	};
 
 	return (
-		<form className={clsx(classes.root, className)} {...rest}>
-			<Card>
-				<CardHeader
-					action={
-						<Typography color="textPrimary" gutterBottom variant="h5">
-							{examBasicInfo.status}
-						</Typography>
-					}
-					title={
-						'Subject Code: '+examBasicInfo.subjectCode + ' -  Subject: ' + examBasicInfo.subjectTitle 
-					}
-				/>
-				<Divider />
-				<CardContent>
-					<Grid container container direction="row" xs={12} justify="space-between" alignItems="center" spacing={2}>
-						<TextField
-							id="standard-basic"
-							value={examBasicInfo.examTitle}
-							onChange={(event) => {
-								handleEditTitle(event);
-							}}
-							disabled={!editable}
-						/>
-						
-						<Typography color="textPrimary" gutterBottom variant="h5">
-							Creator : {examBasicInfo.creator} 
-						</Typography>
-						<Typography color="textPrimary" gutterBottom variant="h5">
-							CreatedTime: {examBasicInfo.createTime}
-						</Typography>
-					</Grid>
-				</CardContent>
-			</Card>
-		</form>
+		<Card>
+			<CardHeader
+				action={
+					<Typography color="textPrimary" gutterBottom variant="h5">
+						{examBasicInfo.status}
+					</Typography>
+				}
+				title={'Subject Code: ' + examBasicInfo.subjectCode + ' -  Subject: ' + examBasicInfo.subjectTitle}
+			/>
+			<Divider />
+			<CardContent>
+				<Grid
+					container
+					container
+					direction="row"
+					xs={12}
+					justify="space-between"
+					alignItems="center"
+					spacing={2}
+				>
+					<TextField
+						id="standard-basic"
+						defaultValue={examBasicInfo.examTitle}
+						onChange={handleEditTitle}
+						disabled={!editable}
+					/>
+
+					<Typography color="textPrimary" gutterBottom variant="h5">
+						Creator : {examBasicInfo.creator}
+					</Typography>
+					<Typography color="textPrimary" gutterBottom variant="h5">
+						CreatedTime: {examBasicInfo.createTime}
+					</Typography>
+				</Grid>
+			</CardContent>
+		</Card>
 	);
 };
 

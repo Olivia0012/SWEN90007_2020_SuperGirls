@@ -74,7 +74,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
 
   const items = [
     {
-      href: '../oea/subjects',
+      href: './subjects',
       icon: ShoppingBagIcon,
       title: 'Subjects'
     },

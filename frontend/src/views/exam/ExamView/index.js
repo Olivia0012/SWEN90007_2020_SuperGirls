@@ -4,7 +4,7 @@ import Page from 'src/components/Page';
 import ExamBasicInfo from './ExamBasicInfo';
 import NewQuestion from './NewQuestion';
 import QuestionCard from './QuestionCard';
-import { getExams, addNewQuestion, deleteExam } from '../../../api/examAPI';
+import { getExams, setExamStatus, deleteExam, editExam } from '../../../api/examAPI';
 import routes from 'src/routes';
 import { useRoutes } from 'react-router-dom';
 import Loading from '../../../utils/loading';
@@ -38,14 +38,53 @@ export const NewQuestionCon = createContext();
 const Exam = () => {
 	const classes = useStyles();
 	const [ isLoading, setLoading ] = React.useState(false);
-	const [ count, setCount ] = React.useState(1);
 	const [ newQuestion, addNew ] = React.useState([]);
 	const [ data, setData ] = React.useState({});
-	const [ examBasicInfo, setExamBasicInfo ] = React.useState('');
+	const [ examBasicInfo, setExamBasicInfo ] = React.useState({});
 	const [ editable, setEditable ] = React.useState(false);
 	const routeResult = useRoutes(routes);
 	const examId = routeResult.props.value.params.id;
 	let questions = [];
+	const [ questionList, setQuestionList ] = React.useState([]);
+	const [ newQ, setNewQ ] = React.useState({
+		questionType: '',
+		questionMark: '',
+		id: -1,
+		choices: [],
+		examId: examId,
+		questionDescription: '',
+		questionNum: 0
+	});
+
+	const [ temp, setTemp ] = React.useState([]);
+
+	const handleAdd = (index, question) => {
+		console.log(question);
+		question.examId = examId;
+		//	newQuestion[index] = question;
+		console.log(newQuestion);
+		const curData = [ ...newQuestion ];
+		newQuestion[index] = question;
+		console.log(newQuestion);
+		setTemp(curData);
+		//	newQuestion = curData;
+		//	questionList.push(curData);
+	};
+
+	console.log(temp);
+	const handleQuestion = (index, question) => {
+		const curData = [ ...questionList ];
+		curData[index] = question;
+		setQuestionList(curData);
+		console.log(curData);
+		console.log(data);
+	};
+
+	console.log(data);
+
+	const handleTitle = (title) => {
+		data.title = title;
+	};
 
 	const handleEdit = () => {
 		setEditable((pre) => !pre);
@@ -58,6 +97,7 @@ const Exam = () => {
 			console.log(result);
 			setData(JSON.parse(result.data));
 			const a = JSON.parse(result.data);
+			setQuestionList(JSON.parse(result.data).questionList);
 			var readyData = {
 				subjectCode: a.subject.subjectCode,
 				subjectTitle: a.subject.title,
@@ -73,63 +113,26 @@ const Exam = () => {
 		fetchData();
 	}, []);
 
-	console.log(data);
-
-	const handleAddNewQuestion = async () => {
-		//	setNewquestion({})
+	const handleEditExam = async (e) => {
+		e.preventDefault();
 		setLoading(true);
-		const newQ = {
-			questionDescription: newquestion.questionDescription,
-			questionType: newquestion.questionType,
-			choices: [ newquestion.choice1, newquestion.choice2, newquestion.choice3, newquestion.choice4 ],
-			id: -1,
-			examId: data.id,
-			questionMark: newquestion.questionMark,
-			questionNum: 0
-		};
-		questions.push(newQ);
-		//	const readyData = data;
-		//	readyData.quesitonList = null;
-		//	readyData.quesitonList = questions;
+		//	console.log(data);
+		//	console.log(newQuestion);
+		const c = questionList.concat(newQuestion);
+		data.questionList = c;
+		//	console.log(data);
 
-		const readyData = {
-			createdTime: data.createdTime,
-			creator: data.creator,
-			id: data.id,
-			locked: data.locked,
-			questionList: questions,
-			status: data.status,
-			subject: data.subject,
-			title: data.title,
-			updatedTime: data.updateTime
-		};
-
-		console.log('readyData:' + readyData);
-		console.log(data.questionList);
-
-		await addNewQuestion(readyData)
-			.then((a) => {
+		await editExam(data)
+			.then(() => {
 				setLoading(false);
-				window.location.href = './id=' + data.id;
+				alert('Edited Successfully!');
+				window.location.href = './id=' + examId;
 			})
 			.catch((error) => {
 				setLoading(false);
 				alert('Error from processDataAsycn() with async( When promise gets rejected ): ' + error);
 			});
-		console.log('add new ');
 	};
-
-	const [ newquestion, setNewquestion ] = React.useState({
-		questionDescription: '',
-		questionType: '',
-		choice1: '',
-		choice2: '',
-		choice3: '',
-		choice4: '',
-		id: null,
-		questionMark: 0,
-		questionNum: 0
-	});
 
 	const handleDeleteExam = async () => {
 		setLoading(true);
@@ -138,6 +141,20 @@ const Exam = () => {
 				setLoading(false);
 				alert('Deleted Successfully!');
 				window.location.href = '../subjects';
+			})
+			.catch((error) => {
+				setLoading(false);
+				alert('Error from processDataAsycn() with async( When promise gets rejected ): ' + error);
+			});
+	};
+
+	const handlePublish =  async () => {
+		setLoading(true);
+		await setExamStatus(data.id)
+			.then(() => {
+				setLoading(false);
+				alert('Successfully!');
+				window.location.href = './id=' + examId;
 			})
 			.catch((error) => {
 				setLoading(false);
@@ -158,34 +175,38 @@ const Exam = () => {
 							</Button>
 						</Grid>
 						<Grid item xs={1}>
-							<Button color="primary" variant="outlined" fullWidth  onClick={handleEdit}>
+							<Button color="primary" variant="outlined" fullWidth onClick={handleEdit}>
 								Edit
 							</Button>
 						</Grid>
 						<Grid item xs={2}>
-							<Button color="primary" variant="contained" fullWidth onClick={handleDeleteExam}>
-								Publish
-							</Button>
+							{
+								data.status === 'RELEASED'?(<div/>):(<Button color="primary" variant="contained" fullWidth onClick={handlePublish}>
+								{data.status === 'CLOSED'? 'release':(data.status === 'PUBLISHED'? 'close':'Publish')}
+								</Button>)
+							}
+							
 						</Grid>
 					</Grid>
 					<Box p={1} />
 
 					<Editable.Provider value={editable}>
-						<ExamBasicContent.Provider value={examBasicInfo}>
-							<ExamBasicInfo />
-						</ExamBasicContent.Provider>
+						<ExamBasicInfo handleTitle={handleTitle} examBasicInfo={examBasicInfo} />
 						{data.questionList ? (
-							data.questionList.map((nq) => {
+							data.questionList.map((nq, index) => {
 								console.log(nq);
-								questions.push(nq);
-								return (
-									<div key={nq}>
-										<Box p={1} />
-										<QuestionContent.Provider value={nq}>
-											<QuestionCard />
-										</QuestionContent.Provider>
-									</div>
-								);
+								console.log(questionList[index]);
+								if (nq)
+									return (
+										<div key={index}>
+											<Box p={1} />
+											<QuestionCard
+												value={index}
+												question={nq}
+												handleQuestion={handleQuestion}
+											/>
+										</div>
+									);
 							})
 						) : (
 							<Box p={1}>
@@ -196,30 +217,10 @@ const Exam = () => {
 						)}
 						<Box p={1} />
 						<Collapse in={editable}>
-							{newQuestion.map((q) => (
+							{newQuestion.map((q, index) => (
 								<div>
-									<NewQuestionCon.Provider value={{ newquestion, setNewquestion }}>
-										<NewQuestion />
-									</NewQuestionCon.Provider>
-									<Box p={2}>
-										<Grid container spacing={5} justify="center">
-											<Grid item xs={3} lg={3}>
-												<Button color="secondary" variant="contained" fullWidth>
-													Cancel
-												</Button>
-											</Grid>
-											<Grid item xs={3} lg={3}>
-												<Button
-													color="primary"
-													variant="contained"
-													fullWidth
-													onClick={handleAddNewQuestion}
-												>
-													Save
-												</Button>
-											</Grid>
-										</Grid>
-									</Box>
+									<NewQuestion qIndex={index} question={q} handleAdd={handleAdd} />
+									<Box p={1} />
 								</div>
 							))}
 						</Collapse>
@@ -232,12 +233,26 @@ const Exam = () => {
 								fullWidth
 								size="large"
 								onClick={() => {
-									setCount(count + 1);
-									addNew([ ...newQuestion, count ]);
+									//setCount(count + 1);
+									addNew([ ...newQuestion, newQ ]);
 								}}
 							>
 								Add New Question
 							</Button>
+						</Box>
+						<Box p={2}>
+							<Grid container spacing={5} justify="center">
+								<Grid item xs={3} lg={3}>
+									<Button color="secondary" variant="contained" fullWidth>
+										Cancel
+									</Button>
+								</Grid>
+								<Grid item xs={3} lg={3}>
+									<Button color="primary" variant="contained" fullWidth onClick={handleEditExam}>
+										Save
+									</Button>
+								</Grid>
+							</Grid>
 						</Box>
 					</Collapse>
 				</Container>

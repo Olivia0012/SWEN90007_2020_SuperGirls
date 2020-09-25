@@ -1,80 +1,76 @@
 {
-  "answers": [
-    {
-      "anwer": "a2",
-      "id": 2,
-      "mark": 6,
-      "question": {
-        "choices": [
-          "",
-          "",
-          "",
-          ""
-        ],
-        "examId": 1,
-        "id": 3,
-        "questionDescription": "q3",
-        "questionMark": 10,
-        "questionNum": 0,
-        "questionType": "ANSWER"
-      }
-    },
-    {
-      "anwer": "1",
-      "id": 1,
-      "mark": 10,
-      "question": {
-        "choices": [
-          "a",
-          "b",
-          "c",
-          "d"
-        ],
-        "examId": 1,
-        "id": 2,
-        "questionDescription": "q2",
-        "questionMark": 10,
-        "questionNum": 0,
-        "questionType": "CHOICE"
-      }
-    }
-  ],
-  "exam": {
-    "createdTime": "Wed Sep 23 20:48:17 AEST 2020",
-    "creator": {
-      "id": 4,
-      "passWord": "111",
-      "role": "INSTRUCTOR",
-      "userName": "Tim"
-    },
-    "id": 1,
-    "locked": false,
-    "questionList": [
-      {
-        "$ref": "$.answers.question"
-      },
-      {
-        "$ref": "$.answers.question"
-      }
-    ],
-    "status": "CREATED",
-    "subject": {
-      "id": 1,
-      "subjectCode": "Software Design and Architecture",
-      "title": "SWEN90007"
-    },
-    "title": "Exam 1"
+  "createdTime": "Wed Sep 23 20:48:17 AEST 2020",
+  "creator": {
+    "id": 4,
+    "passWord": "111",
+    "role": "INSTRUCTOR",
+    "userName": "Tim"
   },
   "id": 1,
-  "lock": false,
-  "student": {
-    "id": 7,
-    "passWord": "111",
-    "role": "STUDENT",
-    "userName": "Olivia"
+  "locked": false,
+  "questionList": [
+    {
+      "choices": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
+      "examId": 1,
+      "id": 2,
+      "questionDescription": "q2",
+      "questionMark": 10,
+      "questionNum": 0,
+      "questionType": "CHOICE"
+    },
+    {
+      "choices": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "examId": 1,
+      "id": 4,
+      "questionDescription": "What is your name",
+      "questionMark": 5,
+      "questionNum": 0,
+      "questionType": "ANSWER"
+    },
+    {
+      "choices": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "examId": 1,
+      "id": 5,
+      "questionDescription": "What is the disadvantage ?",
+      "questionMark": 10,
+      "questionNum": 0,
+      "questionType": "ANSWER"
+    },
+    {
+      "choices": [
+        "Simple",
+        "Short",
+        "Hard",
+        ""
+      ],
+      "examId": 1,
+      "id": 6,
+      "questionDescription": "What is the advantage ?",
+      "questionMark": 15,
+      "questionNum": 0,
+      "questionType": "CHOICE"
+    }
+  ],
+  "status": "CREATED",
+  "subject": {
+    "id": 1,
+    "subjectCode": "Software Design and Architecture",
+    "title": "SWEN90007"
   },
-  "subTime": "2020-09-21 ",
-  "totalMark": 0,
-  "comment": "Good Job!",
-  "markTime": "2020-09-25 01:03:28"
+  "title": "Exam 1"
 }

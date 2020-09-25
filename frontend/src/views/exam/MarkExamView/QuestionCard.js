@@ -49,6 +49,7 @@ function QuestionCard (props){
 	choices = question.question.choices;
 
 	const { handleMark, value} = props;
+	
 	const handleChange = (event) => {
 		const curMark = event.target.value;
 		handleMark(value,curMark);
