@@ -38,7 +38,7 @@ public class ExamMapper extends DataMapper {
 	 * @return indication whether the insert is successful or not
 	 */
 	@Override
-	public Boolean insert(DomainObject obj) {
+	public int insert(DomainObject obj) {
 		Exam exam = (Exam) obj;
 		Date createTime = new Date();
 
@@ -46,7 +46,7 @@ public class ExamMapper extends DataMapper {
 				+ "VALUES (?,?,?,?,?,?)";
 
 		try {
-			PreparedStatement stmt = DatabaseConnection.prepare(addNewExamStm);
+			PreparedStatement stmt = DatabaseConnection.prepareInsert(addNewExamStm);
 			stmt.setInt(1, exam.getSubject().getId());
 			stmt.setInt(2, exam.getCreator().getId());
 			stmt.setString(3, createTime + "");
@@ -67,12 +67,12 @@ public class ExamMapper extends DataMapper {
 
 			keys.close();
 			stmt.close();
-			return true;
+			return id;
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return false;
+			return 0;
 		} finally {
 			DatabaseConnection.closeConnection();
 		}
@@ -89,9 +89,8 @@ public class ExamMapper extends DataMapper {
 	public Boolean update(DomainObject obj) {
 		UnitOfWorkImp.newCurrent();
 		Exam exam = (Exam) obj;
-		LocalDateTime updateTime = LocalDateTime.now();
 
-		String updateSubjectStm = "UPDATE exam SET subjectid = ?,examtitle = ?,islock = ? WHERE examid = ?";
+		String updateSubjectStm = "UPDATE exam SET subjectid = ?,examtitle = ?,islock = ?,examstatus = ? WHERE examid = ?";
 
 		try {
 			PreparedStatement stmt = DatabaseConnection.prepare(updateSubjectStm);
@@ -100,7 +99,8 @@ public class ExamMapper extends DataMapper {
 			stmt.setString(2, exam.getTitle());
 			// stmt.setString(3, exam.getStatus() + "");
 			stmt.setBoolean(3, exam.isLocked());
-			stmt.setInt(4, exam.getId());
+			stmt.setString(4, exam.getStatus()+"");
+			stmt.setInt(5, exam.getId());
 			stmt.executeUpdate();
 
 			IdentityMap<Exam> examMap = IdentityMap.getInstance(exam);
@@ -171,6 +171,10 @@ public class ExamMapper extends DataMapper {
 
 		IdentityMap<Exam> examMap = IdentityMap.getInstance(exam);
 		exam = examMap.get(examId);
+		
+		String r1 = JSONObject.toJSONString(exam);
+		System.out.println("findById exam: "+r1);
+		
 		SubjectMapper subjectMapper = new SubjectMapper();
 		QuestionMapper questisonMapper = new QuestionMapper();
 		UserMapper instructorMapper = new UserMapper();
@@ -190,14 +194,15 @@ public class ExamMapper extends DataMapper {
 					Integer id = rs.getInt(1);
 					Integer subjectId = rs.getInt(2);
 					Integer instructorId = rs.getInt(3);
-					// Date updateTime = rs.getDate(5);
 					String title = rs.getString(4);
-					boolean isLocked = rs.getBoolean(5);
-					String createTime = rs.getString(6);
-					String status = rs.getString(7);
+					String createTime = rs.getString(5);
+					String status = rs.getString(6);
+					boolean isLocked = rs.getBoolean(7);
 
 					List<Question> questionList = questisonMapper.findQuestionByExamId(examId);
 					Subject subject = subjectMapper.findById(subjectId);
+					String r = JSONObject.toJSONString(subject);
+					System.out.println("findById exam---: "+r);
 					User instrctor = instructorMapper.findById(instructorId);
 					exam = new Exam(id, subject, instrctor, createTime, null, title, ExamStatus.valueOf(status),
 							isLocked, questionList);
@@ -212,8 +217,8 @@ public class ExamMapper extends DataMapper {
 						}
 
 					}
-					String result1 = JSONObject.toJSONString(exam);
-					System.out.println(result1);
+					String result1 = JSONObject.toJSONString(result);
+					System.out.println("examMap result : "+result1);
 				}
 
 				rs.close();
@@ -302,13 +307,12 @@ public class ExamMapper extends DataMapper {
 	 *
 	 * @return all the exams records.
 	 */
-	public List<Exam> FindAllExamsBySubjectId(int subjectid) {
+	public List<Exam> FindAllExamsBySubjectId(int subjectid, Role role) {
 		Exam exam = new Exam();
 
 		String queryAllExamBySubjetIdStm = "SELECT * FROM exam WHERE subjectid=?"; // query all exams by subjectId
 		IdentityMap<Exam> examMap = IdentityMap.getInstance(exam);
 		List<Exam> result = new ArrayList<Exam>();
-		QuestionMapper questisonMapper = new QuestionMapper();
 		SubjectMapper subjectMapper = new SubjectMapper();
 		UserMapper instructorMapper = new UserMapper();
 
@@ -327,12 +331,43 @@ public class ExamMapper extends DataMapper {
 				String status = rs.getString("examStatus");
 				boolean isLocked = rs.getBoolean("isLock");
 
-				List<Question> questionList = questisonMapper.findQuestionByExamId(id);
-				Subject subject = subjectMapper.findById(subjectId);
+		//		List<Question> questionList = questisonMapper.findQuestionByExamId(id);
+		//		Subject subject = subjectMapper.findById(subjectId);
 				User instrctor = instructorMapper.findById(instructorId);
-				exam = new Exam(id, subject, instrctor, createTime, null, title, ExamStatus.valueOf(status), isLocked,
-						questionList);
+		//		instrctor.setId(0);
+		//		instrctor.setPassWord(null);
+		//		instrctor.setRole(null);
+				
+				exam = new Exam(id, null, instrctor, createTime, null, title, ExamStatus.valueOf(status), isLocked,
+						null);
+				
 				result.add(exam);
+				
+			/*	if(role.equals(Role.STUDENT)) {
+					if(ExamStatus.valueOf(status).equals(ExamStatus.PUBLISHED) || ExamStatus.valueOf(status).equals(ExamStatus.RELEASED))
+						result.add(exam);
+				}else result.add(exam);*/
+				
+				
+				
+			/*	if(role.equals(Role.INSTRUCTOR)) {
+				//	Subject subject = subjectMapper.findById(subjectId);
+					exam = new Exam(id, null, instrctor, createTime, null, title, ExamStatus.valueOf(status), isLocked,
+							null);
+					result.add(exam);
+					
+				}else {
+					if(ExamStatus.valueOf(status).equals(ExamStatus.PUBLISHED) || ExamStatus.valueOf(status).equals(ExamStatus.RELEASED)) {
+						exam = new Exam(id, null, null, null, null, title, ExamStatus.valueOf(status), isLocked,
+								null);
+						result.add(exam);
+					}*/
+						
+					
+			//	}
+			//	instrctor.setSubjectList(null);
+				
+				
 			}
 
 			if (result.size() > 0) {
@@ -374,8 +409,8 @@ public class ExamMapper extends DataMapper {
 		 */
 		Exam e1 = em.findById(1);
 		// em.insert(e);
-		// String result = JSONObject.toJSONString(e1);
-		// System.out.println(result);
+		 String result = JSONObject.toJSONString(e1);
+		 System.out.println(result);
 	}
 
 }

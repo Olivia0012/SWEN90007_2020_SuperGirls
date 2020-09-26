@@ -3,64 +3,88 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee   
     http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	
+	
+	
 	<servlet>
 		<!-- class name -->
-		<servlet-name>HelloServlet</servlet-name>
+		<servlet-name>LoginController</servlet-name>
 		<!-- package name -->
-		<servlet-class>servlet/HelloServlet</servlet-class>
+		<servlet-class>servlet/LoginController</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>HelloServlet</servlet-name>
+		<servlet-name>LoginController</servlet-name>
 		<!-- access path -->
-		<url-pattern>/hello</url-pattern>
+		<url-pattern>/login</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<!-- class name -->
+		<servlet-name>CheckLoginController</servlet-name>
+		<!-- package name -->
+		<servlet-class>servlet/CheckLoginController</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CheckLoginController</servlet-name>
+		<!-- access path -->
+		<url-pattern>/checklogin</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<!-- class name -->
+		<servlet-name>LogoutController</servlet-name>
+		<!-- package name -->
+		<servlet-class>servlet/LogoutController</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LogoutController</servlet-name>
+		<!-- access path -->
+		<url-pattern>/logout</url-pattern>
+	</servlet-mapping>
+
 
 	<servlet>
 		<!-- class name -->
 		<servlet-name>ExamController</servlet-name>
 		<!-- package name -->
-		<servlet-class>servlet/ExamController
-		</servlet-class>
+		<servlet-class>servlet/ExamController</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>ExamController</servlet-name>
 		<!-- access path -->
 		<url-pattern>/exam</url-pattern>
-		<url-pattern>/exam/addnewquestion</url-pattern>
+		<url-pattern>/addsubmission</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<!-- class name -->
 		<servlet-name>AddExamController</servlet-name>
 		<!-- package name -->
-		<servlet-class>servlet/AddExamController
-		</servlet-class>
+		<servlet-class>servlet/AddExamController</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>AddExamController</servlet-name>
 		<!-- access path -->
 		<url-pattern>/addexam</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<!-- class name -->
 		<servlet-name>DeleteExamController</servlet-name>
 		<!-- package name -->
-		<servlet-class>servlet/DeleteExamController
-		</servlet-class>
+		<servlet-class>servlet/DeleteExamController</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>DeleteExamController</servlet-name>
 		<!-- access path -->
 		<url-pattern>/exam/delete</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<!-- class name -->
 		<servlet-name>SubjectController</servlet-name>
 		<!-- package name -->
-		<servlet-class>servlet/SubjectController
-		</servlet-class>
+		<servlet-class>servlet/SubjectController</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>SubjectController</servlet-name>
@@ -68,13 +92,12 @@
 		<url-pattern>/subject/viewall</url-pattern>
 		<url-pattern>/subject</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<!-- class name -->
 		<servlet-name>StudentController</servlet-name>
 		<!-- package name -->
-		<servlet-class>servlet/StudentController
-		</servlet-class>
+		<servlet-class>servlet/StudentController</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>StudentController</servlet-name>
@@ -82,19 +105,56 @@
 		<url-pattern>/student/viewall</url-pattern>
 		<url-pattern>/student</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<!-- class name -->
 		<servlet-name>DeleteQuestionController</servlet-name>
 		<!-- package name -->
-		<servlet-class>servlet/DeleteQuestionController
-		</servlet-class>
+		<servlet-class>servlet/DeleteQuestionController</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>DeleteQuestionController</servlet-name>
 		<!-- access path -->
 		<url-pattern>/question</url-pattern>
 		<url-pattern>/question/delete</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<!-- class name -->
+		<servlet-name>EditExamController</servlet-name>
+		<!-- package name -->
+		<servlet-class>servlet/EditExamController</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>EditExamController</servlet-name>
+		<!-- access path -->
+		<url-pattern>/editExam</url-pattern>
+		<url-pattern>/publishExam</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<!-- class name -->
+		<servlet-name>MarkExamController</servlet-name>
+		<!-- package name -->
+		<servlet-class>servlet/MarkExamController</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>MarkExamController</servlet-name>
+		<!-- access path -->
+		<url-pattern>/submission</url-pattern>
+		<url-pattern>/markExam</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<!-- class name -->
+		<servlet-name>TakeExamController</servlet-name>
+		<!-- package name -->
+		<servlet-class>servlet/TakeExamController</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>TakeExamController</servlet-name>
+		<!-- access path -->
+		<url-pattern>/takeExam</url-pattern>
 	</servlet-mapping>
 
 </web-app>

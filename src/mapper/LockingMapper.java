@@ -15,9 +15,9 @@ public class LockingMapper extends DataMapper{
 	}
 
 	@Override
-	public Boolean insert(DomainObject obj) {
+	public int insert(DomainObject obj) {
 		// TODO Auto-generated method stub
-		return null;
+		return 0;
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import java.util.List;
 
 import domain.Exam;
 import domain.Question;
+import domain.Submission;
 import domain.User;
 
 /**
@@ -19,9 +20,13 @@ public interface ExamService {
 	public String updateExam(Exam exam);
 	
 	public String addNewExam(Exam exam);
-	public boolean addNewExamCheckingUser(Exam exam, User instructor);
 	
 	public String deleteQuestionById(int questionId);
 	public String deleteExamById(int examId);
+	boolean markSubmission(Submission submission);
+	String findSubmissionById(int submissionId);
+	String publishExam(Exam exam);
+	int addSubmission(Submission submission);
+	boolean takeExam(Submission submission);
 
 }

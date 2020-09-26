@@ -1,18 +1,23 @@
-package service;
+package serviceImp;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import domain.Answer;
 import domain.Exam;
 import domain.Question;
 import domain.Subject;
+import domain.Submission;
 import domain.User;
 import enumeration.QuestionType;
 import enumeration.Role;
+import mapper.AnswerMapper;
 import mapper.ExamMapper;
 import mapper.QuestionMapper;
 import mapper.SubjectMapper;
+import mapper.SubmissionMapper;
 import mapper.UserMapper;
+import service.ExamService;
 import shared.IdentityMap;
 
 import com.alibaba.fastjson.JSONObject;
@@ -22,6 +27,8 @@ public class ExamServiceImp implements ExamService {
 	private ExamMapper examMapper = new ExamMapper();
 	private SubjectMapper subjectMapper = new SubjectMapper();
 	private UserMapper userMapper = new UserMapper();
+	private SubmissionMapper sm = new SubmissionMapper();
+	private AnswerMapper am = new AnswerMapper();
 
 	public ExamServiceImp() {
 		// TODO Auto-generated constructor stub
@@ -29,10 +36,10 @@ public class ExamServiceImp implements ExamService {
 
 	@Override
 	public String findExamById(int examId) {
-		Exam exam = new Exam();
 		ExamMapper examMapper = new ExamMapper();
 		Exam e = examMapper.findById(examId);
 		String result = JSONObject.toJSONString(e);
+		System.out.println("findExamById: "+result);
 		return result;
 	}
 
@@ -62,12 +69,13 @@ public class ExamServiceImp implements ExamService {
 
 	@Override
 	public String updateExam(Exam exam) {
-		ExamMapper examMapper = new ExamMapper();
 		examMapper.update(exam);
 		for(int i = 0; i < exam.getQuestionList().size(); i ++) {
 			QuestionMapper question = new QuestionMapper();
 			if(exam.getQuestionList().get(i).getId() == -1) {
 				question.insert(exam.getQuestionList().get(i));
+			}else {
+				question.update(exam.getQuestionList().get(i));
 			}
 		}
 		IdentityMap<Exam> examMap = IdentityMap.getInstance(exam);
@@ -111,44 +119,68 @@ public class ExamServiceImp implements ExamService {
 	//Adding new exam (only title) for a subject
 	@Override
 	public String addNewExam(Exam exam) {
-		ExamMapper examMapper = new ExamMapper();
 		examMapper.insert(exam);
 		return "OK";
 	}
 
 	@Override
 	public String deleteExamById(int examId) {
-		ExamMapper examMapper = new ExamMapper();
 		Exam e = new Exam();
 		e.setId(examId);
 		examMapper.delete(e);
 		return "OK";
 	}
 
-	//Adding new exam (only title) for a subject with the creator
+	
+	
 	@Override
-	public boolean addNewExamCheckingUser(Exam exam, User creator) {
-		// checking whether this exam is already existed.
-		User user = userMapper.findById(creator.getId());
-		Subject subject = subjectMapper.findById(exam.getSubject().getId());
+	public boolean markSubmission(Submission submission) {
+		sm.update(submission);
+		AnswerMapper am = new AnswerMapper();
+		for(Answer an: submission.getAnswers()) {
+			am.update(an);
+		}
+		return true;
+	}
+	
+	@Override
+	public String findSubmissionById(int submissionId) {
 		
-		if(user == null) {
-			return false;
+		Submission s = sm.findById(submissionId);
+		List<Answer> answers = am.findAnswersBySubmissionId(submissionId);
+		s.setAnswers(answers);
+		String result = JSONObject.toJSONString(s);
+		return result;
+	}
+
+	@Override
+	public String publishExam(Exam exam) {
+		ExamMapper examMapper = new ExamMapper();
+		examMapper.update(exam);
+		String result = JSONObject.toJSONString(examMapper.findById(exam.getId()));
+		return result;
+	}
+
+	@Override
+	public int addSubmission(Submission submission) {
+		int subId = sm.insert(submission);
+		
+		for(Answer an: submission.getAnswers()) {
+			an.setSubmissionId(subId);
+			am.insert(an);
 		}
 		
-		if(user.getRole() != Role.INSTRUCTOR) {
-			return false;
-		}
+		return subId;
 		
-		if(subject == null) {
-			return false;
+	}
+
+	@Override
+	public boolean takeExam(Submission submission) {
+		sm.update(submission);
+		AnswerMapper am = new AnswerMapper();
+		for(Answer an: submission.getAnswers()) {
+			am.update(an);
 		}
-		
-		if(exam.getId() != -1) {
-			
-		}
-		
-		// TODO Auto-generated method stub
 		return true;
 	}
 

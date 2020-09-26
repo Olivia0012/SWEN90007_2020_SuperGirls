@@ -9,10 +9,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import database.DatabaseConnection;
+import database.QueryExecutor;
 import domain.DomainObject;
+import domain.Exam;
 import domain.Student;
 import domain.Subject;
 import domain.Submission;
@@ -34,13 +38,13 @@ public class UserMapper extends DataMapper {
 	 * @return indication whether the insert is successful or not
 	 */
 	@Override
-	public Boolean insert(DomainObject obj) {
+	public int insert(DomainObject obj) {
 		User newUser = (User) obj;
 		String addNewUserStm = "INSERT INTO USERS (USERNAME,PASSWORD,ROLE) " + "VALUES (?,?,?)";// insert new subject 1
 																								// into subject table
 
 		try {
-			PreparedStatement stmt = DatabaseConnection.prepare(addNewUserStm);
+			PreparedStatement stmt = DatabaseConnection.prepareInsert(addNewUserStm);
 			stmt.setString(1, newUser.getUserName());
 			stmt.setString(2, newUser.getPassWord());
 			stmt.setString(3, newUser.getRole() + "");
@@ -56,12 +60,12 @@ public class UserMapper extends DataMapper {
 			userMap.put(newUser.getId(), newUser);
 			keys.close();
 			stmt.close();
-			return true;
+			return id;
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return false;
+			return 0;
 		} finally {
 			DatabaseConnection.closeConnection();
 		}
@@ -149,8 +153,8 @@ public class UserMapper extends DataMapper {
 		// find the subject in the identity map.
 		User user = new User();
 
-		IdentityMap<User> subjectMap = IdentityMap.getInstance(user);
-		user = subjectMap.get(userId);
+		IdentityMap<User> userMap = IdentityMap.getInstance(user);
+		user = userMap.get(userId);
 
 		// find from the DB when it is not in the identity map.
 		if (user == null) {
@@ -180,7 +184,7 @@ public class UserMapper extends DataMapper {
 				DatabaseConnection.closeConnection();
 			}
 			if (result.size() > 0) {
-				subjectMap.put(result.get(0).getId(), result.get(0));
+				userMap.put(result.get(0).getId(), result.get(0));
 				return result.get(0);
 			}
 		}
@@ -253,41 +257,142 @@ public class UserMapper extends DataMapper {
 
 	}
 
-	public List<User> FindAllStudentsBySubjectId(int subjectId) {
-		String queryAllUser = "SELECT * FROM userandsubject WHERE subjectid=?"; // query all users
-
+	public User login(String userName, String passWord) {
 		User user = new User();
-		// query all subjects
+		IdentityMap<User> userMap = IdentityMap.getInstance(user);
 
-		UserMapper userMap = new UserMapper();
+		// find from the DB when it is not in the identity map.
+
 		List<User> result = new ArrayList<User>();
+		// query a subject by subjectId
+		String login = "SELECT * FROM users WHERE username = ? and password = ? ";
 
+		try {
+			PreparedStatement stmt = DatabaseConnection.prepare(login);
+			stmt.setString(1, userName);
+			stmt.setString(2, passWord);
+			ResultSet rs = stmt.executeQuery();
+
+			while (rs.next()) {
+				Integer id = rs.getInt(1);
+				String uName = rs.getString(2);
+				String password = rs.getString(3);
+				String role = rs.getString(4);
+
+				user = new User(id, uName, password, Role.valueOf(role));
+				result.add(user);
+			}
+			rs.close();
+			stmt.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DatabaseConnection.closeConnection();
+		}
+
+		if (result.size() > 0) {
+			User userInMapper = userMap.get(user.getId());
+			if (userInMapper == null) {
+				userMap.put(user.getId(), user);
+			}
+			return user;
+		} else
+			return null;
+
+	}
+
+
+	/**
+	 * finding all students who enrolled in a subject.
+	 * 
+	 * @param student Id
+	 *
+	 * @return all the enrolled students records.
+	 */
+	public List<Student> FindAllStudentsBySubjectId(int subjectid) {
+		User user = new User();
+		Student student = new Student();
+		UserMapper userMapper = new UserMapper();
+		List<Student> result = new ArrayList<Student>();
+		SubjectMapper subjectMapper = new SubjectMapper();
+		SubmissionMapper submMapper = new SubmissionMapper();
+		ExamMapper examMapper = new ExamMapper();
+		List<Exam> examList = examMapper.FindAllExamsBySubjectId(subjectid,Role.STUDENT);
+		
+		// query all users' id by subject Id in the subject and user relation table.
+		String queryAllUser = "SELECT * FROM userandsubject WHERE subjectid=?"; 
+		
+		try {
+			PreparedStatement stmt = DatabaseConnection.prepare(queryAllUser);
+			stmt.setInt(1, subjectid);
+			ResultSet rs = stmt.executeQuery();
+			
+			while (rs.next()) {
+				Integer id = rs.getInt("userid");
+				// find user info.
+				User userResult = userMapper.findById(id);
+				// Only students are wanted.
+				if (userResult.getRole() == Role.STUDENT) {
+					user = new User(id, userResult.getUserName(), null, userResult.getRole());
+					List<Submission> submissions = new ArrayList<Submission>();
+					
+					//finding all submissions
+					for(Exam exam: examList) {
+						submissions.add(submMapper.FindSubmissionsByUserId_ExamId(id, exam.getId()));
+					}
+					
+					student = new Student(user,submissions);
+					result.add(student);
+				}
+			}
+
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} finally {
+			DatabaseConnection.closeConnection();
+		}
+		return result;
+	}
+
+	public List<Student> findAllStudentsAndSubmissions(int subjectId, int examId) {
+		User user = new User();
+		Student student = new Student();
+		UserMapper userMapper = new UserMapper();
+		List<Student> result = new ArrayList<Student>();
+		SubjectMapper subjectMapper = new SubjectMapper();
+		SubmissionMapper submMapper = new SubmissionMapper();
+		ExamMapper examMapper = new ExamMapper();
+		Exam exam = examMapper.findById(examId);
+		
+		// query all users' id by subject Id in the subject and user relation table.
+		String queryAllUser = "SELECT * FROM userandsubject WHERE subjectid=?"; 
+		
 		try {
 			PreparedStatement stmt = DatabaseConnection.prepare(queryAllUser);
 			stmt.setInt(1, subjectId);
 			ResultSet rs = stmt.executeQuery();
-			// Subject subject = new Subject();
-
+			
 			while (rs.next()) {
-				Integer id = rs.getInt(1);
-				
-				User userResult = userMap.findById(id);
-				if(userResult.getRole() == Role.STUDENT) {
+				Integer id = rs.getInt("userid");
+				// find user info.
+				User userResult = userMapper.findById(id);
+				// Only students are wanted.
+				if (userResult.getRole() == Role.STUDENT) {
 					user = new User(id, userResult.getUserName(), null, userResult.getRole());
-					result.add(user);
+					List<Submission> submissions = new ArrayList<Submission>();
+					
+					//finding all submissions
+					submissions.add(submMapper.FindSubmissionsByUserId_ExamId(id, exam.getId()));
+					
+					student = new Student(user,submissions);
+					result.add(student);
 				}
 			}
 
-			if (result.size() > 0) {
-				for (int i = 0; i < result.size(); i++) {
-				//	if (s == null) {
-					//	userMap.put(result.get(i).getId(), result.get(i));
-				//	}
-				//	System.out.println(
-				//			result.get(i).getId() + "," + result.get(i).getUserName() + "," + result.get(i).getRole());
-				}
-
-			}
 			rs.close();
 			stmt.close();
 		} catch (SQLException e) {

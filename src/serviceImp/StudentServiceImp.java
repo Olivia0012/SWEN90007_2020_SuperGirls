@@ -1,4 +1,4 @@
-package service;
+package serviceImp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +14,11 @@ import mapper.ExamMapper;
 import mapper.SubjectMapper;
 import mapper.SubmissionMapper;
 import mapper.UserMapper;
+import service.StudentService;
 
 public class StudentServiceImp implements StudentService {
+	private List<Student> studentList = new ArrayList<Student>();
+	private UserMapper studentMapper = new UserMapper();
 
 	public StudentServiceImp() {
 		// TODO Auto-generated constructor stub
@@ -24,23 +27,33 @@ public class StudentServiceImp implements StudentService {
 	@Override
 	public String findAllStudentsBySubjectId(int subjectId) {
 		List<Student> studentList = new ArrayList<Student>();
-		List<User> userList = new ArrayList<User>();
-		List<Exam> examList = new ArrayList<Exam>();
 		UserMapper studentMapper = new UserMapper();
-		List<Submission> submissionList = new ArrayList<Submission>();
-		SubmissionMapper submissionMapper = new SubmissionMapper();
-		ExamMapper examMapper = new ExamMapper();
 		
-		userList = studentMapper.FindAllStudentsBySubjectId(subjectId);
-		examList = examMapper.FindAllExamsBySubjectId(subjectId);
-		submissionList = submissionMapper.FindAllSubmission();
+		studentList = studentMapper.FindAllStudentsBySubjectId(subjectId);
 		
-		for(int i = 0; i < userList.size(); i++) {
-			
-			Student student = new Student(userList.get(i),examList,submissionList);
-			studentList.add(student);
-			
-		}
+		String result = JSONObject.toJSONString(studentList);
+		System.out.println(result);
+		return result;
+	}
+
+	@Override
+	public String findAllStudentsByExamId(int examId) {
+		List<Student> studentList = new ArrayList<Student>();
+		UserMapper studentMapper = new UserMapper();
+		
+	//	studentList = studentMapper.findAllStudentsByExamId(examId);
+		
+		String result = JSONObject.toJSONString(studentList);
+		System.out.println(result);
+		return result;
+	}
+
+	@Override
+	public String findAllStudentsAndSubmissions(int subjectId, int examId) {
+		
+		
+		studentList = studentMapper.findAllStudentsAndSubmissions(subjectId, examId);
+		
 		String result = JSONObject.toJSONString(studentList);
 		System.out.println(result);
 		return result;

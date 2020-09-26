@@ -92,10 +92,10 @@ public class UnitOfWorkImp implements UnitOfWork<DomainObject> {
 				// get the mapper for the object
 				DataMapper mapper = (DataMapper) Class.forName("mapper." + obj.getClass().getSimpleName() + "Mapper")
 						.getDeclaredConstructor().newInstance();
-				result = mapper.insert(obj);
+				int insertResult = mapper.insert(obj);
 
 				// if one of the insert failed, do not proceed with the rest
-				if (!result) {
+				if (insertResult == 0) {
 					return false;
 				}
 

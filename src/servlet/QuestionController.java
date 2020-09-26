@@ -12,7 +12,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import domain.Exam;
-import service.ExamServiceImp;
+import serviceImp.ExamServiceImp;
 
 /**
  * Servlet implementation class QuestionController
@@ -68,7 +68,7 @@ public class QuestionController extends HttpServlet {
 		String result = JSONObject.toJSONString(exam);
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setContentType("text/json;charset=UTF-8");
-		response.getWriter().write(result);
+		response.getWriter().write("true");
 	}
 
 	/**

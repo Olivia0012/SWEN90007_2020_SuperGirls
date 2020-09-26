@@ -7,8 +7,6 @@
 package servlet;
 
 import java.io.IOException;
-import java.util.UUID;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
@@ -26,14 +24,14 @@ import serviceImp.UserServiceImp;
 /**
  * Servlet implementation class HelloServlet
  */
-@WebServlet("/LoginController")
-public class LoginController extends HttpServlet {
+@WebServlet("/CheckLoginController")
+public class CheckLoginController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public LoginController() {
+	public CheckLoginController() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -45,28 +43,24 @@ public class LoginController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String result = null;
-		
-		String userName = new String(request.getParameter("userName").getBytes("ISO-8859-1"), "UTF-8");
-		String passWord = new String(request.getParameter("passWord").getBytes("ISO-8859-1"), "UTF-8");
-		
-		// check the login info.
-		UserServiceImp userlogin = new UserServiceImp();
-		User user = userlogin.login(userName, passWord);
-		
-		// if login successfully, then adding a token to cookie and return the user Id and role.
-		if (user != null) {
-		//	String id = UUID.randomUUID().toString(); // Create a token
-			Cookie cookie = new Cookie("token", user.getId()+"");  // Create a token
-			response.addCookie(cookie); // add cookie
-			result = JSONObject.toJSONString(user);
-			response.getWriter().print(result);
-		} else {
-			response.getWriter().print("false");
+		Cookie cookie = null;
+		Cookie[] cookies = request.getCookies();
+		if( cookies != null ){
+            for (int i = 0; i < cookies.length; i++){
+               cookie = cookies[i];
+               if((cookie.getName()).equals("token") ){
+            	   String val = cookie.getValue();
+            	   result = val;
+                   break;
+               }
+            }
+		}else {
+			result = "Session has been expired.";
 		}
-
+	
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setContentType("text/json;charset=UTF-8");
-		// response.getWriter().write(result);
+		response.getWriter().write(result);
 	}
 
 	/**

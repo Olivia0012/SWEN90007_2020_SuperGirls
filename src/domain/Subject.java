@@ -5,6 +5,8 @@ package domain;
 
 import java.util.List;
 
+import shared.UnitOfWorkImp;
+
 /**
  * @author manlo
  *
@@ -19,10 +21,14 @@ public class Subject extends DomainObject{
 		super(Id);
 		this.setTitle(title);
 		this.setSubjectCode(subjectCode);
+		UnitOfWorkImp.newCurrent();
+		UnitOfWorkImp.getCurrent().registerNew(this);
 	}
 	
 	public Subject(int Id, String title, String subjectCode, List<Student> students, List<Exam> exams) {
 		super(Id);
+		UnitOfWorkImp.newCurrent();
+		UnitOfWorkImp.getCurrent().registerNew(this);
 		this.setTitle(title);
 		this.setSubjectCode(subjectCode);
 		this.setExams(exams);
@@ -30,6 +36,8 @@ public class Subject extends DomainObject{
 	}
 
 	public Subject() {
+		UnitOfWorkImp.newCurrent();
+		UnitOfWorkImp.getCurrent().registerNew(this);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -45,6 +53,7 @@ public class Subject extends DomainObject{
 	 */
 	public void setTitle(String title) {
 		this.title = title;
+	//	UnitOfWorkImp.getCurrent().registerNew(this);
 	}
 
 
@@ -60,6 +69,7 @@ public class Subject extends DomainObject{
 	 */
 	public void setSubjectCode(String subjectCode) {
 		this.subjectCode = subjectCode;
+	//	UnitOfWorkImp.getCurrent().registerNew(this);
 	}
 
 	/**
@@ -74,6 +84,7 @@ public class Subject extends DomainObject{
 	 */
 	public void setStudents(List<Student> students) {
 		this.students = students;
+		UnitOfWorkImp.getCurrent().registerNew(this);
 	}
 
 	/**
@@ -88,6 +99,7 @@ public class Subject extends DomainObject{
 	 */
 	public void setExams(List<Exam> exams) {
 		this.exams = exams;
+		UnitOfWorkImp.getCurrent().registerNew(this);
 	}
 
 

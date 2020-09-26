@@ -1,6 +1,5 @@
 package servlet;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,7 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
+import domain.Answer;
 import domain.Exam;
+import domain.Question;
 import domain.Submission;
 import domain.User;
 import enumeration.ExamStatus;
@@ -25,16 +26,16 @@ import util.JsonToObject;
 import util.ResponseHeader;
 
 /**
- * Servlet implementation class AddExamController
+ * Servlet implementation class EditExamController
  */
-@WebServlet("/AddExamController")
-public class AddExamController extends HttpServlet {
+@WebServlet("/EditExamController")
+public class EditExamController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public AddExamController() {
+	public EditExamController() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -45,8 +46,37 @@ public class AddExamController extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		UserService us = new UserServiceImp();
+		ResponseHeader header = new ResponseHeader();
+		String val = us.checkLogin(request);
+
+		if (val.equals("0") || val.equals("1")) {
+			response.getWriter().write(val); // invalid session.
+		} else {
+			// finding exam by examId.
+			String data = new String(request.getParameter("id").getBytes("ISO-8859-1"), "UTF-8");
+			int examId = Integer.valueOf(data);
+
+			// String r = JSONObject.toJSONString(subject);
+			System.out.println("examId: " + data);
+
+			ExamMapper em = new ExamMapper();
+			Exam exam = em.findById(examId);
+			if(exam.getStatus().equals(ExamStatus.CREATED)) {
+				exam.setStatus(ExamStatus.PUBLISHED);
+			}
+			else if(exam.getStatus().equals(ExamStatus.PUBLISHED)) {
+				exam.setStatus(ExamStatus.CLOSED);
+			}else if(exam.getStatus().equals(ExamStatus.CLOSED)) {
+				exam.setStatus(ExamStatus.RELEASED);
+			}
+			
+			ExamServiceImp a = new ExamServiceImp();
+			String published = a.publishExam(exam);
+
+			response.getWriter().write(published);
+		}
+		header.setResponseHeader(response);
 	}
 
 	/**
@@ -66,29 +96,26 @@ public class AddExamController extends HttpServlet {
 			// finding all enrolled subjects by userId.
 			JSONObject jsonObject = JSONObject.parseObject(val);
 			user = JSON.toJavaObject(jsonObject, User.class);
-			
-			Submission submission = new Submission();
-			JsonToObject jo = new JsonToObject();
-			JSONObject submissionJsonObject = jo.ReqJsonToObject(request);
-			submission = JSON.toJavaObject(submissionJsonObject, Submission.class);
-			
-			ExamMapper examMapper = new ExamMapper();
 
-			if (examMapper.findById(submission.getExam().getId()).getStatus() != ExamStatus.PUBLISHED) {
-				response.getWriter().write("This exam is not awailable. "); // invalid session.
+			if (!user.getRole().equals(Role.INSTRUCTOR)) {
+				response.getWriter().write("You can't edit this exam."); // invalid session.
 			} else {
 
-				submission.setStudent(user);
-				ExamServiceImp addSubmission = new ExamServiceImp();
-				addSubmission.addSubmission(submission);
-				SubmissionMapper sm = new SubmissionMapper();
-				Submission newSub = sm.findByStudentId(user.getId());
-				String result = JSONObject.toJSONString(newSub);
+				Exam exam = new Exam();
+				JsonToObject jo = new JsonToObject();
+				JSONObject examJsonObject = jo.ReqJsonToObject(request);
+				exam = JSON.toJavaObject(examJsonObject, Exam.class);
+
+				ExamServiceImp markExam = new ExamServiceImp();
+				markExam.updateExam(exam);
+				ExamMapper em = new ExamMapper();
+				Exam updatedExam = em.findById(exam.getId());
+				String result = JSONObject.toJSONString(updatedExam);
 				response.getWriter().write(result);
 			}
 
 		}
-		
+
 		header.setResponseHeader(response);
 	}
 

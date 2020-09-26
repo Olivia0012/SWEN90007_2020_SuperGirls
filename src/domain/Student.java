@@ -1,19 +1,20 @@
 package domain;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import enumeration.Role;
 
 public class Student extends User{
-	private List<Submission> submissionList = new ArrayList<Submission>();
-	private List<Exam> examList = new ArrayList<Exam>();
+	
+	private List<Submission> submissions = new ArrayList<Submission>();
 	
 
-	public Student(User user,List<Exam> subjectList,List<Submission> submissionList) {
+	public Student(User user,List<Submission> submissions) {
 		super(user.getId(), user.getUserName(), user.getPassWord(), Role.STUDENT);
-		this.setExamList(subjectList);
-		this.setSubmissionList(submissionList);
+		this.setSubmissions(submissions);
 	}
 
 
@@ -23,35 +24,23 @@ public class Student extends User{
 
 
 	/**
-	 * @return the submissionList
+	 * @return the submissions
 	 */
-	public List<Submission> getSubmissionList() {
-		return submissionList;
+	public List<Submission> getSubmissions() {
+		return submissions;
 	}
 
 
 	/**
-	 * @param submissionList the submissionList to set
+	 * @param submissions the submissions to set
 	 */
-	public void setSubmissionList(List<Submission> submissionList) {
-		this.submissionList = submissionList;
+	public void setSubmissions(List<Submission> submissions) {
+		this.submissions = submissions;
 	}
 
 
-	/**
-	 * @return the subjectList
-	 */
-	public List<Exam> getExamList() {
-		return examList;
-	}
+	
 
-
-	/**
-	 * @param examList 
-	 */
-	public void setExamList(List<Exam> examList) {
-		this.examList = examList;
-	}
 
 
 
