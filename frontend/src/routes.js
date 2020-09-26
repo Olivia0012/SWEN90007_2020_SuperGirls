@@ -7,6 +7,7 @@ import LoginView from 'src/views/auth/LoginView';
 import EditExam from 'src/views/exam/EditExamView';
 import MarkExamView from 'src/views/exam/MarkExamView';
 import MainLayout from 'src/layouts/MainLayout';
+import TakeExam from './views/exam/TakeExam';
 
 const routes = [
   {
@@ -28,6 +29,7 @@ const routes = [
       { path: `/exam?user=:user`, element: <EditExam /> },
       { path: `/exam/id=:id`, element: <Exam />},
       { path: `/students/submission=:submission`, element: <MarkExamView />},
+      { path: `/takeExam/submission=:submission&subject=:subject`, element: <TakeExam />},
     ]
   },
   {

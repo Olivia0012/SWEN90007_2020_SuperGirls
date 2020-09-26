@@ -138,7 +138,7 @@ const Results = ({ className, customers, ...rest }) => {
 									<TableCell align="center">
 										{ customer.submissions[0].id !== 0?
 										(<Button href={"./submission="+customer.submissions[0].id} color="primary" >
-											View
+											{customer.submissions[0].totalMark == 0? 'Mark' : 'View'}
 										</Button>):(<div>-</div>)
 										}
 									</TableCell>

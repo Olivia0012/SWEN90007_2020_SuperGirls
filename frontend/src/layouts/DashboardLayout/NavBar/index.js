@@ -74,19 +74,14 @@ const NavBar = ({ onMobileClose, openMobile }) => {
 
   const items = [
     {
-      href: './subjects',
+      href: '../../oea/subjects',
       icon: ShoppingBagIcon,
       title: 'Subjects'
     },
     {
-      href: './exams/user='+`${user.user}`,
+      href: '../../',
       icon: SettingsIcon,
-      title: 'Adding Exam'
-    },
-    {
-      href: './students/user='+`${user.user}`,
-      icon: SettingsIcon,
-      title: 'Students'
+      title: 'Profile'
     }
   ];
   

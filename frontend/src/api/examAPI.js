@@ -134,3 +134,44 @@ export async function setExamStatus(examId) {
 	console.log(dataFetched);
 	return dataFetched;
 }
+
+
+export async function submitExam(submission) {
+	const endpoint = '/takeExam';
+	const dataFetched = await axios({
+		url: endpoint, // send a request to the library API
+		//		method: "POST", // HTTP POST method
+		method: 'POST',
+		mode: 'cors',
+		//请求时添加Cookie
+		credentials: 'include',
+		crossDomain: true,
+		headers: {
+			'Content-Type': 'application/json'
+			//  "Access-Control-Allow-Origin": "http://localhost:8080",
+		},
+		data: JSON.stringify(submission),
+	});
+	console.log(dataFetched);
+	return dataFetched;
+}
+
+export async function addSubmission(submission) {
+	const endpoint = '/addsubmission';
+	const dataFetched = await axios({
+		url: endpoint, // send a request to the library API
+		//		method: "POST", // HTTP POST method
+		method: 'POST',
+		mode: 'cors',
+		//请求时添加Cookie
+		credentials: 'include',
+		crossDomain: true,
+		headers: {
+			'Content-Type': 'application/json'
+			//  "Access-Control-Allow-Origin": "http://localhost:8080",
+		},
+		data: JSON.stringify(submission),
+	});
+	console.log(dataFetched);
+	return dataFetched;
+}

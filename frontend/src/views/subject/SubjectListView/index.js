@@ -2,10 +2,11 @@ import React, { useState, useEffect, createContext } from 'react';
 import { Box, Container, makeStyles } from '@material-ui/core';
 import Page from 'src/components/Page';
 import Results from './Results';
+import ResultsforStudent from './ResultsforStudent';
 import Toolbar from './Toolbar';
-import Loading from '../../../utils/loading'
+import Loading from '../../../utils/loading';
 import { getSubjectsByUserId } from '../../../api/examAPI';
-import {useRoutes } from 'react-router-dom';
+import { useRoutes } from 'react-router-dom';
 import routes from 'src/routes';
 
 const useStyles = makeStyles((theme) => ({
@@ -17,8 +18,8 @@ const useStyles = makeStyles((theme) => ({
 	},
 	backdrop: {
 		zIndex: theme.zIndex.drawer + 1,
-		color: '#fff',
-	  },
+		color: '#fff'
+	}
 }));
 
 export const SubjectContext = createContext();
@@ -29,37 +30,56 @@ const SubjectListView = () => {
 	const [ data, setData ] = useState([]);
 	const [ isLoading, setLoading ] = useState(false);
 	const [ subjects, setSubjects ] = useState();
-	
 
 	useEffect(() => {
 		const fetchData = async () => {
 			setLoading(true);
 			const session = routeResult.props.value.params.user;
 			console.log(session);
-			const result = await getSubjectsByUserId(session);
-			setData(result.data);
-			setSubjects(result.data);
+			const subjects = await getSubjectsByUserId(session);
+			const result = subjects.data;
+			// if the user is a student
+			if(subjects.data.user.role == 'STUDENT'){
+				console.log(subjects.data);
+				subjects.data.subjects.map((subject) => {
+					for(var i=subject.exams.length-1;i>=0;i--){
+						console.log(i+'='+subject.exams[i]);
+						if(subject.exams[i].status !=='PUBLISHED' && subject.exams[i].status !=='RELEASED' ){
+							subject.exams.splice(i,1);
+						}
+					}
+				})
+
+			}
+
+			setData(subjects.data);
+			setSubjects(result);
 			setLoading(false);
-			console.log(data);
+			console.log(subjects.data);
 			console.log(isLoading);
 		};
 
 		fetchData();
 	}, []);
 
+	console.log(data);
 
 	return (
 		<Page className={classes.root} title="Customers">
 			<Container maxWidth={false}>
-				<Toolbar />
+				<Toolbar userName={data.user? data.user.userName:''}/>
 				{!isLoading ? (
 					<SubjectContext.Provider value={(subjects, setSubjects)}>
 						<Box mt={3}>
-							<Results customers={data} />
+							{typeof data.user !== 'undefined'? data.user.role === 'INSTRUCTOR' ? (
+								<Results customers={data.subjects} />
+							) : (
+								<ResultsforStudent customers={data.subjects} />
+							):(<div/>)}
 						</Box>
 					</SubjectContext.Provider>
 				) : (
-					<Loading isLoading={isLoading}/>
+					<Loading isLoading={isLoading} />
 				)}
 			</Container>
 		</Page>

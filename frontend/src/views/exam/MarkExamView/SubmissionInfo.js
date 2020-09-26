@@ -46,6 +46,9 @@ const SubmissionInfo = ({ className, ...rest }) => {
 							Student :  {submissionInfo.student} 
 						</Typography>
 						<Typography color="textPrimary" gutterBottom variant="body1">
+							TotalMark :  {submissionInfo.totalMark==0? '-':submissionInfo.totalMark}
+						</Typography>
+						<Typography color="textPrimary" gutterBottom variant="body1">
 							SubTime :  {submissionInfo.subTime}
 						</Typography>
 					</Grid>

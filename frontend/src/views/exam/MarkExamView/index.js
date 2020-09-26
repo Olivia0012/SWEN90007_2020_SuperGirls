@@ -1,5 +1,16 @@
 import React, { createContext, useEffect } from 'react';
-import { Box, Button, Container, makeStyles, Grid,Card,CardHeader,CardContent,TextField } from '@material-ui/core';
+import {
+	Box,
+	Button,
+	Container,
+	makeStyles,
+	Grid,
+	Card,
+	CardHeader,
+	CardContent,
+	TextField,
+	Collapse
+} from '@material-ui/core';
 import Page from 'src/components/Page';
 import SubmissionInfo from './SubmissionInfo';
 import QuestionCard from './QuestionCard';
@@ -46,7 +57,8 @@ const MarkExamView = () => {
 				subjectTitle: a.exam.subject.subjectCode,
 				examTitle: a.exam.title,
 				student: a.student.userName,
-				subTime: a.subTime
+				subTime: a.subTime,
+				totalMark: a.totalMark
 			};
 			setSubmissionInfo(readyData);
 			setLoading(false);
@@ -60,12 +72,11 @@ const MarkExamView = () => {
 		})
 	);
 
-	const [comment, setComment] = React.useState('');
+	const [ comment, setComment ] = React.useState('');
 
 	const handleComment = (e) => {
 		setComment(e.target.value);
-		
-	}
+	};
 
 	const handleMark = (index, mark) => {
 		/*	console.log(mark,index,marks);
@@ -82,14 +93,14 @@ const MarkExamView = () => {
 		e.preventDefault();
 		setLoading(true);
 		data.comment = comment;
-		data.markTime = moment().format("YYYY-MM-DD HH:mm:ss");
+		data.markTime = moment().format('YYYY-MM-DD HH:mm:ss');
 		data.exam.questionList = null;
-		console.log();
+		console.log(data);
 		await markExam(data)
 			.then((a) => {
 				setLoading(false);
 				alert('Saving mark Successfully!');
-			//	window.location.href = './id=' + question.examId;
+				//	window.location.href = './id=' + question.examId;
 			})
 			.catch((error) => {
 				setLoading(false);
@@ -99,26 +110,26 @@ const MarkExamView = () => {
 
 	return (
 		<Page className={classes.root} title="Exam">
-			{!isLoading ? (
+			{!isLoading && data ? (
 				<Container maxWidth="lg">
 					<Box p={1} />
 					<SubmissionContent.Provider value={submissionInfo}>
 						<SubmissionInfo />
 					</SubmissionContent.Provider>
-					{data ? (
-						data.answers.map((nq, index) => {
-							return (
-								<div key={index}>
-									<Box p={1} />
-									<QuestionContent.Provider value={nq}>
-										<QuestionCard value={index} mark={marks[index]} handleMark={handleMark} />
-									</QuestionContent.Provider>
-								</div>
-							);
-						})
-					) : (
-						<div />
-					)}
+					{data.answers.map((nq, index) => {
+						return (
+							<div key={index}>
+								<Box p={1} />
+								<QuestionCard
+									value={index}
+									mark={marks[index]}
+									handleMark={handleMark}
+									question={nq.question}
+									answer={nq}
+								/>
+							</div>
+						);
+					})}
 					<Box p={1} />
 					<Card>
 						<CardHeader title={'Comment:'} />
@@ -128,6 +139,8 @@ const MarkExamView = () => {
 								fullWidth
 								multiline
 								rows={4}
+								disabled={data.marker}
+								defaultValue={data.comment}
 								variant="outlined"
 								onChange={handleComment}
 							/>
@@ -135,9 +148,11 @@ const MarkExamView = () => {
 					</Card>
 					<Box p={2} />
 					<Grid item xs={12}>
-						<Button color="primary" fullWidth variant="contained" onClick={handleSubmit}>
-							Submit
-						</Button>
+						<Collapse in={!data.marker ? true : false}>
+							<Button color="primary" fullWidth variant="contained" onClick={handleSubmit}>
+								Submit
+							</Button>
+						</Collapse>
 					</Grid>
 				</Container>
 			) : (

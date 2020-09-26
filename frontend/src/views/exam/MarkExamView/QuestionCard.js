@@ -12,9 +12,9 @@ import {
 	Box,
 	FormControl,
 	FormLabel,
-	FormGroup,
+	RadioGroup,
 	FormControlLabel,
-	Checkbox,
+	Radio,
 	FormHelperText,
 	Card,
 	Collapse,
@@ -44,12 +44,17 @@ const useStyles = makeStyles({
 function QuestionCard (props){
 	const classes = useStyles();
 	const [ isLoading, setLoading ] = React.useState(false);
-	const question = useContext(QuestionContent);
-	let choices = [];
-	choices = question.question.choices;
-
-	const { handleMark, value} = props;
+//	const question = useContext(QuestionContent);
+//	let choices = [];
+//	choices = question.question.choices;
 	
+
+	const { handleMark, value, question, answer} = props;
+	
+	const c = parseInt(answer.anwer);
+
+	console.log(c===1?true:false);
+
 	const handleChange = (event) => {
 		const curMark = event.target.value;
 		handleMark(value,curMark);
@@ -62,20 +67,22 @@ function QuestionCard (props){
 					<TextField
 						label="Mark"
 						onChange={handleChange}
+						disabled={answer.answer}
+						defaultValue={answer.mark}
 						id="standard-start-adornment"
 						className={clsx(classes.margin, classes.textField)}
 						InputProps={{
 							endAdornment: (
-								<InputAdornment position="end">{' / ' + question.question.questionMark}</InputAdornment>
+								<InputAdornment position="end">{' / ' + question.questionMark}</InputAdornment>
 							)
 						}}
 					/>
 				}
-				title={'Question' + question.question.questionNum + ' : ' + question.question.questionDescription}
+				title={'Question' + question.questionNum + ' : ' + question.questionDescription}
 			/>
 			<Divider />
 			<CardContent>
-				{question.question.questionType === 'ANSWER' ? (
+				{question.questionType === 'ANSWER' ? (
 					<Box p={3}>
 						<Typography color="textPrimary" gutterBottom variant="h6">
 							Answer:
@@ -83,7 +90,7 @@ function QuestionCard (props){
 						<Box p={1} />
 						<Paper variant="outlined">
 							<Typography color="textPrimary" gutterBottom variant="body1">
-								{question.anwer}
+								{answer.answer}
 								<br />
 								<br />
 							</Typography>
@@ -91,25 +98,26 @@ function QuestionCard (props){
 					</Box>
 				) : (
 					<Box p={3}>
-						<FormControl component="fieldset" className={classes.formControl}>
-							<FormLabel component="legend">Choices</FormLabel>
-							<FormGroup>
-								{question.question.choices ? (
-									question.question.choices.map((choice, index) => (
-										<FormControlLabel key={index}
-											control={
-												<Checkbox
-													checked={index == question.anwer ? true : false}
-													name="gilad"
-												/>
-											}
-											label={choice}
-										/>
-									))
-								) : (
-									<div />
-								)}
-							</FormGroup>
+						<FormControl component="fieldset">
+							<FormLabel component="legend">Options</FormLabel>
+							{question.choices ? (
+								question.choices.map(
+									(choice, index) =>
+										choice !== '' ? (
+											<RadioGroup
+												aria-label="gender"
+												name="gender1"
+												value={answer.answer==index? index:''}
+											>
+												<FormControlLabel value={index} control={<Radio />} label={choice} />
+											</RadioGroup>
+										) : (
+											<div />
+										)
+								)
+							) : (
+								<div />
+							)}
 						</FormControl>
 					</Box>
 				)}
