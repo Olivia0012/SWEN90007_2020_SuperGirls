@@ -14,7 +14,7 @@ import mapper.LockingMapper;
  * @author Super Girls
  *
  */
-public class UnitOfWorkImp implements UnitOfWork<DomainObject> {
+public class UnitOfWork {
 	private static ThreadLocal current = new ThreadLocal();
 
 	private List<DomainObject> newObjects = new ArrayList<DomainObject>();
@@ -22,25 +22,39 @@ public class UnitOfWorkImp implements UnitOfWork<DomainObject> {
 	private List<DomainObject> deletedObjects = new ArrayList<DomainObject>();
 
 	public static void newCurrent() {
-		setCurrent(new UnitOfWorkImp());
+		setCurrent(new UnitOfWork());
 	}
 
 	/**
 	 * @return the current
 	 */
-	public static UnitOfWorkImp getCurrent() {
-		return (UnitOfWorkImp) current.get();
+	public static UnitOfWork getCurrent() {
+		return (UnitOfWork) current.get();
 	}
 
 	/**
 	 * @param current the current to set
 	 */
-	@SuppressWarnings("unchecked")
-	public static void setCurrent(UnitOfWorkImp uow) {
+	public static void setCurrent(UnitOfWork uow) {
 		current.set(uow);
 	}
 
-	@Override
+
+	public void registerNew(DomainObject obj) {
+		if (!objectInAnyList(obj)) {
+			newObjects.add(obj);
+		}
+
+	}
+
+
+	public void registerDeleted(DomainObject obj) {
+		if (!objectInAnyList(obj)) {
+			deletedObjects.add(obj);
+		}
+
+	}
+	
 	public void registerDirty(DomainObject obj) {
 		if (!objectInAnyList(obj)) {
 			dirtyObjects.add(obj);
@@ -66,23 +80,10 @@ public class UnitOfWorkImp implements UnitOfWork<DomainObject> {
 
 	}
 
-	@Override
-	public void registerNew(DomainObject obj) {
-		if (!objectInAnyList(obj)) {
-			newObjects.add(obj);
-		}
 
-	}
+	
 
-	@Override
-	public void registerDeleted(DomainObject obj) {
-		if (!objectInAnyList(obj)) {
-			deletedObjects.add(obj);
-		}
 
-	}
-
-	@Override
 	public Boolean commit() {
 		Boolean result = true;
 

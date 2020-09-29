@@ -20,11 +20,13 @@ import javax.servlet.http.HttpSession;
 import com.alibaba.fastjson.JSONObject;
 
 import domain.User;
+import enumeration.Role;
 import serviceImp.SubjectServiceImp;
 import serviceImp.UserServiceImp;
+import util.SSOLogin;
 
 /**
- * Servlet implementation class HelloServlet
+ * User login controller
  */
 @WebServlet("/LoginController")
 public class LoginController extends HttpServlet {
@@ -39,6 +41,8 @@ public class LoginController extends HttpServlet {
 	}
 
 	/**
+	 * User Login controller
+	 * 
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
@@ -49,16 +53,20 @@ public class LoginController extends HttpServlet {
 		String userName = new String(request.getParameter("userName").getBytes("ISO-8859-1"), "UTF-8");
 		String passWord = new String(request.getParameter("passWord").getBytes("ISO-8859-1"), "UTF-8");
 		
-		// check the login info.
+		// Authenticate the user info.
 		UserServiceImp userlogin = new UserServiceImp();
 		User user = userlogin.login(userName, passWord);
 		
-		// if login successfully, then adding a token to cookie and return the user Id and role.
+		// Authenticated successfully  
 		if (user != null) {
-		//	String id = UUID.randomUUID().toString(); // Create a token
-			Cookie cookie = new Cookie("token", user.getId()+"");  // Create a token
-			response.addCookie(cookie); // add cookie
+			// Create a token and record the user info in the SSO login list.
+			String token = UUID.randomUUID().toString(); 
+			SSOLogin userLogin = new SSOLogin();
+			userLogin.login(token, user);
+			
+			// return the token and userInfo
 			result = JSONObject.toJSONString(user);
+			response.setHeader("Token", token);
 			response.getWriter().print(result);
 		} else {
 			response.getWriter().print("false");
@@ -66,7 +74,6 @@ public class LoginController extends HttpServlet {
 
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setContentType("text/json;charset=UTF-8");
-		// response.getWriter().write(result);
 	}
 
 	/**

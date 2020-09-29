@@ -48,12 +48,14 @@ public class StudentServiceImp implements StudentService {
 		return result;
 	}
 
+	/**
+	 * @param subject id; exam id
+	 * 
+	 * @return all enrolled in the subject students with submission details.
+	 */
 	@Override
 	public String findAllStudentsAndSubmissions(int subjectId, int examId) {
-		
-		
 		studentList = studentMapper.findAllStudentsAndSubmissions(subjectId, examId);
-		
 		String result = JSONObject.toJSONString(studentList);
 		System.out.println(result);
 		return result;

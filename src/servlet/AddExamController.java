@@ -23,6 +23,7 @@ import serviceImp.ExamServiceImp;
 import serviceImp.UserServiceImp;
 import util.JsonToObject;
 import util.ResponseHeader;
+import util.SSOLogin;
 
 /**
  * Servlet implementation class AddExamController
@@ -50,45 +51,44 @@ public class AddExamController extends HttpServlet {
 	}
 
 	/**
+	 * This post function is used for creating new exam.
+	 * 
+	 * 
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		UserService us = new UserServiceImp();
+
 		ResponseHeader header = new ResponseHeader();
-		// Checking the login session.
-		String val = us.checkLogin(request);
-		User user = new User();
-		if (val.equals("0") || val.equals("1")) {
-			response.getWriter().write(val); // invalid session.
+
+		// Login check.
+		SSOLogin ssoCheck = new SSOLogin();
+		User user = ssoCheck.checkLogin(request);
+
+		if (user == null) {
+			response.getWriter().write("false"); // invalid token.
 		} else {
-			// finding all enrolled subjects by userId.
-			JSONObject jsonObject = JSONObject.parseObject(val);
-			user = JSON.toJavaObject(jsonObject, User.class);
 			
-			Submission submission = new Submission();
-			JsonToObject jo = new JsonToObject();
-			JSONObject submissionJsonObject = jo.ReqJsonToObject(request);
-			submission = JSON.toJavaObject(submissionJsonObject, Submission.class);
-			
+			Exam exam = new Exam();
 			ExamMapper examMapper = new ExamMapper();
-
-			if (examMapper.findById(submission.getExam().getId()).getStatus() != ExamStatus.PUBLISHED) {
-				response.getWriter().write("This exam is not awailable. "); // invalid session.
-			} else {
-
-				submission.setStudent(user);
-				ExamServiceImp addSubmission = new ExamServiceImp();
-				addSubmission.addSubmission(submission);
-				SubmissionMapper sm = new SubmissionMapper();
-				Submission newSub = sm.findByStudentId(user.getId());
-				String result = JSONObject.toJSONString(newSub);
-				response.getWriter().write(result);
-			}
+			ExamServiceImp addExam = new ExamServiceImp();
+			JsonToObject jo = new JsonToObject();
+			JSONObject examJsonObject = jo.ReqJsonToObject(request);
+			
+			exam = JSON.toJavaObject(examJsonObject, Exam.class);
+			exam.setCreator(user);
+			
+			// Add this new exam into database and return its id.
+			int examId = Integer.valueOf(addExam.addNewExam(exam));
+			examMapper.findById(examId);
+			SubmissionMapper sm = new SubmissionMapper();
+			Submission newSub = sm.findByStudentId(user.getId());
+			String result = JSONObject.toJSONString(newSub);
+			response.getWriter().write(result);
 
 		}
-		
+
 		header.setResponseHeader(response);
 	}
 

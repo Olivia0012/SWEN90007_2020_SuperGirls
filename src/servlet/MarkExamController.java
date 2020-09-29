@@ -15,6 +15,7 @@ import domain.Exam;
 import domain.Submission;
 import domain.User;
 import enumeration.Role;
+import mapper.ExamMapper;
 import mapper.SubmissionMapper;
 import service.UserService;
 import serviceImp.ExamServiceImp;
@@ -58,10 +59,16 @@ public class MarkExamController extends HttpServlet {
 			// String r = JSONObject.toJSONString(subject);
 			System.out.println("submissionId: " + data);
 
-			ExamServiceImp a = new ExamServiceImp();
-			String exam = a.findSubmissionById(submissionId);
-
-			String result = JSONObject.toJSONString(exam);
+			SubmissionMapper submissionMapper = new SubmissionMapper();
+			ExamMapper em = new ExamMapper();
+			Submission submission = submissionMapper.findById(submissionId);
+			Submission resultSubmission = new Submission();
+			resultSubmission.setAnswers(submission.getAnswers());
+			Exam exam = new Exam();
+			exam.setSubject(submission.getExam().getSubject());
+			exam.setTitle(submission.getExam().getTitle());
+			submission.setExam(exam);
+			String result = JSONObject.toJSONString(submission);
 			response.getWriter().write(result);
 		}
 		header.setResponseHeader(response);

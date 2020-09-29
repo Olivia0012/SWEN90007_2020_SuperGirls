@@ -24,7 +24,7 @@ import domain.User;
 import enumeration.ExamStatus;
 import enumeration.Role;
 import shared.IdentityMap;
-import shared.UnitOfWorkImp;
+import shared.UnitOfWork;
 
 /**
  * This class is the data mapper for exam.
@@ -55,15 +55,15 @@ public class ExamMapper extends DataMapper {
 			stmt.setBoolean(6, exam.isLocked());
 
 			stmt.executeUpdate();
+			
 			ResultSet keys = stmt.getGeneratedKeys();
 			keys.next();
 			int id = keys.getInt(1);
-
 			exam.setId(id);
 
+			// add the new exam into the exam identity map.
 			IdentityMap<Exam> examMap = IdentityMap.getInstance(exam);
 			examMap.put(exam.getId(), exam);
-			System.out.println(id);
 
 			keys.close();
 			stmt.close();
@@ -87,7 +87,7 @@ public class ExamMapper extends DataMapper {
 	 */
 	@Override
 	public Boolean update(DomainObject obj) {
-		UnitOfWorkImp.newCurrent();
+		UnitOfWork.newCurrent();
 		Exam exam = (Exam) obj;
 
 		String updateSubjectStm = "UPDATE exam SET subjectid = ?,examtitle = ?,islock = ?,examstatus = ? WHERE examid = ?";
@@ -99,7 +99,7 @@ public class ExamMapper extends DataMapper {
 			stmt.setString(2, exam.getTitle());
 			// stmt.setString(3, exam.getStatus() + "");
 			stmt.setBoolean(3, exam.isLocked());
-			stmt.setString(4, exam.getStatus()+"");
+			stmt.setString(4, exam.getStatus() + "");
 			stmt.setInt(5, exam.getId());
 			stmt.executeUpdate();
 
@@ -110,7 +110,7 @@ public class ExamMapper extends DataMapper {
 			if (examInMap == null) {
 				examMap.put(exam.getId(), exam);
 			}
-			UnitOfWorkImp.getCurrent().commit();
+			UnitOfWork.getCurrent().commit();
 			stmt.close();
 			return true;
 		} catch (SQLException e) {
@@ -130,7 +130,7 @@ public class ExamMapper extends DataMapper {
 	 */
 	@Override
 	public Boolean delete(DomainObject obj) {
-		UnitOfWorkImp.newCurrent();
+		UnitOfWork.newCurrent();
 		Exam exam = (Exam) obj;
 
 		String deleteSubjectStm = "DELETE FROM exam WHERE examid = ?";
@@ -146,7 +146,7 @@ public class ExamMapper extends DataMapper {
 				examMap.put(exam.getId(), null);
 			}
 
-			UnitOfWorkImp.getCurrent().commit();
+			UnitOfWork.getCurrent().commit();
 			stmt.close();
 			return true;
 		} catch (SQLException e) {
@@ -171,10 +171,10 @@ public class ExamMapper extends DataMapper {
 
 		IdentityMap<Exam> examMap = IdentityMap.getInstance(exam);
 		exam = examMap.get(examId);
-		
+
 		String r1 = JSONObject.toJSONString(exam);
-		System.out.println("findById exam: "+r1);
-		
+		System.out.println("findById exam: " + r1);
+
 		SubjectMapper subjectMapper = new SubjectMapper();
 		QuestionMapper questisonMapper = new QuestionMapper();
 		UserMapper instructorMapper = new UserMapper();
@@ -201,8 +201,6 @@ public class ExamMapper extends DataMapper {
 
 					List<Question> questionList = questisonMapper.findQuestionByExamId(examId);
 					Subject subject = subjectMapper.findById(subjectId);
-					String r = JSONObject.toJSONString(subject);
-					System.out.println("findById exam---: "+r);
 					User instrctor = instructorMapper.findById(instructorId);
 					exam = new Exam(id, subject, instrctor, createTime, null, title, ExamStatus.valueOf(status),
 							isLocked, questionList);
@@ -218,7 +216,7 @@ public class ExamMapper extends DataMapper {
 
 					}
 					String result1 = JSONObject.toJSONString(result);
-					System.out.println("examMap result : "+result1);
+					System.out.println("examMap result : " + result1);
 				}
 
 				rs.close();
@@ -326,55 +324,38 @@ public class ExamMapper extends DataMapper {
 				Integer subjectId = rs.getInt("subjectId");
 				Integer instructorId = rs.getInt("instructorId");
 				String createTime = rs.getString("createTime");
-				// Date updateTime = rs.getDate("updatetime");
 				String title = rs.getString("examTitle");
 				String status = rs.getString("examStatus");
 				boolean isLocked = rs.getBoolean("isLock");
 
-		//		List<Question> questionList = questisonMapper.findQuestionByExamId(id);
-		//		Subject subject = subjectMapper.findById(subjectId);
-				User instrctor = instructorMapper.findById(instructorId);
-		//		instrctor.setId(0);
-		//		instrctor.setPassWord(null);
-		//		instrctor.setRole(null);
-				
-				exam = new Exam(id, null, instrctor, createTime, null, title, ExamStatus.valueOf(status), isLocked,
-						null);
-				
-				result.add(exam);
-				
-			/*	if(role.equals(Role.STUDENT)) {
-					if(ExamStatus.valueOf(status).equals(ExamStatus.PUBLISHED) || ExamStatus.valueOf(status).equals(ExamStatus.RELEASED))
-						result.add(exam);
-				}else result.add(exam);*/
-				
-				
-				
-			/*	if(role.equals(Role.INSTRUCTOR)) {
-				//	Subject subject = subjectMapper.findById(subjectId);
-					exam = new Exam(id, null, instrctor, createTime, null, title, ExamStatus.valueOf(status), isLocked,
-							null);
-					result.add(exam);
-					
-				}else {
-					if(ExamStatus.valueOf(status).equals(ExamStatus.PUBLISHED) || ExamStatus.valueOf(status).equals(ExamStatus.RELEASED)) {
-						exam = new Exam(id, null, null, null, null, title, ExamStatus.valueOf(status), isLocked,
+				User instrctor = new User();
+
+				User creator = instructorMapper.findById(instructorId);
+				instrctor.setUserName(creator.getUserName());
+
+				Subject subject = new Subject();// subjectMapper.findById(subjectId);
+				subject.setId(subjectid);
+
+				if(role.equals(Role.STUDENT)) {
+					if(status.equals("PUBLISHED") || status.equals("RELEASED")) {
+						exam = new Exam(id, subject, instrctor, createTime, null, title, ExamStatus.valueOf(status), isLocked,
 								null);
 						result.add(exam);
-					}*/
-						
-					
-			//	}
-			//	instrctor.setSubjectList(null);
+					}
+				}else {
+					exam = new Exam(id, subject, instrctor, createTime, null, title, ExamStatus.valueOf(status), isLocked,
+							null);
+					result.add(exam);
+				}
 				
-				
+
 			}
 
 			if (result.size() > 0) {
 				for (int i = 0; i < result.size(); i++) {
 					Exam s = examMap.get(result.get(i).getId());
 					if (s == null) {
-						examMap.put(result.get(i).getId(), result.get(i));
+						// examMap.put(result.get(i).getId(), result.get(i));
 					}
 					/*
 					 * System.out.println(result.get(i).getId() + "," + result.get(i).getTitle() +
@@ -409,8 +390,8 @@ public class ExamMapper extends DataMapper {
 		 */
 		Exam e1 = em.findById(1);
 		// em.insert(e);
-		 String result = JSONObject.toJSONString(e1);
-		 System.out.println(result);
+		String result = JSONObject.toJSONString(e1);
+		System.out.println(result);
 	}
 
 }

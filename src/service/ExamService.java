@@ -24,7 +24,7 @@ public interface ExamService {
 	public String deleteQuestionById(int questionId);
 	public String deleteExamById(int examId);
 	boolean markSubmission(Submission submission);
-	String findSubmissionById(int submissionId);
+	Submission findSubmissionById(int submissionId);
 	String publishExam(Exam exam);
 	int addSubmission(Submission submission);
 	boolean takeExam(Submission submission);

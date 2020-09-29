@@ -181,8 +181,8 @@ public class SubjectMapper extends DataMapper {
 				DatabaseConnection.closeConnection();
 			}
 			if (result.size() > 0) {
-				subjectMap.put( result.get(0).getId(), result.get(0));
-				return result.get(0);
+				subjectMap.put( result.get(0).getId(), subject);
+				return subject;
 			}
 		}
 		return subject;

@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import enumeration.ExamStatus;
-import shared.UnitOfWorkImp;
+import shared.UnitOfWork;
 
 public class Exam extends DomainObject{
 	private Subject subject;
@@ -19,8 +19,7 @@ public class Exam extends DomainObject{
 	
 	public Exam() {
 		super();
-		UnitOfWorkImp.newCurrent();
-		UnitOfWorkImp.getCurrent().registerNew(this);
+	//	UnitOfWork.getCurrent().registerNew(this);
 	}
 
 
@@ -34,15 +33,15 @@ public class Exam extends DomainObject{
 		this.setStatus(status);
 		this.setLocked(isLocked);
 		this.setQuestionList(questionList);
-		UnitOfWorkImp.newCurrent();
-		UnitOfWorkImp.getCurrent().registerNew(this);
+	//	UnitOfWork.newCurrent();
+		UnitOfWork.getCurrent().registerNew(this);
 	}
 
 	public Exam(Integer id, String title) {
 		super(id);
 		this.setTitle(title);
-		UnitOfWorkImp.newCurrent();
-		UnitOfWorkImp.getCurrent().registerNew(this);
+		UnitOfWork.newCurrent();
+		UnitOfWork.getCurrent().registerNew(this);
 	}
 
 
@@ -59,7 +58,7 @@ public class Exam extends DomainObject{
 	 */
 	public void setSubject(Subject subject) {
 		this.subject = subject;
-		UnitOfWorkImp.getCurrent().registerDirty(this);
+		UnitOfWork.getCurrent().registerDirty(this);
 	}
 
 
@@ -76,7 +75,7 @@ public class Exam extends DomainObject{
 	 */
 	public void setCreator(User creator) {
 		this.creator = creator;
-		UnitOfWorkImp.getCurrent().registerDirty(this);
+		UnitOfWork.getCurrent().registerDirty(this);
 	}
 
 
@@ -94,7 +93,7 @@ public class Exam extends DomainObject{
 	 */
 	public void setCreatedTime(String createdTime) {
 		this.createdTime = createdTime;
-		UnitOfWorkImp.getCurrent().registerDirty(this);
+		UnitOfWork.getCurrent().registerDirty(this);
 	}
 
 
@@ -111,7 +110,7 @@ public class Exam extends DomainObject{
 	 */
 	public void setUpdatedTime(Date updatedTime) {
 		this.updatedTime = updatedTime;
-		UnitOfWorkImp.getCurrent().registerDirty(this);
+		UnitOfWork.getCurrent().registerDirty(this);
 	}
 
 
@@ -128,7 +127,7 @@ public class Exam extends DomainObject{
 	 */
 	public void setTitle(String title) {
 		this.title = title;
-		UnitOfWorkImp.getCurrent().registerDirty(this);
+		UnitOfWork.getCurrent().registerDirty(this);
 	}
 
 
@@ -145,7 +144,7 @@ public class Exam extends DomainObject{
 	 */
 	public void setStatus(ExamStatus status) {
 		this.status = status;
-		UnitOfWorkImp.getCurrent().registerDirty(this);
+		UnitOfWork.getCurrent().registerDirty(this);
 	}
 
 
@@ -162,7 +161,7 @@ public class Exam extends DomainObject{
 	 */
 	public void setLocked(boolean isLocked) {
 		this.isLocked = isLocked;
-		UnitOfWorkImp.getCurrent().registerDirty(this);
+		UnitOfWork.getCurrent().registerDirty(this);
 	}
 
 	/**
@@ -177,7 +176,7 @@ public class Exam extends DomainObject{
 	 */
 	public void setQuestionList(List<Question> questionList) {
 		this.questionList = questionList;
-		UnitOfWorkImp.getCurrent().registerDirty(this);
+		UnitOfWork.getCurrent().registerDirty(this);
 	}
 
 

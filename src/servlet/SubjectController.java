@@ -16,6 +16,7 @@ import service.UserService;
 import serviceImp.SubjectServiceImp;
 import serviceImp.UserServiceImp;
 import util.ResponseHeader;
+import util.SSOLogin;
 
 /**
  * Querying all enrolled subjects.
@@ -23,7 +24,7 @@ import util.ResponseHeader;
 @WebServlet("/SubjectController")
 public class SubjectController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private UserServiceImp us = new UserServiceImp();
+	private SSOLogin ssoCheck = new SSOLogin();
 	private ResponseHeader header = new ResponseHeader();
 
 	/**
@@ -40,19 +41,13 @@ public class SubjectController extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// Checking the login session.
-		String val = us.checkLogin(request);
-		User user = new User();
-		JSONObject jsonObject = JSONObject.parseObject(val);
-	    user = JSON.toJavaObject(jsonObject,User.class);
+		// Login check.
+		User user = ssoCheck.checkLogin(request);
 		
-		 System.out.println("val: "+user.getRole()+user.getUserName());
-		
-		if(val.equals("0") || val.equals("1")) {
-			response.getWriter().write(val); // invalid session.
+		if(user == null) {
+			response.getWriter().write("false"); //invalid token.
 		}else {
-			 // finding all enrolled subjects by userId.
-			 
+			 // finding all enrolled subjects for the user.
 		     SubjectServiceImp a = new SubjectServiceImp();
 		     String subjects = a.findAllSubjectsByUserId(user.getId(), user.getRole());
 		     System.out.println("subjects； "+subjects);

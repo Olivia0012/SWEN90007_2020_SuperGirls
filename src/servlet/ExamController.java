@@ -30,16 +30,17 @@ import serviceImp.SubjectServiceImp;
 import serviceImp.UserServiceImp;
 import util.JsonToObject;
 import util.ResponseHeader;
+import util.SSOLogin;
 
 import java.io.BufferedReader;
 
 /**
- * Servlet implementation class ViewExamController
+ * GET method: find exam by examId;
+ * POST method: create new submission when a student takes an exam.
  */
 @WebServlet("/ExamController")
 public class ExamController extends HttpServlet {
 	private static final long serialVersionUID = 102831973239L;
-	private UserService us = new UserServiceImp();
 	private ResponseHeader header = new ResponseHeader();
 
 	/**
@@ -57,18 +58,17 @@ public class ExamController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		String val = us.checkLogin(request);
+		// Login check.
+		SSOLogin ssoCheck = new SSOLogin();
+		User user = ssoCheck.checkLogin(request);
 
-		if (val.equals("0") || val.equals("1")) {
-			response.getWriter().write(val); // invalid session.
+		if (user == null) {
+			response.getWriter().write("false"); // invalid token.
 		} else {
 			// finding exam by examId.
 			String data = new String(request.getParameter("examId").getBytes("ISO-8859-1"), "UTF-8");
 			int examId = Integer.valueOf(data);
 
-		//	String r = JSONObject.toJSONString(subject);
-			System.out.println("examId: "+data);
-			
 			ExamServiceImp a = new ExamServiceImp();
 			String exam = a.findExamById(examId);
 
@@ -76,122 +76,77 @@ public class ExamController extends HttpServlet {
 			response.getWriter().write(result);
 		}
 		header.setResponseHeader(response);
-		
+
 	}
 
 	/**
+	 * Create new submissions when students click the "take" exam button.
+	 * 
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		UserService us = new UserServiceImp();
+		
 		SubmissionMapper sm = new SubmissionMapper();
 		ExamMapper em = new ExamMapper();
 		ResponseHeader header = new ResponseHeader();
-		// Checking the login session.
-		String val = us.checkLogin(request);
-		User user = new User();
-		if (val.equals("0") || val.equals("1")) {
-			response.getWriter().write(val); // invalid session.
+		
+		// Login check.
+		SSOLogin ssoCheck = new SSOLogin();
+		User user = ssoCheck.checkLogin(request);
+
+		if (user == null) {
+			response.getWriter().write("false"); // invalid token.
 		} else {
-			// finding all enrolled subjects by userId.
-			JSONObject jsonObject = JSONObject.parseObject(val);
-			user = JSON.toJavaObject(jsonObject, User.class);
-			
+			// get exam from the request.
 			Exam exam = new Exam();
 			JsonToObject jo = new JsonToObject();
 			JSONObject examJsonObject = jo.ReqJsonToObject(request);
 			exam = JSON.toJavaObject(examJsonObject, Exam.class);
-			
+
+			// check if this student has taken this exam.
 			Submission checkSub = sm.FindSubmissionsByUserId_ExamId(user.getId(), exam.getId());
-			String result1 = JSONObject.toJSONString(checkSub);
-			
-			List<Question> questions = em.findById(exam.getId()).getQuestionList();
-			
-			
-			if(checkSub.getId() == 0) {
+
+			// not taken this exam before
+			if (checkSub.getId() == 0) {
+				
+				// create new submission and answers object
 				Submission newSub = new Submission();
 				newSub.setExam(exam);
 				newSub.setLock(false);
 				newSub.setStudent(user);
-				
+
 				List<Answer> answers = new ArrayList<Answer>();
+				List<Question> questions = em.findById(exam.getId()).getQuestionList();
 				
-				for(Question q: questions) {
+				for (Question q : questions) {
 					Answer an = new Answer();
 					an.setQuestion(q);
 					answers.add(an);
 				}
-				
+
 				newSub.setAnswers(answers);
-				
+
+				// add new submission and its answers into database
 				ExamServiceImp esi = new ExamServiceImp();
 				int newSubmissionId = esi.addSubmission(newSub);
-				if( newSubmissionId != 0) {
-					
+				
+				// add new submission successfully
+				if (newSubmissionId != 0) {
 					Submission newSubmission = sm.findById(newSubmissionId);
 					String result = JSONObject.toJSONString(newSubmission);
 					response.getWriter().write(result);
-				} else response.getWriter().write("0");
-			}else response.getWriter().write("1");
-			
-			
-			
-			
-
-		/*	if (examMapper.findById(submission.getExam().getId()).getStatus() != ExamStatus.PUBLISHED) {
-				response.getWriter().write("This exam is not awailable. "); // invalid session.
-			} else {
-
-				submission.setStudent(user);
-				ExamServiceImp addSubmission = new ExamServiceImp();
-				addSubmission.addSubmission(submission);
-				SubmissionMapper sm = new SubmissionMapper();
-				Submission newSub = sm.findByStudentId(user.getId());
-				String result = JSONObject.toJSONString(newSub);
-				response.getWriter().write(result);
-			}*/
+				} else
+					response.getWriter().write("0");
+			} else
+				response.getWriter().write("1");
 
 		}
-		
+
 		header.setResponseHeader(response);
 	}
 
-	public String readJSONString(HttpServletRequest request) {
-		String param = null;
-		try {
-			BufferedReader streamReader = new BufferedReader(new InputStreamReader(request.getInputStream(), "UTF-8"));
-			StringBuilder responseStrBuilder = new StringBuilder();
-			String inputStr;
-			while ((inputStr = streamReader.readLine()) != null)
-				responseStrBuilder.append(inputStr);
 
-			JSONObject jsonObject = JSONObject.parseObject(responseStrBuilder.toString());
-			param = jsonObject.toJSONString();
-			System.out.println(param);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return param;
-
-	}
-
-	/**
-	 * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
-	 */
-	protected void doPut(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-	}
-
-	/**
-	 * @see HttpServlet#doDelete(HttpServletRequest, HttpServletResponse)
-	 */
-	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-	}
 
 }

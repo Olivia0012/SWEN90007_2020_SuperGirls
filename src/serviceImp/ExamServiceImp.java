@@ -19,6 +19,7 @@ import mapper.SubmissionMapper;
 import mapper.UserMapper;
 import service.ExamService;
 import shared.IdentityMap;
+import shared.UnitOfWork;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -119,8 +120,10 @@ public class ExamServiceImp implements ExamService {
 	//Adding new exam (only title) for a subject
 	@Override
 	public String addNewExam(Exam exam) {
-		examMapper.insert(exam);
-		return "OK";
+		UnitOfWork.newCurrent();
+		int examId = examMapper.insert(exam);
+		UnitOfWork.getCurrent().registerNew(exam);
+		return examId+"";
 	}
 
 	@Override
@@ -143,14 +146,13 @@ public class ExamServiceImp implements ExamService {
 		return true;
 	}
 	
+	/**
+	 * Finding submission by its id
+	 */
 	@Override
-	public String findSubmissionById(int submissionId) {
-		
+	public Submission findSubmissionById(int submissionId) {
 		Submission s = sm.findById(submissionId);
-		List<Answer> answers = am.findAnswersBySubmissionId(submissionId);
-		s.setAnswers(answers);
-		String result = JSONObject.toJSONString(s);
-		return result;
+		return s;
 	}
 
 	@Override
@@ -178,8 +180,12 @@ public class ExamServiceImp implements ExamService {
 	public boolean takeExam(Submission submission) {
 		sm.update(submission);
 		AnswerMapper am = new AnswerMapper();
+		if(submission.getAnswers().size() > 0)
 		for(Answer an: submission.getAnswers()) {
 			am.update(an);
+		}
+		else {
+			am.delete(submission);
 		}
 		return true;
 	}

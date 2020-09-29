@@ -20,6 +20,7 @@ import domain.Question;
 import domain.Submission;
 import domain.User;
 import shared.IdentityMap;
+import shared.UnitOfWork;
 
 /**
  * @author manlo
@@ -122,8 +123,36 @@ public class AnswerMapper extends DataMapper{
 
 	@Override
 	public Boolean delete(DomainObject obj) {
-		// TODO Auto-generated method stub
-		return null;
+		UnitOfWork.newCurrent();
+		Submission submission = (Submission) obj;
+		AnswerMapper answerMapper = new AnswerMapper();
+		List<Answer> answers = answerMapper.findAnswersBySubmissionId(submission.getId());
+
+		String deleteAnswersStm = "DELETE FROM answer WHERE submissionid = ?";
+
+		try {
+			PreparedStatement stmt = DatabaseConnection.prepare(deleteAnswersStm);
+			stmt.setInt(1, submission.getId());
+			stmt.executeUpdate();
+
+			for(Answer an: answers) {
+				IdentityMap<Answer> answerMap = IdentityMap.getInstance(an);
+				Answer examInMap = answerMap.get(an.getId());
+				if (examInMap != null) {
+					answerMap.put(an.getId(), null);
+				}
+			}
+		
+			UnitOfWork.getCurrent().commit();
+			stmt.close();
+			return true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		} finally {
+			DatabaseConnection.closeConnection();
+		}
 	}
 
 	@Override
@@ -138,6 +167,7 @@ public class AnswerMapper extends DataMapper{
 		String queryAnswerStm = "SELECT * FROM answer WHERE submissionid = ?"; // query all subjects
 		IdentityMap<Answer> answerMap = IdentityMap.getInstance(answer);
 		QuestionMapper questionMapper = new QuestionMapper();
+		ExamMapper examMapper = new ExamMapper();
 		
 		try {
 			PreparedStatement stmt = DatabaseConnection.prepare(queryAnswerStm);
@@ -153,11 +183,6 @@ public class AnswerMapper extends DataMapper{
 				Float mark = rs.getFloat(6);
 				Integer submissionid = rs.getInt(7);
 				
-				
-			//	Exam exam = examMapper.findById(examid);
-				
-			//	exam.setId(examId);
-			//	User student = userMapper.findById(studentid);
 				Question q = questionMapper.findById(questionid);
 				
 				answer = new Answer(id,sanswer, q,mark,submissionid) ;
@@ -184,6 +209,8 @@ public class AnswerMapper extends DataMapper{
 		return result;
 		
 	}
+
+
 	
 	
 

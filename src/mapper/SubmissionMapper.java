@@ -387,14 +387,15 @@ public class SubmissionMapper extends DataMapper {
 				String subTime = rs.getString(8);
 				String comment = rs.getString(9);
 
-				Exam exam = examMapper.findById(examid);
+			//	Exam exam = examMapper.findById(examid);
+				List<Answer> answers = answerMapper.findAnswersBySubmissionId(id);
 
 				// exam.setId(examId);
 				User student = userMapper.findById(studentid);
 				User marker = userMapper.findById(markerid);
 
-				submission = new Submission(id, exam, student, totalmark, comment, marker, marktime, subTime, isLocked,
-						null);
+				submission = new Submission(id, null, student, totalmark, comment, marker, marktime, subTime, isLocked,
+						answers);
 				result.add(submission);
 			}
 

@@ -1,7 +1,5 @@
 package serviceImp;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -29,10 +27,20 @@ public class UserServiceImp implements UserService {
 		if (allcookie != null) {
 		    for (i = 0; i < allcookie.length; i++) {
 		        Cookie temp = allcookie[i];
-		        // checking the token
-		        if (temp.getName().equals("token")) {
-		        	String s = temp.getValue();
-		        	User user = userMapper.findById(Integer.valueOf(s));
+		        String s = "";
+		        User user = new User();
+		        // checking the tokens of student and instructor
+		        if (temp.getName().equals("tokenIns")) {
+		        	s = temp.getValue();
+		        	user = userMapper.findById(Integer.valueOf(s));
+		        	result = JSONObject.toJSONString(user);
+		        	System.out.println("checklogin: " + user.getRole()+user.getUserName());
+		            break;
+		        }
+		        
+		        if(temp.getName().equals("tokenStu")) {
+		        	s = temp.getValue();
+		        	user = userMapper.findById(Integer.valueOf(s));
 		        	result = JSONObject.toJSONString(user);
 		        	System.out.println("checklogin: " + user.getRole()+user.getUserName());
 		            break;
