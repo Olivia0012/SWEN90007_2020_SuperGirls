@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
 
 const StudentListView = () => {
 	const classes = useStyles();
-	const [ data, setData ] = useState([]);
+	const [ data, setData ] = useState();
 	const [ isLoading, setLoading ] = useState(false);
 	const routeResult = useRoutes(routes);
 	console.log(routeResult.props.value.params.subject);
@@ -40,13 +40,13 @@ const StudentListView = () => {
 
 	console.log(data);
 	return (
-		<Page className={classes.root} title="Customers">
-			{!isLoading ? (
+		<Page className={classes.root} title="Subjects">
+			{!isLoading && data ? (
 				<Container maxWidth={false}>
-					<Toolbar />
+					<Toolbar subject={data.subject} exam={data.exam}/>
 					{//data.map((item) => (
 						<Box mt={3}>
-							<Results  customers={data} />
+							<Results  customers={data.submissions} />
 						</Box>
 					//))
 				}

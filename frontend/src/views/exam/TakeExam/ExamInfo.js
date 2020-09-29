@@ -25,7 +25,7 @@ const ExamInfo = (props) => {
 			<Card>
 				<CardHeader
 					action={
-						<Typography color="textPrimary" gutterBottom variant="h5">
+						<Typography color="primary" gutterBottom variant="h5">
 							{examInfo.status}
 						</Typography>
 					}

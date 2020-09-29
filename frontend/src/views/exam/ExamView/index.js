@@ -97,6 +97,7 @@ const Exam = () => {
 			console.log(result);
 			setData(JSON.parse(result.data));
 			const a = JSON.parse(result.data);
+			console.log(JSON.parse(result.data));
 			setQuestionList(JSON.parse(result.data).questionList);
 			var readyData = {
 				subjectCode: a.subject.subjectCode,
@@ -148,7 +149,7 @@ const Exam = () => {
 			});
 	};
 
-	const handlePublish =  async () => {
+	const handlePublish = async () => {
 		setLoading(true);
 		await setExamStatus(data.id)
 			.then(() => {
@@ -175,17 +176,28 @@ const Exam = () => {
 							</Button>
 						</Grid>
 						<Grid item xs={1}>
-							<Button color="primary" variant="outlined" fullWidth onClick={handleEdit}>
-								Edit
-							</Button>
+							{data.status === 'RELEASED' ? (
+								<div />
+							) : (
+								<Button color="primary" variant="contained" fullWidth onClick={handleEdit}>
+									Edit
+								</Button>
+							)}
 						</Grid>
 						<Grid item xs={2}>
-							{
-								data.status === 'RELEASED'?(<div/>):(<Button color="primary" variant="contained" fullWidth onClick={handlePublish}>
-								{data.status === 'CLOSED'? 'release':(data.status === 'PUBLISHED'? 'close':'Publish')}
-								</Button>)
-							}
-							
+							{data.status === 'RELEASED' ? (
+								<div />
+							) : (
+								<Button color="primary" variant="contained" fullWidth onClick={handlePublish}>
+									{data.status === 'CLOSED' ? (
+										'release'
+									) : data.status === 'PUBLISHED' ? (
+										'close'
+									) : (
+										'Publish'
+									)}
+								</Button>
+							)}
 						</Grid>
 					</Grid>
 					<Box p={1} />
@@ -200,11 +212,7 @@ const Exam = () => {
 									return (
 										<div key={index}>
 											<Box p={1} />
-											<QuestionCard
-												value={index}
-												question={nq}
-												handleQuestion={handleQuestion}
-											/>
+											<QuestionCard value={index} question={nq} handleQuestion={handleQuestion} />
 										</div>
 									);
 							})

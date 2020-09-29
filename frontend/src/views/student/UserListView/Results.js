@@ -77,7 +77,6 @@ const Results = ({ className, customers, ...rest }) => {
 		setPage(newPage);
 	};
 
-
 	return (
 		<Card className={clsx(classes.root, className)} {...rest}>
 			<PerfectScrollbar>
@@ -85,6 +84,14 @@ const Results = ({ className, customers, ...rest }) => {
 					<Table>
 						<TableHead>
 							<TableRow>
+								<TableCell padding="checkbox" />
+								<TableCell />
+								<TableCell align="center" colSpan={3}>
+									Exam
+								</TableCell>
+								<TableCell align="center" />
+							</TableRow>
+							<TableRow align="center">
 								<TableCell padding="checkbox">
 									<Checkbox
 										checked={selectedCustomerIds.length === customers.length}
@@ -97,18 +104,10 @@ const Results = ({ className, customers, ...rest }) => {
 									/>
 								</TableCell>
 								<TableCell>Student Name</TableCell>
-								<TableCell align="center" colSpan={3}>
-									Exam
-								</TableCell>
-								<TableCell align="center">Action</TableCell>
-							</TableRow>
-							<TableRow align="center">
-								<TableCell padding="checkbox" />
-								<TableCell rowSpan={1} />
-								<TableCell colSpan={1} align="center">Total Mark</TableCell>
+								<TableCell align="center">Total Mark</TableCell>
 								<TableCell align="center">Comment</TableCell>
 								<TableCell align="center">Marker</TableCell>
-								<TableCell />
+								<TableCell align="center">Action</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
@@ -132,15 +131,31 @@ const Results = ({ className, customers, ...rest }) => {
 											</Typography>
 										</Box>
 									</TableCell>
-									<TableCell align="center">{customer.submissions[0].id !==0? customer.submissions[0].totalMark:"-"}</TableCell>
-									<TableCell align="center">{customer.submissions[0].id !==0 && customer.submissions[0].comment? customer.submissions[0].comment:"-"}</TableCell>
-									<TableCell align="center">{customer.submissions[0].id !==0 && customer.submissions[0].marker? customer.submissions[0].marker.userName:"-"}</TableCell>
 									<TableCell align="center">
-										{ customer.submissions[0].id !== 0?
-										(<Button href={"./submission="+customer.submissions[0].id} color="primary" >
-											{customer.submissions[0].totalMark == 0? 'Mark' : 'View'}
-										</Button>):(<div>-</div>)
-										}
+										{customer.submissions[0].id !== 0 ? customer.submissions[0].totalMark : '-'}
+									</TableCell>
+									<TableCell align="center">
+										{customer.submissions[0].id !== 0 && customer.submissions[0].comment ? (
+											customer.submissions[0].comment
+										) : (
+											'-'
+										)}
+									</TableCell>
+									<TableCell align="center">
+										{customer.submissions[0].id !== 0 && customer.submissions[0].marker ? (
+											customer.submissions[0].marker.userName
+										) : (
+											'-'
+										)}
+									</TableCell>
+									<TableCell align="center">
+										{customer.submissions[0].id !== 0 ? (
+											<Button href={'./submission=' + customer.submissions[0].id} color="primary">
+												{customer.submissions[0].totalMark == 0 ? 'Mark' : 'View'}
+											</Button>
+										) : (
+											<div>-</div>
+										)}
 									</TableCell>
 								</TableRow>
 							))}

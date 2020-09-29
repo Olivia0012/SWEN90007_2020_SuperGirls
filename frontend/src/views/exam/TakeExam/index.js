@@ -3,7 +3,7 @@ import { Box, Button, Container, makeStyles, Grid, Card, CardHeader, CardContent
 import Page from 'src/components/Page';
 import ExamInfo from './ExamInfo';
 import QuestionCard from './QuestionCard';
-import { submitExam, getExams } from '../../../api/examAPI';
+import { submitExam, deleteAnswers } from '../../../api/examAPI';
 import routes from 'src/routes';
 import { useRoutes } from 'react-router-dom';
 import Loading from '../../../utils/loading';
@@ -39,9 +39,9 @@ const TakeExam = () => {
 		const fetchData = async () => {
 			setLoading(true);
 			const result = await getSubmission(submissionId);
-			console.log(JSON.parse(result.data));
-			setOriAnswers(JSON.parse(result.data).answers);
-			setData(JSON.parse(result.data));
+		//	console.log(JSON.parse(result.data));
+			setOriAnswers(result.data.answers);
+			setData(result.data);
 			setLoading(false);
 		};
 		fetchData();
@@ -66,22 +66,38 @@ const TakeExam = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setLoading(true);
-		console.log(answers);
-
-		await submitExam(data)
+		const examStatusCheck = await getSubmission(submissionId);
+		if(examStatusCheck.data.exam.status == 'CLOSED'){
+			alert("Failed to submit because the exam has been closed.");
+			data.subTime = '';
+			data.answers = [];
+			await submitExam(data)
 			.then((a) => {
 				setLoading(false);
-				alert("Submitted Successfully.");
-				window.location.href = './subjects';
+				window.location.href = '../subjects';
 			})
 			.catch((error) => {
 				setLoading(false);
 				alert('Error from processDataAsycn() with async( When promise gets rejected ): ' + error);
 			});
+		}else{
+			data.subTime = moment().format('YYYY-MM-DD HH:mm:ss');
+			await submitExam(data)
+			.then((a) => {
+				setLoading(false);
+				alert("Submitted Successfully.");
+				window.location.href = '../subjects';
+			})
+			.catch((error) => {
+				setLoading(false);
+				alert('Error from processDataAsycn() with async( When promise gets rejected ): ' + error);
+			});
+		}
+		
 	};
 
 	return (
-		<Page className={classes.root} title="Exam">
+		<Page className={classes.root} title="TakeExam">
 			{!isLoading ? (
 				<Container maxWidth="lg">
 					<Box p={1} />

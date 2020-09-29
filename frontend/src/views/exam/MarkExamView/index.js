@@ -15,6 +15,7 @@ import Page from 'src/components/Page';
 import SubmissionInfo from './SubmissionInfo';
 import QuestionCard from './QuestionCard';
 import { getSubmission, markExam } from '../../../api/instructorAPI';
+import {viewResult} from '../../../api/examAPI';
 import routes from 'src/routes';
 import { useRoutes } from 'react-router-dom';
 import Loading from '../../../utils/loading';
@@ -41,17 +42,21 @@ const MarkExamView = () => {
 	const [ submissionInfo, setSubmissionInfo ] = React.useState('');
 	const routeResult = useRoutes(routes);
 	const id = routeResult.props.value.params.submission;
+	const examId = routeResult.props.value.params.examId;
 
 	const [ answers, setAnswers ] = React.useState([]);
 
 	useEffect(() => {
 		const fetchData = async () => {
 			setLoading(true);
-			const result = await getSubmission(id);
-			console.log(JSON.parse(result.data));
-			const a = JSON.parse(result.data);
-			setData(JSON.parse(result.data));
-			setAnswers(JSON.parse(result.data).answers);
+			let result = {};
+			if(typeof id !== 'undefined'){
+				result = await getSubmission(id);
+			} else result = await viewResult(examId);
+			console.log(result.data);
+			const a = result.data;
+			setData(result.data);
+			setAnswers(result.data.answers);
 			var readyData = {
 				subjectCode: a.exam.subject.title,
 				subjectTitle: a.exam.subject.subjectCode,
@@ -126,6 +131,7 @@ const MarkExamView = () => {
 									handleMark={handleMark}
 									question={nq.question}
 									answer={nq}
+									marker={data.marker}
 								/>
 							</div>
 						);

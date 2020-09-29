@@ -20,7 +20,7 @@ export async function getExams(examId) {
 	return dataFetched;
 }
 
-export async function getSubjectsByUserId(user) {
+export async function getSubjectsByUserId(token) {
 	const endpoint = "/subject"; //subjectId=`+subjectId;
 	const dataFetched = await axios({
 		url: endpoint, // send a request to the library API
@@ -28,7 +28,8 @@ export async function getSubjectsByUserId(user) {
 		method: 'GET',
 		headers: {
 			'withCredentials' : true,
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
+		//	'token':token
 		}
 	});
 	console.log(dataFetched);
@@ -72,7 +73,8 @@ export async function addNewExam(newExam) {
 		method: 'POST', // HTTP POST method
 		mode:'cors',
 		headers: {
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
+			'token':localStorage.getItem("token")
 		},
 		data: JSON.stringify(newExam),
 	});
@@ -175,3 +177,25 @@ export async function addSubmission(submission) {
 	console.log(dataFetched);
 	return dataFetched;
 }
+
+export async function viewResult(examId) {
+	//	const endpoint = '/subject?userName=Edu&passWord=111';//?userId='+userId;//subjectId=`+subjectId;
+	const endpoint = '/examResult?examId='+examId;
+	const dataFetched = await axios({
+		url: endpoint, // send a request to the library API
+		//		method: "POST", // HTTP POST method
+		method: 'GET',
+		mode: 'cors',
+		//请求时添加Cookie
+		credentials: 'include',
+		crossDomain: true,
+		headers: {
+			'Content-Type': 'application/json',
+			'token':localStorage.getItem("token")
+			//  "Access-Control-Allow-Origin": "http://localhost:8080",
+		}
+	});
+	console.log(dataFetched);
+	return dataFetched;
+}
+

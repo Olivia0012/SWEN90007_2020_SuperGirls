@@ -71,6 +71,7 @@ const ResultsforStudent = ({ className, customers, ...rest }) => {
 	const handleTakeExam = async (status,exam,subjectId) => {
 		if(status == 'PUBLISHED'){
 			exam.creator=null;
+			exam.subject.id = subjectId;
 			await addSubmission(exam).then((data) => {
 				if(data.data == 1){
 					alert("You've already taken this exam.")
@@ -89,7 +90,7 @@ const ResultsforStudent = ({ className, customers, ...rest }) => {
 			});
 			
 		}else{
-			await getSubmission()
+			window.location.href="./viewResult/examId="+exam.id;
 		}
 	}
 

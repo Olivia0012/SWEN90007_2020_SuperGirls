@@ -5,8 +5,8 @@ import Results from './Results';
 import ResultsforStudent from './ResultsforStudent';
 import Toolbar from './Toolbar';
 import Loading from '../../../utils/loading';
-import { getSubjectsByUserId } from '../../../api/examAPI';
-import { useRoutes } from 'react-router-dom';
+import { getSubjectsByUserId } from '../../../api/instructorAPI';
+import { useNavigate, useLocation, useRoutes } from 'react-router-dom';
 import routes from 'src/routes';
 
 const useStyles = makeStyles((theme) => ({
@@ -25,38 +25,47 @@ const useStyles = makeStyles((theme) => ({
 export const SubjectContext = createContext();
 
 const SubjectListView = () => {
-	const routeResult = useRoutes(routes);
+	const navigate = useNavigate();
 	const classes = useStyles();
 	const [ data, setData ] = useState([]);
 	const [ isLoading, setLoading ] = useState(false);
 	const [ subjects, setSubjects ] = useState();
+	const location = useLocation();
+	const routeResult = useRoutes(routes);
+
+	console.log(location);
+	console.log(routeResult);
 
 	useEffect(() => {
 		const fetchData = async () => {
 			setLoading(true);
-			const session = routeResult.props.value.params.user;
-			console.log(session);
-			const subjects = await getSubjectsByUserId(session);
-			const result = subjects.data;
-			// if the user is a student
-			if(subjects.data.user.role == 'STUDENT'){
-				console.log(subjects.data);
-				subjects.data.subjects.map((subject) => {
-					for(var i=subject.exams.length-1;i>=0;i--){
-						console.log(i+'='+subject.exams[i]);
-						if(subject.exams[i].status !=='PUBLISHED' && subject.exams[i].status !=='RELEASED' ){
-							subject.exams.splice(i,1);
+		//	const token = location.state.token;
+			const subjects = await getSubjectsByUserId().then((response) => {
+				console.log(response);
+				const result = response.data;
+				if(response.data == false){
+					alert("Please login to continue.");
+					window.location.href="../";
+				}
+				// if the user is a student
+				if (response.data.user.role == 'STUDENT') {
+					console.log(response.data);
+					response.data.subjects.map((subject) => {
+						for (var i = subject.exams.length - 1; i >= 0; i--) {
+							console.log(i + '=' + subject.exams[i]);
+							if (subject.exams[i].status !== 'PUBLISHED' && subject.exams[i].status !== 'RELEASED') {
+								subject.exams.splice(i, 1);
+							}
 						}
-					}
-				})
+					});
+				}
 
-			}
-
-			setData(subjects.data);
-			setSubjects(result);
-			setLoading(false);
-			console.log(subjects.data);
-			console.log(isLoading);
+				setData(response.data);
+				setSubjects(response.data.subjects);
+				setLoading(false);
+				console.log(response.data);
+				console.log(isLoading);
+			});
 		};
 
 		fetchData();
@@ -65,17 +74,19 @@ const SubjectListView = () => {
 	console.log(data);
 
 	return (
-		<Page className={classes.root} title="Customers">
+		<Page className={classes.root} title="Subjects">
 			<Container maxWidth={false}>
-				<Toolbar userName={data.user? data.user.userName:''}/>
+				<Toolbar userName={data.user ? data.user.userName : ''} />
 				{!isLoading ? (
 					<SubjectContext.Provider value={(subjects, setSubjects)}>
 						<Box mt={3}>
-							{typeof data.user !== 'undefined'? data.user.role === 'INSTRUCTOR' ? (
+							{typeof data.user !== 'undefined' ? data.user.role === 'INSTRUCTOR' ? (
 								<Results customers={data.subjects} />
 							) : (
 								<ResultsforStudent customers={data.subjects} />
-							):(<div/>)}
+							) : (
+								<div />
+							)}
 						</Box>
 					</SubjectContext.Provider>
 				) : (

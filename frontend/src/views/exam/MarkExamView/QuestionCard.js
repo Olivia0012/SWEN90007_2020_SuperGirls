@@ -41,25 +41,24 @@ const useStyles = makeStyles({
 	}
 });
 
-function QuestionCard (props){
+function QuestionCard(props) {
 	const classes = useStyles();
 	const [ isLoading, setLoading ] = React.useState(false);
-//	const question = useContext(QuestionContent);
-//	let choices = [];
-//	choices = question.question.choices;
-	
+	//	const question = useContext(QuestionContent);
+	//	let choices = [];
+	//	choices = question.question.choices;
 
-	const { handleMark, value, question, answer} = props;
-	
+	const { handleMark, value, question, answer, marker } = props;
+
 	const c = parseInt(answer.anwer);
 
-	console.log(c===1?true:false);
+	console.log(c === 1 ? true : false);
 
 	const handleChange = (event) => {
 		const curMark = event.target.value;
-		handleMark(value,curMark);
-	}
-	
+		handleMark(value, curMark);
+	};
+
 	return !isLoading ? (
 		<Card>
 			<CardHeader
@@ -67,7 +66,8 @@ function QuestionCard (props){
 					<TextField
 						label="Mark"
 						onChange={handleChange}
-						disabled={answer.answer}
+						//	placeholder={answer.mark}
+						disabled={marker}
 						defaultValue={answer.mark}
 						id="standard-start-adornment"
 						className={clsx(classes.margin, classes.textField)}
@@ -78,7 +78,7 @@ function QuestionCard (props){
 						}}
 					/>
 				}
-				title={'Question' + question.questionNum + ' : ' + question.questionDescription}
+				title={'Question' + (value + 1) + ' : ' + question.questionDescription}
 			/>
 			<Divider />
 			<CardContent>
@@ -107,7 +107,7 @@ function QuestionCard (props){
 											<RadioGroup
 												aria-label="gender"
 												name="gender1"
-												value={answer.answer==index? index:''}
+												value={answer.answer == index ? index : ''}
 											>
 												<FormControlLabel value={index} control={<Radio />} label={choice} />
 											</RadioGroup>
@@ -126,7 +126,7 @@ function QuestionCard (props){
 	) : (
 		<Loading isLoading={isLoading} />
 	);
-};
+}
 
 QuestionCard.propTypes = {
 	className: PropTypes.string

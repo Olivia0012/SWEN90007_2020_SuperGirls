@@ -6,6 +6,8 @@ import { Box, Button, Container, Grid, Link, TextField, Typography, makeStyles }
 import Page from 'src/components/Page';
 import { login } from '../../api/instructorAPI';
 
+export let token = "";
+
 const useStyles = makeStyles((theme) => ({
 	root: {
 		backgroundColor: theme.palette.background.dark,
@@ -24,19 +26,30 @@ export let loginUser = {
 const LoginView = () => {
 	const classes = useStyles();
 	const navigate = useNavigate();
+	
 
 	const handleSubmit = async (auth) => {
-		console.log(auth.email, auth.password);
-		const userInfo = await login(auth.email, auth.password);
-		if(userInfo.data !== false){
-			const a = {avatar: '/static/images/avatars/avatar_6.png', jobTitle: userInfo.data.role, name: auth.email, sessionId: userInfo.data.sessionId };
-			loginUser = a;
-			navigate('/oea/name='+ auth.email + '&role=' + userInfo.data.role, {
-				replace: true
-			});
-		}else{
-			alert("Username or password is not correct, please try again.")
-		}
+	//	let token;
+		await login(auth.email, auth.password)//.then(response=>{
+		/*	token = response.headers.token;
+			const userInfo = response;
+			console.log(token);
+			console.log(response.data);
+			if(response.data !== false){
+				const authUser = {
+					token:token,
+					user: userInfo.data
+				};
+				navigate('./oea', {
+					replace: true, state: authUser
+				});
+			//	window.location.href="./oea";
+			}else{
+				alert("Username or password is not correct, please try again.")
+			}
+		});*/
+
+		
 		
 	};
 
@@ -44,7 +57,7 @@ const LoginView = () => {
 		<Page className={classes.root} title="Login">
 			<Box display="flex" flexDirection="column" height="100%" justifyContent="center">
 				<Container maxWidth="sm">
-					<Box mb={8}>
+					<Box mb={6}>
 						<Typography align="center" color="primary" variant="h1">
 							Online Exam Application
 						</Typography>
@@ -61,7 +74,6 @@ const LoginView = () => {
 						onSubmit={(auth) => handleSubmit(auth)}
 					>
 						{({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
-							console.log(isSubmitting),
 							(
 								<form onSubmit={handleSubmit}>
 									<Box mb={1}>

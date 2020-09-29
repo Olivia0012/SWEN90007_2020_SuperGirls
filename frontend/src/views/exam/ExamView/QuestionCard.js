@@ -125,7 +125,7 @@ const QuestionCard = (props) => {
 		<Card>
 			<Collapse in={!editable}>
 				<CardHeader
-					title={'Question ' + question.questionNum + ' : ' + question.questionDescription}
+					title={'Question ' + (value+1) + ' : ' + question.questionDescription}
 				/>
 			</Collapse>
 			<Collapse in={editable}>
@@ -134,7 +134,7 @@ const QuestionCard = (props) => {
 						<Grid container>
 							<Grid item xs={2} lg={1}>
 								<Typography color="textPrimary" gutterBottom variant="h5">
-									{'Question ' + question.questionNum + ' : '}
+									{'Question ' + (value+1) + ' : '}
 								</Typography>
 							</Grid>
 							<Grid item xs={9} lg={10}>

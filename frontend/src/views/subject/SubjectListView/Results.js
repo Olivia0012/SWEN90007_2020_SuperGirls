@@ -4,11 +4,14 @@ import PropTypes from 'prop-types';
 import { addNewExam } from '../../../api/examAPI';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { useNavigate } from 'react-router-dom';
+import { green } from '@material-ui/core/colors';
+import moment from 'moment';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import {
 	Link,
 	Box,
 	Card,
-	Checkbox,
+	IconButton,
 	Table,
 	TableBody,
 	TableCell,
@@ -115,21 +118,24 @@ const Results = ({ className, customers, ...rest }) => {
 			setLoading(true);
 			//	alert("Adding new exam!");
 			const newExam = {
-				createdTime: '2020-09-21:04:14:30',
+				createdTime: moment().format('YYYY-MM-DD HH:mm:ss')+"",
 				updatedTime: '',
 				creator: { id: 4, passWord: '', userName: '', role: '' },
 				id: -1,
-				locked: false,
+				isLocked: false,
 				questionList: [],
-				status: 'CREATED',
+				status: "CREATED",
 				subject: { id: subject.id, title: '', subjectCode: '' },
 				title: values.title
 			};
 			const a = await addNewExam(newExam)
-				.then(() => {
+				.then((res) => {
 					setLoading(false);
+					if(res.data == false){
+						alert("Invalid session,Please login to continuee.");
+						window.location.href = '../';
+					}
 					setOpenGreen(true);
-					//	alert("adding...");
 				})
 				.catch((error) => {
 					setLoading(false);
@@ -151,9 +157,10 @@ const Results = ({ className, customers, ...rest }) => {
 								<TableCell />
 								<TableCell />
 								<TableCell />
-								<TableCell align="center" colSpan={5}>
+								<TableCell align="center" colSpan={3}>
 									Exams
 								</TableCell>
+								<TableCell />
 								<TableCell />
 							</TableRow>
 							<TableRow>
@@ -162,8 +169,8 @@ const Results = ({ className, customers, ...rest }) => {
 								<TableCell>New Exam</TableCell>
 								<TableCell align="center">Title</TableCell>
 								<TableCell>Status</TableCell>
-								<TableCell >Creator</TableCell>
-								<TableCell>CreatedTime</TableCell>
+								<TableCell>Creator</TableCell>
+								<TableCell >CreatedTime</TableCell>
 								<TableCell>Students</TableCell>
 							</TableRow>
 						</TableHead>
@@ -185,18 +192,16 @@ const Results = ({ className, customers, ...rest }) => {
 													</Box>
 												</TableCell>
 												<TableCell>{index == 0 ? customer.title : ''}</TableCell>
-												<TableCell >
-													{index == 0 ? (
-														<Button
-															color="primary"
-															variant="contained"
-															onClick={(event) => handleOpen(event, customer)}
-														>
-															Add
-														</Button>
-													) : (
-														<div />
-													)}
+												<TableCell align="center">
+													<IconButton
+														color="secondary"
+														aria-label="add an alarm"
+														style={{ width: 50 }}
+														onClick={(event) => handleOpen(event, customer)}
+													>
+														<AddCircleOutlineIcon style={{ color: green[500] }} />
+													</IconButton>
+													<div />
 												</TableCell>
 												<TableCell align="center">
 													<Link href={'./exam/id=' + item.id}>{item.title}</Link>
@@ -208,7 +213,7 @@ const Results = ({ className, customers, ...rest }) => {
 												<TableCell>
 													<Button
 														color="primary"
-														variant="contained"
+														//	variant="contained"
 														onClick={() =>
 															navigate(
 																'/oea/students/subject=' +

@@ -1,69 +1,41 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  TextField,
-  InputAdornment,
-  SvgIcon,
-  makeStyles,
-  Typography
-} from '@material-ui/core';
-import { Search as SearchIcon } from 'react-feather';
+import { Box, Button, Card, CardContent, CardHeader, Divider, makeStyles, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
-  root: {},
-  importButton: {
-    marginRight: theme.spacing(1)
-  },
-  exportButton: {
-    marginRight: theme.spacing(1)
-  }
+	root: {},
+	importButton: {
+		marginRight: theme.spacing(1)
+	},
+	exportButton: {
+		marginRight: theme.spacing(1)
+	}
 }));
 
-const Toolbar = ({ className, ...rest }) => {
-  const classes = useStyles();
+const Toolbar = (props, { className, ...rest }) => {
+	const classes = useStyles();
+	const { subject, exam } = props;
 
-  return (
-    <div
-      className={clsx(classes.root, className)}
-      {...rest}
-    >
-      <Box
-        display="flex"
-        justifyContent="flex-end"
-      >
-        <Button className={classes.importButton}>
-          Import
-        </Button>
-        <Button className={classes.exportButton}>
-          Export
-        </Button>
-        <Button
-          color="primary"
-          variant="contained"
-        >
-          Add 
-        </Button>
-      </Box>
-      <Box mt={3}>
-        <Card>
-          <CardContent>
-            <Box maxWidth={500}>
-              <Typography>Subject Code + title</Typography>
-            </Box>
-          </CardContent>
-        </Card>
-      </Box>
-    </div>
-  );
+	return (
+		<div className={clsx(classes.root, className)} {...rest}>
+			<Box mt={3}>
+				<Card>
+					<CardHeader title={subject.title + ' - ' + subject.subjectCode} />
+					<Divider />
+					<CardContent>
+						<Typography color="textPrimary" gutterBottom variant="body1">
+							Exam Title : {exam}
+						</Typography>
+					</CardContent>
+				</Card>
+			</Box>
+		</div>
+	);
 };
 
 Toolbar.propTypes = {
-  className: PropTypes.string
+	className: PropTypes.string
 };
 
 export default Toolbar;

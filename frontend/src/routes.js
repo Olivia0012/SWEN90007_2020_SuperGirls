@@ -11,16 +11,6 @@ import TakeExam from './views/exam/TakeExam';
 
 const routes = [
   {
-    path: 'oea/name=:name&role=:role',
-    element: <DashboardLayout />,
-   /* children: [
-      { path: './subjects', element: <SubjectListView /> },
-      { path: './students', element: <StudentListView /> },
-      { path: './exams', element: <EditExam /> },
-      { path: `./exam/id=:id`, element: <Exam />},
-    ]*/
-  },
-  {
     path: '/oea',
     element: <DashboardLayout />,
     children: [
@@ -30,6 +20,7 @@ const routes = [
       { path: `/exam/id=:id`, element: <Exam />},
       { path: `/students/submission=:submission`, element: <MarkExamView />},
       { path: `/takeExam/submission=:submission&subject=:subject`, element: <TakeExam />},
+      { path: `/viewResult/examId=:examId`, element: <MarkExamView />},
     ]
   },
   {
