@@ -4,6 +4,7 @@ axios.defaults.withCredentials = true;
 //login
 export async function login(username, password) {
 	let storage = window.localStorage;
+	storage.setItem('token', null);
 	const endpoint = '/login?userName=' + username + '&passWord=' + password; //subjectId=`+subjectId;
 	const dataFetched = await axios({
 		url: endpoint, // send a request to the library API
