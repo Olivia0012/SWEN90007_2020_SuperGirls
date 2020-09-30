@@ -55,7 +55,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
  
   
   const [user,setUser] = React.useState({
-    avatar: '/static/images/avatars/avatar_3.png',//location.state.user.userName === 'Edu'?'/static/images/avatars/avatar_3.png':'/static/images/avatars/avatar_6.png',
+    avatar: '/static/images/avatars/avatar_6.png',//location.state.user.userName === 'Edu'?'/static/images/avatars/avatar_3.png':'/static/images/avatars/avatar_6.png',
 	  jobTitle: '',//location.state.user.role,
 	  name:'',// location.state.user.userName,
     });
