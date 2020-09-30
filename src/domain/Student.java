@@ -1,11 +1,11 @@
 package domain;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import enumeration.Role;
+import mapper.QuestionMapper;
+import mapper.SubmissionMapper;
 
 public class Student extends User{
 	
@@ -27,6 +27,9 @@ public class Student extends User{
 	 * @return the submissions
 	 */
 	public List<Submission> getSubmissions() {
+		if(submissions == null) {
+			load();
+		}
 		return submissions;
 	}
 
@@ -39,7 +42,18 @@ public class Student extends User{
 	}
 
 
-	
+	void load() {
+		try {
+			SubmissionMapper submissionMapper = new SubmissionMapper();
+			List<Submission> submissionList = submissionMapper.findByStudentId(Id);
+			submissions = submissionList;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
 
 
 

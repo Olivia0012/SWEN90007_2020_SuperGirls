@@ -1,6 +1,5 @@
 package serviceImp;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,11 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import domain.Answer;
 import domain.Exam;
 import domain.Question;
-import domain.Subject;
 import domain.Submission;
 import domain.User;
 import enumeration.ExamStatus;
-import enumeration.QuestionType;
 import enumeration.Role;
 import mapper.AnswerMapper;
 import mapper.ExamMapper;
@@ -21,7 +18,6 @@ import mapper.SubjectMapper;
 import mapper.SubmissionMapper;
 import mapper.UserMapper;
 import service.ExamService;
-import shared.IdentityMap;
 import shared.UnitOfWork;
 import util.JsonToObject;
 
@@ -53,8 +49,9 @@ public class ExamServiceImp implements ExamService {
 	@Override
 	public String findExamById(int examId) {
 		Exam e = examMapper.findById(examId);
-		List<Question> questions = questionMapper.findQuestionByExamId(examId);
-		e.setQuestionList(questions);
+
+		// lazy loading question list.
+		e.getQuestionList();
 		String result = JSONObject.toJSONString(e);
 		return result;
 	}
@@ -248,7 +245,7 @@ public class ExamServiceImp implements ExamService {
 		submission.setStudent(user);
 
 		Exam exam = examMapper.findById(submission.getExam().getId());
-		
+
 		// this exam cannot be submitted when exam has been closed.
 		if (!exam.getStatus().equals(ExamStatus.PUBLISHED)) {
 			return false;
@@ -258,7 +255,7 @@ public class ExamServiceImp implements ExamService {
 
 			if (submission.getAnswers().size() > 0)
 				for (Answer an : submission.getAnswers()) {
-					// update answers 
+					// update answers
 					UnitOfWork.getCurrent().registerDirty(an);
 				}
 
@@ -271,9 +268,10 @@ public class ExamServiceImp implements ExamService {
 	public Submission findSubmissionByUserId_ExamId(int userId, int examId) {
 		Submission submission = submissionMapper.FindSubmissionsByUserId_ExamId(userId, examId);
 
-		if (submission != null)
+		if (submission != null) {
+			submission.getAnswers();
 			return submission;
-		else
+		} else
 			return null;
 	}
 

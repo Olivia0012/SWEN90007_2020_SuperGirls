@@ -2,6 +2,9 @@ package domain;
 
 import java.util.List;
 
+import mapper.AnswerMapper;
+import mapper.QuestionMapper;
+
 public class Submission extends DomainObject{
 	private User student;
 	private Exam exam;
@@ -118,6 +121,9 @@ public class Submission extends DomainObject{
 	 * @return the answers
 	 */
 	public List<Answer> getAnswers() {
+		if(answers == null) {
+			load();
+		}
 		return answers;
 	}
 	/**
@@ -138,5 +144,20 @@ public class Submission extends DomainObject{
 	public void setSubTime(String subTime) {
 		this.subTime = subTime;
 	}
+	
 
+	void load() {
+		try {
+			AnswerMapper answerMapper = new AnswerMapper();
+			List<Answer> answerList = answerMapper.findAnswersBySubmissionId(Id);
+			answers = answerList;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	
+	
 }

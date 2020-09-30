@@ -3,16 +3,16 @@
  */
 package domain;
 
+import java.sql.ResultSet;
 import java.util.List;
 
-import lazyload.ExamList;
-import lazyload.ExamListProxyImp;
+import mapper.SubjectMapper;
 
 /**
  * @author manlo
  *
  */
-public class Subject extends DomainObject{
+public class Subject extends DomainObject {
 	private String title;
 	private String subjectCode;
 	private List<Exam> exams;
@@ -22,7 +22,7 @@ public class Subject extends DomainObject{
 		this.setTitle(title);
 		this.setSubjectCode(subjectCode);
 	}
-	
+
 	public Subject(int Id, String title, String subjectCode, List<Exam> exams) {
 		super(Id);
 		this.setTitle(title);
@@ -47,7 +47,6 @@ public class Subject extends DomainObject{
 	public void setTitle(String title) {
 		this.title = title;
 	}
-
 
 	/**
 	 * @return the subjectCode
@@ -78,7 +77,5 @@ public class Subject extends DomainObject{
 	}
 
 	
-
-
 
 }

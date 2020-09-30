@@ -23,7 +23,6 @@ import domain.Subject;
 import domain.User;
 import enumeration.ExamStatus;
 import enumeration.Role;
-import lazyload.QuestionListProxyImp;
 import shared.IdentityMap;
 import shared.UnitOfWork;
 
@@ -330,11 +329,8 @@ public class ExamMapper extends DataMapper {
 				User instrctor = new User();
 
 				User creator = instructorMapper.findById(instructorId);
-			//	instrctor.setUserName(creator.getUserName());
 				
-			//	List<Question> questionList = questisonMapper.findQuestionByExamId(id);
 				Subject subject = subjectMapper.findById(subjectId);
-			//	subject.setId(subjectid);
 
 				if(role.equals(Role.STUDENT)) {
 					if(status.equals("PUBLISHED") || status.equals("RELEASED")) {

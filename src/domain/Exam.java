@@ -4,8 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import enumeration.ExamStatus;
-import lazyload.QuestionList;
-import lazyload.QuestionListProxyImp;
+import mapper.QuestionMapper;
 
 public class Exam extends DomainObject{
 	private Subject subject;
@@ -156,6 +155,9 @@ public class Exam extends DomainObject{
 	 * @return the questionList
 	 */
 	public List<Question> getQuestionList() {
+		if (questionList == null) {
+			load();
+		}
 		return questionList;
 	}
 
@@ -168,6 +170,17 @@ public class Exam extends DomainObject{
 	}
 
 
+	void load() {
+		try {
+			QuestionMapper questionMapper = new QuestionMapper();
+			List<Question> questions = questionMapper.findQuestionByExamId(Id);
+			questionList = questions;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
 
 
 }

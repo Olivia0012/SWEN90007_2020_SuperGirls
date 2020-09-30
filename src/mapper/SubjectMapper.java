@@ -11,15 +11,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.fastjson.JSONObject;
 
 import database.DatabaseConnection;
 import domain.DomainObject;
 import domain.Exam;
 import domain.Subject;
-import domain.User;
 import enumeration.Role;
-import lazyload.ExamListProxyImp;
 import shared.IdentityMap;
 
 /**
@@ -268,9 +265,9 @@ public class SubjectMapper extends DataMapper {
 				
 				// finding the exams by the subjectId.
 				List<Exam> examList = examMapper.FindAllExamsBySubjectId(subjectId,role);
-			//	ExamListProxyImp examList = new ExamListProxyImp();
 				
 				subject = new Subject(subjectId,subjectResult.getSubjectCode(),subjectResult.getTitle(),examList);
+			
 				result.add(subject);
 			}
 			
@@ -309,6 +306,51 @@ public class SubjectMapper extends DataMapper {
 	//	sm.FindAllSubject();
 	//	sm.FindAllSubjectByUserId(4);
 
+	}
+	
+	
+	
+	// find Row
+public ResultSet findRowById(int subjectId) {
+		
+		// find the subject in the identity map.
+		Subject subject = new Subject();
+		
+		IdentityMap<Subject> subjectMap = IdentityMap.getInstance(subject);
+		subject = subjectMap.get(subjectId);
+
+		// find from the DB when it is not in the identity map.
+		if (subject == null) {
+			List<Subject> result = new ArrayList<Subject>();
+			// query a subject by subjectId
+			String findSubjectbyIdStm = "SELECT * FROM subject WHERE subjectid = ?";
+			
+			try {
+				PreparedStatement stmt = DatabaseConnection.prepare(findSubjectbyIdStm);
+				stmt.setInt(1, subjectId);
+				ResultSet rs = stmt.executeQuery();
+
+		/*		while (rs.next()) {
+					Integer id = rs.getInt(1);
+					String subjectCode = rs.getString(2);
+					String subjectTitle = rs.getString(3);
+				//	ExamListProxyImp examList = new ExamListProxyImp();
+					subject = new Subject(id, subjectCode, subjectTitle);
+					result.add(subject);
+				}*/
+				stmt.close();
+				
+				return rs;
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				DatabaseConnection.closeConnection();
+			}
+			
+		}
+		return null;
+		
 	}
 
 }

@@ -22,6 +22,11 @@ public class SubjectServiceImp implements SubjectService {
 		SubjectMapper subjectMapper = new SubjectMapper();
 		subjectList = subjectMapper.FindAllSubjectByUserId(userId, role);
 		
+		for(Subject s: subjectList) {
+			s.getSubjectCode();
+			s.getTitle();
+		}
+		
 		String result = JSONObject.toJSONString(subjectList);
 		System.out.println(result);
 		return result;

@@ -227,7 +227,7 @@ public class SubmissionMapper extends DataMapper {
 	 * @param submissionId = target submission id
 	 * @return exam with the id.
 	 */
-	public Submission findByStudentId(int studentId) {
+	public List<Submission> findByStudentId(int studentId) {
 		// find the exam in the identity map.
 		Submission submission = new Submission();
 
@@ -277,10 +277,10 @@ public class SubmissionMapper extends DataMapper {
 			IdentityMap<Submission> submissionMap = IdentityMap.getInstance(submission);
 			submission = submissionMap.get(submission.getId());
 			submissionMap.put(result.get(0).getId(), result.get(0));
-			return result.get(0);
+			
 		}
 
-		return submission;
+		return result;
 	}
 
 	/**
@@ -377,7 +377,7 @@ public class SubmissionMapper extends DataMapper {
 				String comment = rs.getString(9);
 
 				Exam exam = examMapper.findById(examid);
-				List<Answer> answers = answerMapper.findAnswersBySubmissionId(id);
+				List<Answer> answers = null;//answerMapper.findAnswersBySubmissionId(id);
 
 				User student = userMapper.findById(studentid);
 				User marker1 = userMapper.findById(markerid);
