@@ -27,12 +27,20 @@ const StudentListView = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			setLoading(true);
-		//	const result = await getAllStudentsBySubjectId(routeResult.props.value.params.subject);
-			const result = await getAllStudentsBySubject_Exam(routeResult.props.value.params.subject,routeResult.props.value.params.exam);
-			setData(result.data);
-			setLoading(false);
-			console.log(data);
-			console.log(isLoading);
+
+			await getAllStudentsBySubject_Exam(
+				routeResult.props.value.params.subject,
+				routeResult.props.value.params.exam
+			).then((response) => {
+				console.log(response);
+				const result = response.data;
+				if (response.data == false) {
+					alert('Please login to continue.');
+					window.location.href = '../../';
+				}
+				setData(result);
+				setLoading(false);
+			});
 		};
 
 		fetchData();
@@ -43,13 +51,14 @@ const StudentListView = () => {
 		<Page className={classes.root} title="Subjects">
 			{!isLoading && data ? (
 				<Container maxWidth={false}>
-					<Toolbar subject={data.subject} exam={data.exam}/>
-					{//data.map((item) => (
+					<Toolbar subject={data.subject} exam={data.exam} />
+					{
+						//data.map((item) => (
 						<Box mt={3}>
-							<Results  customers={data.submissions} />
+							<Results customers={data.submissions} />
 						</Box>
-					//))
-				}
+						//))
+					}
 				</Container>
 			) : (
 				<Loading />

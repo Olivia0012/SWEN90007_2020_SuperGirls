@@ -93,23 +93,30 @@ const Exam = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			setLoading(true);
-			const result = await getExams(examId);
-			console.log(result);
-			setData(JSON.parse(result.data));
-			const a = JSON.parse(result.data);
-			console.log(JSON.parse(result.data));
-			setQuestionList(JSON.parse(result.data).questionList);
-			var readyData = {
-				subjectCode: a.subject.subjectCode,
-				subjectTitle: a.subject.title,
-				examTitle: a.title,
-				creator: a.creator.userName,
-				createTime: a.createdTime,
-				updateTime: a.updateTime,
-				status: a.status
-			};
-			setExamBasicInfo(readyData);
-			setLoading(false);
+			 await getExams(examId).then((response) => {
+				console.log(response);
+				const result = response.data;
+				if (response.data == false) {
+					alert('Please login to continue.');
+					window.location.href = '../';
+				}
+				console.log(result);
+				setData(result);
+				const a = result;
+				console.log(result);
+				setQuestionList(result.questionList);
+				var readyData = {
+					subjectCode: a.subject.subjectCode,
+					subjectTitle: a.subject.title,
+					examTitle: a.title,
+					creator: a.creator.userName,
+					createTime: a.createdTime,
+					updateTime: a.updateTime,
+					status: a.status
+				};
+				setExamBasicInfo(readyData);
+				setLoading(false);
+			});
 		};
 		fetchData();
 	}, []);

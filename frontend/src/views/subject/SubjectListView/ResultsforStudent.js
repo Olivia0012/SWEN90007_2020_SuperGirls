@@ -68,31 +68,33 @@ const ResultsforStudent = ({ className, customers, ...rest }) => {
 		setDMOpen(false);
 	};
 
-	const handleTakeExam = async (status,exam,subjectId) => {
-		if(status == 'PUBLISHED'){
-			exam.creator=null;
+	const handleTakeExam = async (status, exam, subjectId) => {
+		if (status == 'PUBLISHED') {
+			exam.creator = null;
 			exam.subject.id = subjectId;
-			await addSubmission(exam).then((data) => {
-				if(data.data == 1){
-					alert("You've already taken this exam.")
-				}
-				else if(data.data == 0){
-					alert("Error in adding new submission.")
-				}
-				else{
-					alert(data.data.id);
-					window.location.href="./takeExam/submission="+data.data.id+"&subject="+subjectId;
-				}
-				
-			})
-			.catch((error) => {
-				alert('Error from processDataAsycn() with async( When promise gets rejected ): ' + error);
-			});
-			
-		}else{
-			window.location.href="./viewResult/examId="+exam.id;
+			await addSubmission(exam)
+				.then((response) => {
+					const result = response.data;
+					if (response.data == false) {
+						alert('Please login to continue.');
+						window.location.href = '../';
+					}
+
+					if(response.data == -1){
+						alert('You have taken this exam.');
+					}else{
+						window.location.href = './takeExam/submission=' + result;
+					}
+
+					
+				})
+				.catch((error) => {
+					alert('Error from processDataAsycn() with async( When promise gets rejected ): ' + error);
+				});
+		} else {
+			window.location.href = './viewResult/examId=' + exam.id;
 		}
-	}
+	};
 
 	const handleLimitChange = (event) => {
 		setLimit(event.target.value);
@@ -101,7 +103,6 @@ const ResultsforStudent = ({ className, customers, ...rest }) => {
 	const handlePageChange = (event, newPage) => {
 		setPage(newPage);
 	};
-
 
 	return (
 		<Card className={clsx(classes.root, className)} {...rest}>
@@ -122,7 +123,7 @@ const ResultsforStudent = ({ className, customers, ...rest }) => {
 								<TableCell>Subject Title</TableCell>
 								<TableCell align="center">Title</TableCell>
 								<TableCell>Status</TableCell>
-								<TableCell></TableCell>
+								<TableCell />
 							</TableRow>
 						</TableHead>
 						<TableBody>
@@ -143,15 +144,15 @@ const ResultsforStudent = ({ className, customers, ...rest }) => {
 													</Box>
 												</TableCell>
 												<TableCell>{index == 0 ? customer.title : ''}</TableCell>
-												<TableCell align="center">
-													{item.title}
-												</TableCell>
+												<TableCell align="center">{item.title}</TableCell>
 												<TableCell>{item.status}</TableCell>
 												<TableCell>
 													<Button
 														color="primary"
 														variant={item.status == 'PUBLISHED' ? 'contained' : 'outlined'}
-														onClick={() => {handleTakeExam(item.status,item,customer.id)}}
+														onClick={() => {
+															handleTakeExam(item.status, item, customer.id);
+														}}
 													>
 														{item.status == 'PUBLISHED' ? 'Take' : 'View'}
 													</Button>
@@ -232,7 +233,7 @@ const ResultsforStudent = ({ className, customers, ...rest }) => {
 							Cancel
 						</Button>
 					</Collapse>
-					<Button onClick={()=>alert("confirm")} color="primary" type="submit">
+					<Button onClick={() => alert('confirm')} color="primary" type="submit">
 						Confirm
 					</Button>
 				</DialogActions>

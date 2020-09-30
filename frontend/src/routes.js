@@ -19,7 +19,7 @@ const routes = [
       { path: `/exam?user=:user`, element: <EditExam /> },
       { path: `/exam/id=:id`, element: <Exam />},
       { path: `/students/submission=:submission`, element: <MarkExamView />},
-      { path: `/takeExam/submission=:submission&subject=:subject`, element: <TakeExam />},
+      { path: `/takeExam/submission=:submission`, element: <TakeExam />},
       { path: `/viewResult/examId=:examId`, element: <MarkExamView />},
     ]
   },

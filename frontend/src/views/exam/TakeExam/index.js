@@ -32,14 +32,13 @@ const TakeExam = () => {
 	const subjectId = routeResult.props.value.params.subject;
 	const submissionId = routeResult.props.value.params.submission;
 
-	
 	const [ oriAnswers, setOriAnswers ] = React.useState([]);
 
 	useEffect(() => {
 		const fetchData = async () => {
 			setLoading(true);
 			const result = await getSubmission(submissionId);
-		//	console.log(JSON.parse(result.data));
+			//	console.log(JSON.parse(result.data));
 			setOriAnswers(result.data.answers);
 			setData(result.data);
 			setLoading(false);
@@ -49,12 +48,11 @@ const TakeExam = () => {
 
 	const [ answers, setAnswers ] = React.useState(
 		oriAnswers.map((an) => {
-		//	return q.id;
+			//	return q.id;
 			//	answer.question = q;
-				return an;
+			return an;
 		})
 	);
-
 
 	const handleAnswer = (index, answer) => {
 		const curData = [ ...answers ];
@@ -66,34 +64,66 @@ const TakeExam = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setLoading(true);
-		const examStatusCheck = await getSubmission(submissionId);
-		if(examStatusCheck.data.exam.status == 'CLOSED'){
-			alert("Failed to submit because the exam has been closed.");
+	/*	const examStatusCheck = await getSubmission(submissionId)
+			.then((response) => {
+				const result = response.data;
+				if (response.data == 'invalid') {
+					alert('Please login to continue.');
+					window.location.href = '../../';
+				}
+				if (response.data == '-1') {
+					alert('Invalid account,Please login to continue.');
+					window.location.href = '../../';
+				}
+
+				if (response.data == false) {
+					alert('Submitted failed, exam has been closed.');
+				} else {
+					alert('Submitted successfully.');
+					window.location.href = '../';
+				}
+			})
+			.catch((error) => {
+				alert('Error from processDataAsycn() with async( When promise gets rejected ): ' + error);
+			});
+			
+			alert('Failed to submit because the exam has been closed.');
 			data.subTime = '';
 			data.answers = [];
 			await submitExam(data)
-			.then((a) => {
-				setLoading(false);
-				window.location.href = '../subjects';
-			})
-			.catch((error) => {
-				setLoading(false);
-				alert('Error from processDataAsycn() with async( When promise gets rejected ): ' + error);
-			});
-		}else{
+				.then((a) => {
+					setLoading(false);
+					window.location.href = '../subjects';
+				})
+				.catch((error) => {
+					setLoading(false);
+					alert('Error from processDataAsycn() with async( When promise gets rejected ): ' + error);
+				});*/
 			data.subTime = moment().format('YYYY-MM-DD HH:mm:ss');
 			await submitExam(data)
-			.then((a) => {
-				setLoading(false);
-				alert("Submitted Successfully.");
-				window.location.href = '../subjects';
+			.then((response) => {
+				const result = response.data;
+				if (response.data == 'invalid') {
+					alert('Please login to continue.');
+					window.location.href = '../../';
+				}
+				if (response.data == '-1') {
+					alert('Invalid account,Please login to continue.');
+					window.location.href = '../../';
+				}
+
+				if (response.data == false) {
+					alert('Submitted failed, exam has been closed.');
+					window.location.href = '../';
+				} else {
+					alert('Submitted successfully.');
+					window.location.href = '../';
+				}
 			})
 			.catch((error) => {
-				setLoading(false);
 				alert('Error from processDataAsycn() with async( When promise gets rejected ): ' + error);
 			});
-		}
-		
+		//}
 	};
 
 	return (

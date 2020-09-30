@@ -12,7 +12,8 @@ export async function getExams(examId) {
 		//		method: "POST", // HTTP POST method
 		method: 'GET',
 		headers: {
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
+			'token':localStorage.getItem("token")
 		}
 		//		data: "JSON.stringify((JSON.parse(surveyInfo)))",
 	});
@@ -29,7 +30,7 @@ export async function getSubjectsByUserId(token) {
 		headers: {
 			'withCredentials' : true,
 			'Content-Type': 'application/json',
-		//	'token':token
+			'token':localStorage.getItem("token")
 		}
 	});
 	console.log(dataFetched);
@@ -43,7 +44,8 @@ export async function addNewQuestion(newQuestion) {
 		method: 'POST', // HTTP POST method
 		mode:'cors',
 		headers: {
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
+			'token':localStorage.getItem("token")
 		},
 		data: JSON.stringify(newQuestion),
 	});
@@ -59,6 +61,7 @@ export async function deleteQuestion(questionId) {
 		mode:'cors',
 		headers: {
 			'Content-Type': 'application/json',
+			'token':localStorage.getItem("token")
 		},
 	//	data: JSON.stringify(question),
 	});
@@ -90,6 +93,7 @@ export async function deleteExam(examId) {
 		mode:'cors',
 		headers: {
 			'Content-Type': 'application/json',
+			'token':localStorage.getItem("token")
 		},
 	//	data: JSON.stringify(question),
 	});
@@ -108,7 +112,8 @@ export async function editExam(exam) {
 		credentials: 'include',
 		crossDomain: true,
 		headers: {
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
+			'token':localStorage.getItem("token")
 			//  "Access-Control-Allow-Origin": "http://localhost:8080",
 		},
 		data: JSON.stringify(exam),
@@ -129,7 +134,8 @@ export async function setExamStatus(examId) {
 		credentials: 'include',
 		crossDomain: true,
 		headers: {
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
+			'token':localStorage.getItem("token")
 			//  "Access-Control-Allow-Origin": "http://localhost:8080",
 		},
 	});
@@ -149,7 +155,8 @@ export async function submitExam(submission) {
 		credentials: 'include',
 		crossDomain: true,
 		headers: {
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
+			'token':localStorage.getItem("token")
 			//  "Access-Control-Allow-Origin": "http://localhost:8080",
 		},
 		data: JSON.stringify(submission),
@@ -169,7 +176,8 @@ export async function addSubmission(submission) {
 		credentials: 'include',
 		crossDomain: true,
 		headers: {
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
+			'token':localStorage.getItem("token")
 			//  "Access-Control-Allow-Origin": "http://localhost:8080",
 		},
 		data: JSON.stringify(submission),

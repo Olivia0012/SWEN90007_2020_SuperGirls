@@ -51,12 +51,26 @@ const MarkExamView = () => {
 			setLoading(true);
 			let result = {};
 			if(typeof id !== 'undefined'){
-				result = await getSubmission(id);
-			} else result = await viewResult(examId);
-			console.log(result.data);
-			const a = result.data;
-			setData(result.data);
-			setAnswers(result.data.answers);
+				await getSubmission(id).then((response) => {
+					console.log(response);
+					result = response.data;
+					if (response.data == false) {
+						alert('Please login to continue.');
+						window.location.href = '../../';
+					};
+				});
+			} else await viewResult(examId).then((response) => {
+				console.log(response);
+			    result = response.data;
+				if (response.data == false) {
+					alert('Please login to continue.');
+					window.location.href = '../../';
+				};
+			});
+			console.log(result);
+			const a = result;
+			setData(result);
+			setAnswers(result.answers);
 			var readyData = {
 				subjectCode: a.exam.subject.title,
 				subjectTitle: a.exam.subject.subjectCode,
@@ -105,7 +119,10 @@ const MarkExamView = () => {
 			.then((a) => {
 				setLoading(false);
 				alert('Saving mark Successfully!');
-				//	window.location.href = './id=' + question.examId;
+				window.location.href = '/oea/students/subject=' +
+				data.exam.subject.id +
+				'&exam=' +
+				data.exam.id;
 			})
 			.catch((error) => {
 				setLoading(false);
@@ -145,7 +162,7 @@ const MarkExamView = () => {
 								fullWidth
 								multiline
 								rows={4}
-								disabled={data.marker}
+								disabled={data.marker.id!==0}
 								defaultValue={data.comment}
 								variant="outlined"
 								onChange={handleComment}
@@ -154,7 +171,7 @@ const MarkExamView = () => {
 					</Card>
 					<Box p={2} />
 					<Grid item xs={12}>
-						<Collapse in={!data.marker ? true : false}>
+						<Collapse in={data.marker.id===0}>
 							<Button color="primary" fullWidth variant="contained" onClick={handleSubmit}>
 								Submit
 							</Button>

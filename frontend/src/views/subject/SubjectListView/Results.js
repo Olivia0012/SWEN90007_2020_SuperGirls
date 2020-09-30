@@ -118,21 +118,21 @@ const Results = ({ className, customers, ...rest }) => {
 			setLoading(true);
 			//	alert("Adding new exam!");
 			const newExam = {
-				createdTime: moment().format('YYYY-MM-DD HH:mm:ss')+"",
+				createdTime: moment().format('YYYY-MM-DD HH:mm:ss') + '',
 				updatedTime: '',
 				creator: { id: 4, passWord: '', userName: '', role: '' },
 				id: -1,
-				isLocked: false,
-				questionList: [],
-				status: "CREATED",
+				locked: false,
+				questionList: null,
+				status: 'CREATED',
 				subject: { id: subject.id, title: '', subjectCode: '' },
 				title: values.title
 			};
 			const a = await addNewExam(newExam)
 				.then((res) => {
 					setLoading(false);
-					if(res.data == false){
-						alert("Invalid session,Please login to continuee.");
+					if (res.data == false) {
+						alert('Invalid session,Please login to continuee.');
 						window.location.href = '../';
 					}
 					setOpenGreen(true);
@@ -170,7 +170,7 @@ const Results = ({ className, customers, ...rest }) => {
 								<TableCell align="center">Title</TableCell>
 								<TableCell>Status</TableCell>
 								<TableCell>Creator</TableCell>
-								<TableCell >CreatedTime</TableCell>
+								<TableCell>CreatedTime</TableCell>
 								<TableCell>Students</TableCell>
 							</TableRow>
 						</TableHead>
@@ -193,15 +193,19 @@ const Results = ({ className, customers, ...rest }) => {
 												</TableCell>
 												<TableCell>{index == 0 ? customer.title : ''}</TableCell>
 												<TableCell align="center">
-													<IconButton
-														color="secondary"
-														aria-label="add an alarm"
-														style={{ width: 50 }}
-														onClick={(event) => handleOpen(event, customer)}
-													>
-														<AddCircleOutlineIcon style={{ color: green[500] }} />
-													</IconButton>
-													<div />
+													{index == 0 ? (
+														<IconButton
+															color="secondary"
+															aria-label="add an alarm"
+															style={{ width: 50 }}
+															onClick={(event) => handleOpen(event, customer)}
+														>
+															<AddCircleOutlineIcon style={{ color: green[500] }} />
+														</IconButton>
+													) : (
+														<div />
+													)}
+													
 												</TableCell>
 												<TableCell align="center">
 													<Link href={'./exam/id=' + item.id}>{item.title}</Link>
