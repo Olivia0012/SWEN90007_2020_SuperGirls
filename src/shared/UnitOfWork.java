@@ -93,6 +93,7 @@ public class UnitOfWork {
 				// get the mapper for the object
 				DataMapper mapper = (DataMapper) Class.forName("mapper." + obj.getClass().getSimpleName() + "Mapper")
 						.getDeclaredConstructor().newInstance();
+				
 				int insertResult = mapper.insert(obj);
 
 				// if one of the insert failed, do not proceed with the rest
@@ -114,8 +115,9 @@ public class UnitOfWork {
 						.getDeclaredConstructor().newInstance();
 
 				// make a locking mapper
-				LockingMapper lckMapper = new LockingMapper(mapper);
-				result = lckMapper.update(obj);
+			//	LockingMapper lckMapper = new LockingMapper(mapper);
+				
+				result = mapper.update(obj);
 
 				// if one of the insert failed, do not proceed with the rest
 				if (!result) {

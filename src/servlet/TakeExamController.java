@@ -27,6 +27,7 @@ import serviceImp.ExamServiceImp;
 import serviceImp.UserServiceImp;
 import util.JsonToObject;
 import util.ResponseHeader;
+import util.SSOLogin;
 
 /**
  * Servlet implementation class TakeExamController
@@ -34,6 +35,7 @@ import util.ResponseHeader;
 @WebServlet("/TakeExamController")
 public class TakeExamController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private ResponseHeader header = new ResponseHeader();
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -45,78 +47,55 @@ public class TakeExamController extends HttpServlet {
 
 	/**
 	 * Students view the released exam result details.
+	 * 
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		UserService us = new UserServiceImp();
-		SubmissionMapper sm = new SubmissionMapper();
-		ExamMapper em = new ExamMapper();
-		ResponseHeader header = new ResponseHeader();
-		// Checking the login session.
-		String val = us.checkLogin(request);
-		User user = new User();
-		if (val.equals("0") || val.equals("1")) {
-			response.getWriter().write(val); // invalid session.
+		ExamServiceImp examService = new ExamServiceImp();
+		String data = new String(request.getParameter("examId").getBytes("ISO-8859-1"), "UTF-8");
+		int examId = Integer.valueOf(data);
+
+		// Login check.
+		SSOLogin ssoCheck = new SSOLogin();
+		User user = ssoCheck.checkLogin(request);
+
+		if (user == null) {
+			response.getWriter().write("false"); // invalid token.
+
 		} else {
-			// finding all enrolled subjects by userId.
-			JSONObject jsonObject = JSONObject.parseObject(val);
-			user = JSON.toJavaObject(jsonObject, User.class);
-
-		
-			String data =new String(request.getParameter("examId").getBytes("ISO-8859-1"),"UTF-8");
-		    int examId = Integer. valueOf(data);
-
-			Submission submission = sm.FindSubmissionsByUserId_ExamId(user.getId(), examId);
-
-			if (submission.getId() != 0) {
-				Exam exam = em.findById(examId);
-				submission.setExam(exam);
-				String result = JSONObject.toJSONString(submission);
-				response.getWriter().write(result);
-			} else
-				response.getWriter().write("0");
+			// find this submission by the user's id and exam id
+			Submission submission = examService.findSubmissionByUserId_ExamId(user.getId(), examId);
+			String result = JSONObject.toJSONString(submission);
+			response.getWriter().write(result);
 		}
-
 		header.setResponseHeader(response);
 	}
 
 	/**
+	 * Student submits an exam
+	 * 
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		UserService us = new UserServiceImp();
-		ResponseHeader header = new ResponseHeader();
-		// Checking the login session.
-		String val = us.checkLogin(request);
-		User user = new User();
-		if (val.equals("0") || val.equals("1")) {
-			response.getWriter().write(val); // invalid session.
+		// Login check.
+		SSOLogin ssoCheck = new SSOLogin();
+		User user = ssoCheck.checkLogin(request);
+
+		if (user == null) {
+			response.getWriter().write("invalid"); // invalid token.
 		} else {
-			// finding all enrolled subjects by userId.
-			JSONObject jsonObject = JSONObject.parseObject(val);
-			user = JSON.toJavaObject(jsonObject, User.class);
 
 			if (user.getRole().equals(Role.INSTRUCTOR)) {
-				response.getWriter().write("Instructor cannot take exam."); // invalid session.
+				response.getWriter().write("-1"); // invalid session.
 			} else {
 
-				Submission submission = new Submission();
-				JsonToObject jo = new JsonToObject();
-				JSONObject SubmissionJsonObject = jo.ReqJsonToObject(request);
-				submission = JSON.toJavaObject(SubmissionJsonObject, Submission.class);
-				submission.setStudent(user);
-
 				ExamServiceImp takeExam = new ExamServiceImp();
-				if (takeExam.takeExam(submission)) {
-					SubmissionMapper sm = new SubmissionMapper();
-					Submission markedSubmission = sm.findById(submission.getId());
-					String result = JSONObject.toJSONString(markedSubmission);
-					response.getWriter().write(result);
-				}
+				boolean success = takeExam.takeExam(request,user);
+				response.getWriter().write(success+"");
 
 			}
 

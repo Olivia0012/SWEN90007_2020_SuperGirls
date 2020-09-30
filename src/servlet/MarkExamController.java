@@ -23,9 +23,10 @@ import serviceImp.SubjectServiceImp;
 import serviceImp.UserServiceImp;
 import util.JsonToObject;
 import util.ResponseHeader;
+import util.SSOLogin;
 
 /**
- * Servlet implementation class MarkExamController
+ * view and mark a submission controller
  */
 @WebServlet("/MarkExamController")
 public class MarkExamController extends HttpServlet {
@@ -40,34 +41,27 @@ public class MarkExamController extends HttpServlet {
 	}
 
 	/**
+	 * view a submission by its id
+	 * 
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		UserService us = new UserServiceImp();
 		ResponseHeader header = new ResponseHeader();
-		String val = us.checkLogin(request);
 
-		if (val.equals("0") || val.equals("1")) {
-			response.getWriter().write(val); // invalid session.
+		String data = new String(request.getParameter("id").getBytes("ISO-8859-1"), "UTF-8");
+		int submissionId = Integer.valueOf(data);
+
+		// Login check.
+		SSOLogin ssoCheck = new SSOLogin();
+		User user = ssoCheck.checkLogin(request);
+
+		if (user == null) {
+			response.getWriter().write("false"); // invalid token.
 		} else {
-			// finding exam by examId.
-			String data = new String(request.getParameter("id").getBytes("ISO-8859-1"), "UTF-8");
-			int submissionId = Integer.valueOf(data);
-
-			// String r = JSONObject.toJSONString(subject);
-			System.out.println("submissionId: " + data);
-
-			SubmissionMapper submissionMapper = new SubmissionMapper();
-			ExamMapper em = new ExamMapper();
-			Submission submission = submissionMapper.findById(submissionId);
-			Submission resultSubmission = new Submission();
-			resultSubmission.setAnswers(submission.getAnswers());
-			Exam exam = new Exam();
-			exam.setSubject(submission.getExam().getSubject());
-			exam.setTitle(submission.getExam().getTitle());
-			submission.setExam(exam);
+			ExamServiceImp examService = new ExamServiceImp();
+			Submission submission = examService.findSubmissionById(submissionId,user);
 			String result = JSONObject.toJSONString(submission);
 			response.getWriter().write(result);
 		}
@@ -75,47 +69,31 @@ public class MarkExamController extends HttpServlet {
 	}
 
 	/**
+	 * 
+	 * mark a submission
+	 * 
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		UserService us = new UserServiceImp();
 		ResponseHeader header = new ResponseHeader();
-		// Checking the login session.
-		String val = us.checkLogin(request);
-		User user = new User();
-		if (val.equals("0") || val.equals("1")) {
-			response.getWriter().write(val); // invalid session.
+
+		// Login check.
+		SSOLogin ssoCheck = new SSOLogin();
+		User user = ssoCheck.checkLogin(request);
+
+		if (user == null) {
+			response.getWriter().write("false"); // invalid token.
 		} else {
-			// finding all enrolled subjects by userId.
-			JSONObject jsonObject = JSONObject.parseObject(val);
-			user = JSON.toJavaObject(jsonObject, User.class);
-
+			// Only instructor can mark exams.
 			if (!user.getRole().equals(Role.INSTRUCTOR)) {
-				response.getWriter().write("You can't mark this exam."); // invalid session.
+				response.getWriter().write("false"); // invalid user.
 			} else {
-
-				Submission submission = new Submission();
-				JsonToObject jo = new JsonToObject();
-				JSONObject SubmissionJsonObject = jo.ReqJsonToObject(request);
-				submission = JSON.toJavaObject(SubmissionJsonObject, Submission.class);
-				submission.setMarker(user);
-				if (submission.getTotalMark() == 0) {
-					float totalMark = 0;
-					for (Answer an : submission.getAnswers()) {
-						totalMark += an.getMark();
-					}
-					submission.setTotalMark(totalMark);
-				}
+				//mark a submission
 				ExamServiceImp markExam = new ExamServiceImp();
-				if (markExam.markSubmission(submission)) {
-					SubmissionMapper sm = new SubmissionMapper();
-					Submission markedSubmission = sm.findById(submission.getId());
-					String result = JSONObject.toJSONString(markedSubmission);
-					response.getWriter().write(result);
-				}
-
+				boolean success = markExam.markSubmission(request, user);
+				response.getWriter().write(success + "");
 			}
 
 		}

@@ -19,6 +19,9 @@ import service.StudentService;
 public class StudentServiceImp implements StudentService {
 	private List<Student> studentList = new ArrayList<Student>();
 	private UserMapper studentMapper = new UserMapper();
+	private ExamMapper examMapper = new ExamMapper();
+	private SubjectMapper subjectMapper = new SubjectMapper();
+	
 
 	public StudentServiceImp() {
 		// TODO Auto-generated constructor stub
@@ -55,9 +58,22 @@ public class StudentServiceImp implements StudentService {
 	 */
 	@Override
 	public String findAllStudentsAndSubmissions(int subjectId, int examId) {
+		
+    	Subject subject = subjectMapper.findById(subjectId);
+    	if(subject == null) {
+    		return "false";
+    	}
+    	
+    	Exam exam = examMapper.findById(examId);
+    	if(exam == null) {
+    		return "false";
+    	}
+    	// find all students and their submissions
+    	String resultSubject = JSONObject.toJSONString(subject);
 		studentList = studentMapper.findAllStudentsAndSubmissions(subjectId, examId);
-		String result = JSONObject.toJSONString(studentList);
-		System.out.println(result);
+		String resultSubmissions = JSONObject.toJSONString(studentList);
+		
+		String result = "{\"subject\":"+resultSubject+",\"submissions\":"+resultSubmissions+",\"exam\":\""+exam.getTitle()+"\"}";
 		return result;
 	}
 

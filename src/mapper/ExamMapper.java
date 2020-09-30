@@ -23,6 +23,7 @@ import domain.Subject;
 import domain.User;
 import enumeration.ExamStatus;
 import enumeration.Role;
+import lazyload.QuestionListProxyImp;
 import shared.IdentityMap;
 import shared.UnitOfWork;
 
@@ -104,12 +105,10 @@ public class ExamMapper extends DataMapper {
 			stmt.executeUpdate();
 
 			IdentityMap<Exam> examMap = IdentityMap.getInstance(exam);
-			Exam examInMap = examMap.get(exam.getId());
 
 			// add the updated subject into subject identity map if it is not there.
-			if (examInMap == null) {
-				examMap.put(exam.getId(), exam);
-			}
+			examMap.put(exam.getId(), exam);
+			
 			UnitOfWork.getCurrent().commit();
 			stmt.close();
 			return true;
@@ -130,7 +129,6 @@ public class ExamMapper extends DataMapper {
 	 */
 	@Override
 	public Boolean delete(DomainObject obj) {
-		UnitOfWork.newCurrent();
 		Exam exam = (Exam) obj;
 
 		String deleteSubjectStm = "DELETE FROM exam WHERE examid = ?";
@@ -146,7 +144,6 @@ public class ExamMapper extends DataMapper {
 				examMap.put(exam.getId(), null);
 			}
 
-			UnitOfWork.getCurrent().commit();
 			stmt.close();
 			return true;
 		} catch (SQLException e) {
@@ -199,9 +196,10 @@ public class ExamMapper extends DataMapper {
 					String status = rs.getString(6);
 					boolean isLocked = rs.getBoolean(7);
 
-					List<Question> questionList = questisonMapper.findQuestionByExamId(examId);
+					List<Question> questionList = questisonMapper.findQuestionByExamId(id);
 					Subject subject = subjectMapper.findById(subjectId);
 					User instrctor = instructorMapper.findById(instructorId);
+					
 					exam = new Exam(id, subject, instrctor, createTime, null, title, ExamStatus.valueOf(status),
 							isLocked, questionList);
 					result.add(exam);
@@ -267,6 +265,7 @@ public class ExamMapper extends DataMapper {
 				boolean isLocked = rs.getBoolean("isLock");
 
 				List<Question> questionList = questisonMapper.findQuestionByExamId(id);
+				
 				Subject subject = subjectMapper.findById(subjectId);
 				User instrctor = instructorMapper.findById(instructorId);
 				exam = new Exam(id, subject, instrctor, createTime, null, title, ExamStatus.valueOf(status), isLocked,
@@ -331,10 +330,11 @@ public class ExamMapper extends DataMapper {
 				User instrctor = new User();
 
 				User creator = instructorMapper.findById(instructorId);
-				instrctor.setUserName(creator.getUserName());
-
-				Subject subject = new Subject();// subjectMapper.findById(subjectId);
-				subject.setId(subjectid);
+			//	instrctor.setUserName(creator.getUserName());
+				
+			//	List<Question> questionList = questisonMapper.findQuestionByExamId(id);
+				Subject subject = subjectMapper.findById(subjectId);
+			//	subject.setId(subjectid);
 
 				if(role.equals(Role.STUDENT)) {
 					if(status.equals("PUBLISHED") || status.equals("RELEASED")) {
@@ -343,7 +343,7 @@ public class ExamMapper extends DataMapper {
 						result.add(exam);
 					}
 				}else {
-					exam = new Exam(id, subject, instrctor, createTime, null, title, ExamStatus.valueOf(status), isLocked,
+					exam = new Exam(id, subject, creator, createTime, null, title, ExamStatus.valueOf(status), isLocked,
 							null);
 					result.add(exam);
 				}
@@ -355,7 +355,7 @@ public class ExamMapper extends DataMapper {
 				for (int i = 0; i < result.size(); i++) {
 					Exam s = examMap.get(result.get(i).getId());
 					if (s == null) {
-						// examMap.put(result.get(i).getId(), result.get(i));
+						 examMap.put(result.get(i).getId(), result.get(i));
 					}
 					/*
 					 * System.out.println(result.get(i).getId() + "," + result.get(i).getTitle() +
@@ -389,9 +389,14 @@ public class ExamMapper extends DataMapper {
 		 * ExamStatus.CREATED, false,null);
 		 */
 		Exam e1 = em.findById(1);
+		String result1 = JSONObject.toJSONString(e1);
+		System.out.println("Original: "+result1);
+		e1.setStatus(ExamStatus.RELEASED);
+		em.update(e1);
+		Exam e2 = em.findById(1);
 		// em.insert(e);
-		String result = JSONObject.toJSONString(e1);
-		System.out.println(result);
+		String result = JSONObject.toJSONString(e2);
+		System.out.println("Updated : "+result);
 	}
 
 }

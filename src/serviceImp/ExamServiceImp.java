@@ -3,12 +3,15 @@ package serviceImp;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import domain.Answer;
 import domain.Exam;
 import domain.Question;
 import domain.Subject;
 import domain.Submission;
 import domain.User;
+import enumeration.ExamStatus;
 import enumeration.QuestionType;
 import enumeration.Role;
 import mapper.AnswerMapper;
@@ -20,174 +23,276 @@ import mapper.UserMapper;
 import service.ExamService;
 import shared.IdentityMap;
 import shared.UnitOfWork;
+import util.JsonToObject;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 public class ExamServiceImp implements ExamService {
-	
-	private ExamMapper examMapper = new ExamMapper();
-	private SubjectMapper subjectMapper = new SubjectMapper();
-	private UserMapper userMapper = new UserMapper();
-	private SubmissionMapper sm = new SubmissionMapper();
-	private AnswerMapper am = new AnswerMapper();
+
+	private ExamMapper examMapper;
+	private SubjectMapper subjectMapper;
+	private UserMapper userMapper;
+	private SubmissionMapper submissionMapper;
+	private AnswerMapper answerMapper;
+	private QuestionMapper questionMapper;
+	private JsonToObject jo = new JsonToObject();
 
 	public ExamServiceImp() {
-		// TODO Auto-generated constructor stub
+		examMapper = new ExamMapper();
+		subjectMapper = new SubjectMapper();
+		userMapper = new UserMapper();
+		submissionMapper = new SubmissionMapper();
+		answerMapper = new AnswerMapper();
+		questionMapper = new QuestionMapper();
 	}
 
+	/**
+	 * Find an exam by exam id.
+	 */
 	@Override
 	public String findExamById(int examId) {
-		ExamMapper examMapper = new ExamMapper();
 		Exam e = examMapper.findById(examId);
+		List<Question> questions = questionMapper.findQuestionByExamId(examId);
+		e.setQuestionList(questions);
 		String result = JSONObject.toJSONString(e);
-		System.out.println("findExamById: "+result);
 		return result;
 	}
 
+	/**
+	 * Edit existing exam
+	 */
 	@Override
-	public String findAllExams() {
-		List<Exam> examList = new ArrayList<Exam>();
-		ExamMapper examMapper = new ExamMapper();
-		Exam e = examMapper.findById(1);
-	//	examJson.add(examList);
-		User u = new User(1,"1","1",Role.ADMIN);
-	//	Question a = new Question(1, 1, null, "11", 1.4, null);
-		Subject s = new Subject(1,"S","s");
-	//	Exam e = new Exam(1,a,s);
-			
-		
-		String result = JSONObject.toJSONString(e);
-		String result1 = JSONObject.toJSONString(s);
-		System.out.println(result);
-		System.out.println(result1);
-		return result;
-	}
-	
-	public static void main(String[] args) {
-		ExamServiceImp a = new ExamServiceImp();
-		a.findAllExams();
-	}
+	public boolean updateExam(HttpServletRequest request) {
+		UnitOfWork.newCurrent();
+		Exam exam = new Exam();
+		JSONObject examJsonObject = jo.ReqJsonToObject(request);
+		exam = JSON.toJavaObject(examJsonObject, Exam.class);
 
-	@Override
-	public String updateExam(Exam exam) {
-		examMapper.update(exam);
-		for(int i = 0; i < exam.getQuestionList().size(); i ++) {
-			QuestionMapper question = new QuestionMapper();
-			if(exam.getQuestionList().get(i).getId() == -1) {
-				question.insert(exam.getQuestionList().get(i));
-			}else {
-				question.update(exam.getQuestionList().get(i));
+		// update the exam
+		UnitOfWork.getCurrent().registerDirty(exam);
+
+		// update questions
+		for (int i = 0; i < exam.getQuestionList().size(); i++) {
+			// add new questions
+			if (exam.getQuestionList().get(i).getId() == -1) {
+				UnitOfWork.getCurrent().registerNew(exam.getQuestionList().get(i));
+			} else {
+				// update existing questions
+				UnitOfWork.getCurrent().registerDirty(exam.getQuestionList().get(i));
 			}
 		}
-		IdentityMap<Exam> examMap = IdentityMap.getInstance(exam);
-		examMap.put(exam.getId(), null);
-		Exam newExam = examMapper.findById(exam.getId());
-		examMap.put(exam.getId(), newExam);
-		String result = JSONObject.toJSONString(newExam);
-		System.out.println(result);
-		return result;
+
+		return UnitOfWork.getCurrent().commit();
+
 	}
 
+	/**
+	 * delete a question by its id
+	 */
 	@Override
-	public String deleteQuestionById(int questionId) {
-		QuestionMapper questionMapper = new QuestionMapper();
-		Question q = new Question();
-		q.setId(questionId);
-		
-		// find the question whose id equals questionId in the IdentityMap
-		IdentityMap<Question> questionMap = IdentityMap.getInstance(q);
-		Question deleteQ = questionMap.get(questionId);
-		
-		// delete the old exam in the IdentityMap
-		int examId = deleteQ.getExamId();
-		ExamMapper examMapper = new ExamMapper();
-		Exam exam = examMapper.findById(examId);
-		IdentityMap<Exam> examMap = IdentityMap.getInstance(exam);
-		examMap.put(examId, null);
-		
-		// delete the target question
-		questionMapper.delete(q);
-		
-		// add new exam into the IndentityMap
-		Exam newExam = examMapper.findById(deleteQ.getExamId());
-		examMap.put(exam.getId(), newExam);
-		
-		String result = JSONObject.toJSONString(newExam);
-		System.out.println(result);
-		return "OK";
-	}
-
-	//Adding new exam (only title) for a subject
-	@Override
-	public String addNewExam(Exam exam) {
+	public boolean deleteQuestionById(int questionId) {
 		UnitOfWork.newCurrent();
-		int examId = examMapper.insert(exam);
-		UnitOfWork.getCurrent().registerNew(exam);
-		return examId+"";
-	}
 
-	@Override
-	public String deleteExamById(int examId) {
-		Exam e = new Exam();
-		e.setId(examId);
-		examMapper.delete(e);
-		return "OK";
-	}
+		Question question = questionMapper.findById(questionId);
 
-	
-	
-	@Override
-	public boolean markSubmission(Submission submission) {
-		sm.update(submission);
-		AnswerMapper am = new AnswerMapper();
-		for(Answer an: submission.getAnswers()) {
-			am.update(an);
+		if (question == null) {
+			return false;
+		} else {
+			UnitOfWork.getCurrent().registerDeleted(question);
+			return UnitOfWork.getCurrent().commit();
 		}
-		return true;
+
 	}
-	
+
+	/**
+	 * Adding new exam for a subject
+	 */
+	@Override
+	public boolean addNewExam(HttpServletRequest request, User user) {
+		UnitOfWork.newCurrent();
+
+		// get the new exam info from the request.
+		JSONObject examJsonObject = jo.ReqJsonToObject(request);
+
+		Exam exam = new Exam();
+		exam = JSON.toJavaObject(examJsonObject, Exam.class);
+		exam.setCreator(user);
+
+		UnitOfWork.getCurrent().registerNew(exam);
+
+		return UnitOfWork.getCurrent().commit();
+
+	}
+
+	/**
+	 * delete an exam by its id
+	 */
+	@Override
+	public boolean deleteExamById(int examId) {
+		UnitOfWork.newCurrent();
+
+		Exam exam = examMapper.findById(examId);
+
+		if (exam == null) {
+			return false;
+		} else {
+
+			UnitOfWork.getCurrent().registerDeleted(exam);
+			return UnitOfWork.getCurrent().commit();
+		}
+	}
+
+	/**
+	 * mark an exam submission
+	 */
+	@Override
+	public boolean markSubmission(HttpServletRequest request, User user) {
+		UnitOfWork.newCurrent();
+		Submission submission = new Submission();
+		JSONObject SubmissionJsonObject = jo.ReqJsonToObject(request);
+		submission = JSON.toJavaObject(SubmissionJsonObject, Submission.class);
+		submission.setMarker(user);
+
+		// calculate the total mark
+		if (submission.getTotalMark() == 0) {
+			float totalMark = 0;
+			for (Answer an : submission.getAnswers()) {
+				totalMark += an.getMark();
+			}
+			submission.setTotalMark(totalMark);
+		}
+
+		UnitOfWork.getCurrent().registerDirty(submission);
+
+		for (Answer an : submission.getAnswers()) {
+			UnitOfWork.getCurrent().registerDirty(an);
+		}
+		return UnitOfWork.getCurrent().commit();
+	}
+
 	/**
 	 * Finding submission by its id
 	 */
 	@Override
-	public Submission findSubmissionById(int submissionId) {
-		Submission s = sm.findById(submissionId);
-		return s;
+	public Submission findSubmissionById(int submissionId, User user) {
+		Submission submission = submissionMapper.findById(submissionId);
+		if (user.getRole().equals(Role.STUDENT)) {
+			if (submission.getAnswers() == null) {
+				addAnswers(submission);
+				submission.setAnswers(answerMapper.findAnswersBySubmissionId(submissionId));
+			}
+		} else {
+			return submission;
+		}
+		return submission;
+
 	}
 
 	@Override
-	public String publishExam(Exam exam) {
-		ExamMapper examMapper = new ExamMapper();
-		examMapper.update(exam);
-		String result = JSONObject.toJSONString(examMapper.findById(exam.getId()));
-		return result;
+	public boolean publishExam(String examId) {
+		UnitOfWork.newCurrent();
+		int examid = Integer.valueOf(examId);
+
+		// update exam status
+		Exam exam = examMapper.findById(examid);
+		if (exam.getStatus().equals(ExamStatus.CREATED)) {
+			exam.setStatus(ExamStatus.PUBLISHED);
+		} else if (exam.getStatus().equals(ExamStatus.PUBLISHED)) {
+			exam.setStatus(ExamStatus.CLOSED);
+		} else if (exam.getStatus().equals(ExamStatus.CLOSED)) {
+			exam.setStatus(ExamStatus.RELEASED);
+		}
+
+		UnitOfWork.getCurrent().registerDirty(exam);
+
+		return UnitOfWork.getCurrent().commit();
 	}
 
 	@Override
-	public int addSubmission(Submission submission) {
-		int subId = sm.insert(submission);
-		
-		for(Answer an: submission.getAnswers()) {
-			an.setSubmissionId(subId);
-			am.insert(an);
+	public boolean addSubmission(Exam exam, User user) {
+		UnitOfWork.newCurrent();
+
+		// check if this student has taken this exam.
+		Submission checkSub = submissionMapper.FindSubmissionsByUserId_ExamId(user.getId(), exam.getId());
+
+		// not taken this exam before
+		if (checkSub.getId() == 0) {
+
+			// create new submission and answers object
+			Submission newSub = new Submission();
+			newSub.setExam(exam);
+			newSub.setLock(false);
+			newSub.setStudent(user);
+
+			// add new submission and its answers into database
+			UnitOfWork.getCurrent().registerNew(newSub);
+		} else {
+			return false;
 		}
+
+		return UnitOfWork.getCurrent().commit();
+
+	}
+
+	/**
+	 * Submit the exam
+	 */
+	@Override
+	public boolean takeExam(HttpServletRequest request, User user) {
+		UnitOfWork.newCurrent();
+		Submission submission = new Submission();
+		JsonToObject jo = new JsonToObject();
+		JSONObject SubmissionJsonObject = jo.ReqJsonToObject(request);
+		submission = JSON.toJavaObject(SubmissionJsonObject, Submission.class);
+		submission.setStudent(user);
+
+		Exam exam = examMapper.findById(submission.getExam().getId());
 		
-		return subId;
-		
+		// this exam cannot be submitted when exam has been closed.
+		if (!exam.getStatus().equals(ExamStatus.PUBLISHED)) {
+			return false;
+		} else {
+			// update submission info
+			UnitOfWork.getCurrent().registerDirty(submission);
+
+			if (submission.getAnswers().size() > 0)
+				for (Answer an : submission.getAnswers()) {
+					// update answers 
+					UnitOfWork.getCurrent().registerDirty(an);
+				}
+
+			return UnitOfWork.getCurrent().commit();
+		}
+
 	}
 
 	@Override
-	public boolean takeExam(Submission submission) {
-		sm.update(submission);
-		AnswerMapper am = new AnswerMapper();
-		if(submission.getAnswers().size() > 0)
-		for(Answer an: submission.getAnswers()) {
-			am.update(an);
+	public Submission findSubmissionByUserId_ExamId(int userId, int examId) {
+		Submission submission = submissionMapper.FindSubmissionsByUserId_ExamId(userId, examId);
+
+		if (submission != null)
+			return submission;
+		else
+			return null;
+	}
+
+	/**
+	 * Add new answers for an submission
+	 */
+	@Override
+	public boolean addAnswers(Submission submission) {
+		UnitOfWork.newCurrent();
+		List<Question> questions = questionMapper.findQuestionByExamId(submission.getExam().getId());
+
+		for (Question question : questions) {
+			Answer answer = new Answer();
+			answer.setQuestion(question);
+			answer.setSubmissionId(submission.getId());
+			UnitOfWork.getCurrent().registerNew(answer);
 		}
-		else {
-			am.delete(submission);
-		}
-		return true;
+
+		return UnitOfWork.getCurrent().commit();
 	}
 
 }

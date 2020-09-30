@@ -71,7 +71,6 @@ public class AnswerMapper extends DataMapper{
 
 			IdentityMap<Answer> answerMap = IdentityMap.getInstance(answer);
 			answerMap.put(answer.getId(), answer);
-			System.out.println(id);
 
 			keys.close();
 			stmt.close();
@@ -104,10 +103,6 @@ public class AnswerMapper extends DataMapper{
 			Answer answerInMap = answerMap.get(answer.getId());
 
 			// add the updated submission into submission identity map if it is not there.
-			if (answerInMap == null) {
-				answerMap.put(answer.getId(), null);
-			}
-
 			answerMap.put(answer.getId(), answer);
 
 			stmt.close();

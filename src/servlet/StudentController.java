@@ -24,6 +24,7 @@ import serviceImp.StudentServiceImp;
 import serviceImp.SubjectServiceImp;
 import serviceImp.UserServiceImp;
 import util.ResponseHeader;
+import util.SSOLogin;
 
 /**
  * Servlet implementation class SubjectController
@@ -43,6 +44,8 @@ public class StudentController extends HttpServlet {
 	}
 
 	/**
+	 * Finding all students with their submissions
+	 * 
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
@@ -54,30 +57,25 @@ public class StudentController extends HttpServlet {
 		int examId = Integer.valueOf(examIdStr);
 		int subjectId = Integer.valueOf(subjectIdStr);
 
-		// Checking the login session.
-		String val = us.checkLogin(request);
-		User user = new User();
-		
-		if (val.equals("0") || val.equals("1")) {
-			response.getWriter().write(val); // invalid session.
+		ResponseHeader header = new ResponseHeader();
+
+		// Login check.
+		SSOLogin ssoCheck = new SSOLogin();
+		User user = ssoCheck.checkLogin(request);
+
+		if (user == null) {
+			response.getWriter().write("false"); // invalid token.
 		} else {
-			// finding all enrolled subjects by userId.
-			JSONObject jsonObject = JSONObject.parseObject(val);
-		    user = JSON.toJavaObject(jsonObject,User.class);
-		    if(user.getRole().equals(Role.INSTRUCTOR)) {
-		    	StudentServiceImp a = new StudentServiceImp();
-		    	SubjectMapper subjectMapper = new SubjectMapper();
-		    	Subject subject = subjectMapper.findById(subjectId);
-		    	ExamMapper examMapper = new ExamMapper();
-		    	Exam exam = examMapper.findById(examId);
-		    	String resultSubject = JSONObject.toJSONString(subject);
-				String resultSubmissions = a.findAllStudentsAndSubmissions(subjectId,examId);
-				String result = "{\"subject\":"+resultSubject+",\"submissions\":"+resultSubmissions+",\"exam\":\""+exam.getTitle()+"\"}";
+
+			// Only instructor can view the students with their submissions lists.
+			if (user.getRole().equals(Role.INSTRUCTOR)) {
+				StudentServiceImp a = new StudentServiceImp();
+				String result = a.findAllStudentsAndSubmissions(subjectId, examId);
 				response.getWriter().write(result);
-		    }else {
-		    	response.getWriter().write("false");
-		    }
-			
+			} else {
+				response.getWriter().write("false");
+			}
+
 		}
 		header.setResponseHeader(response);
 	}

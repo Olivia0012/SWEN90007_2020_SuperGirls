@@ -99,13 +99,10 @@ public class QuestionMapper extends DataMapper {
 			stmt.executeUpdate();
 
 			IdentityMap<Question> questionMap = IdentityMap.getInstance(question);
-			questionMap.put(question.getId(), question);
-			Question questionInMap = questionMap.get(question.getId());
 
 			// add the updated question into question identity map if it is not there.
-			if (questionInMap == null) {
-				questionMap.put(question.getId(), question);
-			}
+			questionMap.put(question.getId(), question);
+
 			stmt.close();
 			return true;
 		} catch (SQLException e) {

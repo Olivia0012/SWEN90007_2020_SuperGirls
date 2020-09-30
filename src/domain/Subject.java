@@ -5,7 +5,8 @@ package domain;
 
 import java.util.List;
 
-import shared.UnitOfWork;
+import lazyload.ExamList;
+import lazyload.ExamListProxyImp;
 
 /**
  * @author manlo
@@ -14,31 +15,23 @@ import shared.UnitOfWork;
 public class Subject extends DomainObject{
 	private String title;
 	private String subjectCode;
-	private List<Student> students;
 	private List<Exam> exams;
 
 	public Subject(int Id, String title, String subjectCode) {
 		super(Id);
 		this.setTitle(title);
 		this.setSubjectCode(subjectCode);
-		UnitOfWork.newCurrent();
-		UnitOfWork.getCurrent().registerNew(this);
 	}
 	
-	public Subject(int Id, String title, String subjectCode, List<Student> students, List<Exam> exams) {
+	public Subject(int Id, String title, String subjectCode, List<Exam> exams) {
 		super(Id);
-		UnitOfWork.newCurrent();
-		UnitOfWork.getCurrent().registerNew(this);
 		this.setTitle(title);
 		this.setSubjectCode(subjectCode);
 		this.setExams(exams);
-		this.setStudents(students);
 	}
 
 	public Subject() {
-		UnitOfWork.newCurrent();
-		UnitOfWork.getCurrent().registerNew(this);
-		// TODO Auto-generated constructor stub
+		super();
 	}
 
 	/**
@@ -53,7 +46,6 @@ public class Subject extends DomainObject{
 	 */
 	public void setTitle(String title) {
 		this.title = title;
-	//	UnitOfWorkImp.getCurrent().registerNew(this);
 	}
 
 
@@ -69,22 +61,6 @@ public class Subject extends DomainObject{
 	 */
 	public void setSubjectCode(String subjectCode) {
 		this.subjectCode = subjectCode;
-	//	UnitOfWorkImp.getCurrent().registerNew(this);
-	}
-
-	/**
-	 * @return the students
-	 */
-	public List<Student> getStudents() {
-		return students;
-	}
-
-	/**
-	 * @param students the students to set
-	 */
-	public void setStudents(List<Student> students) {
-		this.students = students;
-		UnitOfWork.getCurrent().registerNew(this);
 	}
 
 	/**
@@ -99,11 +75,10 @@ public class Subject extends DomainObject{
 	 */
 	public void setExams(List<Exam> exams) {
 		this.exams = exams;
-		UnitOfWork.getCurrent().registerNew(this);
 	}
 
-
-
 	
+
+
 
 }

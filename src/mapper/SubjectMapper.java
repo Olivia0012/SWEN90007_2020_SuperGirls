@@ -19,6 +19,7 @@ import domain.Exam;
 import domain.Subject;
 import domain.User;
 import enumeration.Role;
+import lazyload.ExamListProxyImp;
 import shared.IdentityMap;
 
 /**
@@ -169,7 +170,7 @@ public class SubjectMapper extends DataMapper {
 					Integer id = rs.getInt(1);
 					String subjectCode = rs.getString(2);
 					String subjectTitle = rs.getString(3);
-
+				//	ExamListProxyImp examList = new ExamListProxyImp();
 					subject = new Subject(id, subjectCode, subjectTitle);
 					result.add(subject);
 				}
@@ -264,10 +265,12 @@ public class SubjectMapper extends DataMapper {
 				
 				// finding the subject by the subjectId.
 				Subject subjectResult = subjectMapper.findById(subjectId);
+				
 				// finding the exams by the subjectId.
 				List<Exam> examList = examMapper.FindAllExamsBySubjectId(subjectId,role);
+			//	ExamListProxyImp examList = new ExamListProxyImp();
 				
-				subject = new Subject(subjectId,subjectResult.getSubjectCode(),subjectResult.getTitle(),null,examList);
+				subject = new Subject(subjectId,subjectResult.getSubjectCode(),subjectResult.getTitle(),examList);
 				result.add(subject);
 			}
 			

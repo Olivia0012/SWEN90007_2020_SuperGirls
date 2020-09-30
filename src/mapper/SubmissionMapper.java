@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import database.DatabaseConnection;
 import domain.Answer;
 import domain.DomainObject;
@@ -46,35 +45,32 @@ public class SubmissionMapper extends DataMapper {
 			stmt.setBoolean(4, submission.isLock());
 
 			int affectedRows = stmt.executeUpdate();
-			
-			if (affectedRows == 0) {
-		        throw new SQLException("Creating user failed, no rows affected.");
-		    }
-			try (ResultSet keys = stmt.getGeneratedKeys()) {
-		        if (keys.next()) {
-		            id = keys.getInt(1);
-		        }
-		        keys.close();
 
-		    }catch (SQLException e) {
+			if (affectedRows == 0) {
+				throw new SQLException("Creating user failed, no rows affected.");
+			}
+			try (ResultSet keys = stmt.getGeneratedKeys()) {
+				if (keys.next()) {
+					id = keys.getInt(1);
+				}
+				keys.close();
+
+			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
 
 			submission.setId(id);
 
 			IdentityMap<Submission> submissionMap = IdentityMap.getInstance(submission);
 			submissionMap.put(submission.getId(), submission);
-			
-			
+
 			stmt.close();
-			
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			
+
 		} finally {
 			DatabaseConnection.closeConnection();
 		}
@@ -100,9 +96,9 @@ public class SubmissionMapper extends DataMapper {
 			stmt.setInt(2, submission.getExam().getId());
 			stmt.setFloat(3, submission.getTotalMark());
 			stmt.setString(4, submission.getComment());
-			if(submission.getMarker()!=null)
+			if (submission.getMarker() != null)
 				stmt.setInt(5, submission.getMarker().getId());
-			else 
+			else
 				stmt.setInt(5, 0);
 			stmt.setString(6, submission.getMarkTime() + "");
 			stmt.setBoolean(7, submission.isLock());
@@ -112,13 +108,8 @@ public class SubmissionMapper extends DataMapper {
 			stmt.executeUpdate();
 
 			IdentityMap<Submission> submissionMap = IdentityMap.getInstance(submission);
-			Submission submissionInMap = submissionMap.get(submission.getId());
 
 			// add the updated submission into submission identity map if it is not there.
-			if (submissionInMap == null) {
-				submissionMap.put(submission.getId(), null);
-			}
-
 			submissionMap.put(submission.getId(), submission);
 
 			stmt.close();
@@ -206,8 +197,6 @@ public class SubmissionMapper extends DataMapper {
 					String comment = rs.getString(9);
 
 					Exam exam = examMapper.findById(examid);
-				//	exam.setQuestionList(null);
-					// exam.setId(examId);
 					User student = userMapper.findById(studentid);
 					User marker = userMapper.findById(markerid);
 					List<Answer> answers = answerMapper.findAnswersBySubmissionId(submissionId);
@@ -387,14 +376,16 @@ public class SubmissionMapper extends DataMapper {
 				String subTime = rs.getString(8);
 				String comment = rs.getString(9);
 
-			//	Exam exam = examMapper.findById(examid);
+				Exam exam = examMapper.findById(examid);
 				List<Answer> answers = answerMapper.findAnswersBySubmissionId(id);
 
-				// exam.setId(examId);
 				User student = userMapper.findById(studentid);
-				User marker = userMapper.findById(markerid);
+				User marker1 = userMapper.findById(markerid);
+				User marker = new User();
+				if (marker1 != null)
+					marker.setUserName(marker1.getUserName());
 
-				submission = new Submission(id, null, student, totalmark, comment, marker, marktime, subTime, isLocked,
+				submission = new Submission(id, exam, student, totalmark, comment, marker, marktime, subTime, isLocked,
 						answers);
 				result.add(submission);
 			}

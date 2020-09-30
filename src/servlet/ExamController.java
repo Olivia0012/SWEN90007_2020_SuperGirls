@@ -35,8 +35,8 @@ import util.SSOLogin;
 import java.io.BufferedReader;
 
 /**
- * GET method: find exam by examId;
- * POST method: create new submission when a student takes an exam.
+ * GET method: find exam by examId; POST method: create new submission when a
+ * student takes an exam.
  */
 @WebServlet("/ExamController")
 public class ExamController extends HttpServlet {
@@ -52,6 +52,8 @@ public class ExamController extends HttpServlet {
 	}
 
 	/**
+	 * find exam by examId;
+	 * 
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
@@ -64,15 +66,16 @@ public class ExamController extends HttpServlet {
 
 		if (user == null) {
 			response.getWriter().write("false"); // invalid token.
+
 		} else {
-			// finding exam by examId.
+			// get examId from request.
 			String data = new String(request.getParameter("examId").getBytes("ISO-8859-1"), "UTF-8");
 			int examId = Integer.valueOf(data);
 
-			ExamServiceImp a = new ExamServiceImp();
-			String exam = a.findExamById(examId);
+			// find exam info
+			ExamServiceImp examService = new ExamServiceImp();
+			String result = examService.findExamById(examId);
 
-			String result = JSONObject.toJSONString(exam);
 			response.getWriter().write(result);
 		}
 		header.setResponseHeader(response);
@@ -87,11 +90,9 @@ public class ExamController extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
-		SubmissionMapper sm = new SubmissionMapper();
-		ExamMapper em = new ExamMapper();
+
 		ResponseHeader header = new ResponseHeader();
-		
+
 		// Login check.
 		SSOLogin ssoCheck = new SSOLogin();
 		User user = ssoCheck.checkLogin(request);
@@ -105,48 +106,19 @@ public class ExamController extends HttpServlet {
 			JSONObject examJsonObject = jo.ReqJsonToObject(request);
 			exam = JSON.toJavaObject(examJsonObject, Exam.class);
 
-			// check if this student has taken this exam.
-			Submission checkSub = sm.FindSubmissionsByUserId_ExamId(user.getId(), exam.getId());
-
-			// not taken this exam before
-			if (checkSub.getId() == 0) {
-				
-				// create new submission and answers object
-				Submission newSub = new Submission();
-				newSub.setExam(exam);
-				newSub.setLock(false);
-				newSub.setStudent(user);
-
-				List<Answer> answers = new ArrayList<Answer>();
-				List<Question> questions = em.findById(exam.getId()).getQuestionList();
-				
-				for (Question q : questions) {
-					Answer an = new Answer();
-					an.setQuestion(q);
-					answers.add(an);
-				}
-
-				newSub.setAnswers(answers);
-
-				// add new submission and its answers into database
-				ExamServiceImp esi = new ExamServiceImp();
-				int newSubmissionId = esi.addSubmission(newSub);
-				
-				// add new submission successfully
-				if (newSubmissionId != 0) {
-					Submission newSubmission = sm.findById(newSubmissionId);
-					String result = JSONObject.toJSONString(newSubmission);
-					response.getWriter().write(result);
-				} else
-					response.getWriter().write("0");
-			} else
-				response.getWriter().write("1");
-
+			// add new submission into database
+			ExamServiceImp examService = new ExamServiceImp();
+			
+			boolean success = examService.addSubmission(exam, user);
+			if(success) {
+				int newSubmissionId = examService.findSubmissionByUserId_ExamId(user.getId(), exam.getId()).getId();
+				response.getWriter().write(newSubmissionId + "");
+			}else {
+				response.getWriter().write("-1");
+			}
 		}
 
 		header.setResponseHeader(response);
 	}
-
-
 
 }
