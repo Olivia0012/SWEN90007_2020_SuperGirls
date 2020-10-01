@@ -23,6 +23,7 @@ import domain.User;
 import enumeration.Role;
 import serviceImp.SubjectServiceImp;
 import serviceImp.UserServiceImp;
+import util.ResponseHeader;
 import util.SSOLogin;
 
 /**
@@ -72,8 +73,8 @@ public class LoginController extends HttpServlet {
 			response.getWriter().print("false");
 		}
 
-		response.setHeader("Access-Control-Allow-Origin", "*");
-		response.setContentType("text/json;charset=UTF-8");
+		ResponseHeader responseHeader = new ResponseHeader();
+		responseHeader.setResponseHeader(response);
 	}
 
 	/**
