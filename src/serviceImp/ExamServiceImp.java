@@ -177,7 +177,8 @@ public class ExamServiceImp implements ExamService {
 		if (user.getRole().equals(Role.STUDENT)) {
 			if (submission.getAnswers() == null) {
 				addAnswers(submission);
-				submission.setAnswers(answerMapper.findAnswersBySubmissionId(submissionId));
+				submission.getAnswers();
+			//	submission.setAnswers(answerMapper.findAnswersBySubmissionId(submissionId));
 			}
 		} else {
 			return submission;
