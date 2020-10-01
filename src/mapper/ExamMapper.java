@@ -328,7 +328,10 @@ public class ExamMapper extends DataMapper {
 
 				User instrctor = new User();
 
-				User creator = instructorMapper.findById(instructorId);
+				User instructor = instructorMapper.findById(instructorId);
+				User creator = new User();
+				creator.setId(instructor.getId());
+				creator.setUserName(instructor.getUserName());
 				
 				Subject subject = subjectMapper.findById(subjectId);
 
