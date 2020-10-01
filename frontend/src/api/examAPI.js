@@ -22,7 +22,7 @@ export async function getExams(examId) {
 }
 
 export async function getSubjectsByUserId(token) {
-	const endpoint = "/subject"; //subjectId=`+subjectId;
+	const endpoint = "/api/subject"; //subjectId=`+subjectId;
 	const dataFetched = await axios({
 		url: endpoint, // send a request to the library API
 		//		method: "POST", // HTTP POST method

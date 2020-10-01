@@ -1,20 +1,26 @@
 const axios = require('axios');
 axios.defaults.withCredentials = true;
 
+const proxy = `https://online-exam-app-supergirls.herokuapp.com`;
+
 //login
 export async function login(username, password) {
+	console.log(proxy);
+	console.log(username);
 	let storage = window.localStorage;
 	storage.setItem('token', null);
-	const endpoint = '/login?userName=' + username + '&passWord=' + password; //subjectId=`+subjectId;
+	const endpoint = `/login?userName=` + username + `&passWord=` + password; //subjectId=`+subjectId;
+	console.log(endpoint);
 	const dataFetched = await axios({
 		url: endpoint, // send a request to the library API
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			withCredentials: 'true'
+			withCredentials: 'true',
+			'Access-Control-Allow-Origin':'*'
 		}
 	}).then( res => {
-		if(res.data  !== false){
+		if(res.headers.token  !== 'undefined' || res.headers.token  !== null || typeof res.headers.token  !== 'undefined'){
 		   window.location.href = "./oea";
 		}
 		localStorage.setItem('token', res.headers.token);
@@ -37,7 +43,7 @@ export async function login(username, password) {
 
 //logout
 export async function logout(token) {
-	const endpoint = '/logout'; //subjectId=`+subjectId;
+	const endpoint = '/api/logout'; //subjectId=`+subjectId;
 	const dataFetched = await axios({
 		url: endpoint, // send a request to the library API
 		method: 'GET',
@@ -131,7 +137,7 @@ export async function markExam(submissions) {
 }
 
 export async function getSubjectsByUserId(token) {
-	const endpoint = "/subject"; //subjectId=`+subjectId;
+	const endpoint = "/api/subject"; //subjectId=`+subjectId;
 	const dataFetched = await axios({
 		url: endpoint, // send a request to the library API
 		//		method: "POST", // HTTP POST method
