@@ -352,10 +352,10 @@ public class ExamMapper extends DataMapper {
 
 			if (result.size() > 0) {
 				for (int i = 0; i < result.size(); i++) {
-					Exam s = examMap.get(result.get(i).getId());
-					if (s == null) {
+				//	Exam s = examMap.get(result.get(i).getId());
+				//	if (s == null) {
 						 examMap.put(result.get(i).getId(), result.get(i));
-					}
+				//	}
 					/*
 					 * System.out.println(result.get(i).getId() + "," + result.get(i).getTitle() +
 					 * "," + result.get(i).getStatus() + "," +

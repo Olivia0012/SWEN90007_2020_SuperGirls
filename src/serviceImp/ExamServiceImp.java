@@ -49,9 +49,11 @@ public class ExamServiceImp implements ExamService {
 	@Override
 	public String findExamById(int examId) {
 		Exam e = examMapper.findById(examId);
-
+		
+		e.setQuestionList(null);
 		// lazy loading question list.
 		e.getQuestionList();
+		
 		String result = JSONObject.toJSONString(e);
 		return result;
 	}
