@@ -16,7 +16,7 @@ public class DBMaintain {
 	         c = DriverManager
 	            .getConnection("jdbc:postgresql://localhost:5432/postgres",
 	            "postgres", "123");
-	         System.out.println("连接数据库成功！");
+	         System.out.println("connected succeeded！");
 	         stmt = c.createStatement();
 	         
 	         // Create exam table
@@ -82,7 +82,7 @@ public class DBMaintain {
 	         System.err.println(e.getClass().getName()+": "+e.getMessage());
 	         System.exit(0);
 	      }
-	      System.out.println("新表创建成功！");
+	      System.out.println("Create Table successfully！");
 	   }
 
 
