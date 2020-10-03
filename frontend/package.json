@@ -65,7 +65,7 @@
     "http-proxy-middleware": "^1.0.5",
     "prettier": "^1.19.1"
   },
-  "proxy":"http://localhost:8080/SWEN90007_2020_SuperGirls",
+  "proxy":"https://swen90007-banckend.herokuapp.com/",
   "secure": false,
   "changeOrigin": true
 }

@@ -4,7 +4,7 @@ module.exports = function(app) {
   app.use(
     '/api',
     createProxyMiddleware({
-      target: 'http://localhost:8080/SWEN90007_2020_SuperGirls',//'https://online-exam-app-supergirls.herokuapp.com/',
+      target: 'https://swen90007-banckend.herokuapp.com/',//'http://localhost:8080/SWEN90007_2020_SuperGirls',//'https://online-exam-app-supergirls.herokuapp.com/',
       changeOrigin: true,
       pathRewrite: {
         '^/api': ''
