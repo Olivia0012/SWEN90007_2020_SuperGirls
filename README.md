@@ -68,19 +68,6 @@ All deliverables will be uploaded and managed here.
   
    Implemented with React: [frontend](http://35.174.205.208:3000/)
 
-## Design Diagrams:
-
-![DomainModel](./Figure%201%20Domain%20Model.png)
-
-![Class](./Figure%204%20Class%20Diagram.png)
-
-![SQ_Instructor](./Figure%205%20Sequence%20Diagram%20of%20Instructor.png)
-
-![SQ_Student](./Figure%206%20Sequence%20Diagram%20of%20Student.png)
-
-![Component](./Figure%207%20Component%20Diagram.png)
-
-![UseCase](./Figure%209%20Use%20Case%20Diagram.png)
 
 
 ## Environment:
