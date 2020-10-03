@@ -31,7 +31,7 @@ const LoginView = () => {
 	const handleSubmit = async (auth) => {
 		//	let token;
 		await login(auth.email, auth.password).then((res) => {
-			alert(res.headers.token);
+		//	alert(res.headers.token);
 			if (
 				res.headers.token !== 'undefined' &&
 				res.headers.token !== null &&
