@@ -3,11 +3,15 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { addNewExam } from '../../../api/examAPI';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import { useNavigate } from 'react-router-dom';
+import { green } from '@material-ui/core/colors';
+import moment from 'moment';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import {
 	Link,
 	Box,
 	Card,
-	Checkbox,
+	IconButton,
 	Table,
 	TableBody,
 	TableCell,
@@ -37,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Results = ({ className, customers, ...rest }) => {
 	const classes = useStyles();
+	const navigate = useNavigate();
 	const [ selectedCustomerIds, setSelectedCustomerIds ] = useState([]);
 	const [ limit, setLimit ] = useState(10);
 	const [ isLoading, setLoading ] = useState(false);
@@ -107,33 +112,34 @@ const Results = ({ className, customers, ...rest }) => {
 
 	const AddNewExam = async () => {
 		if (openGreen) {
-			window.location.href = './subjects';
+			setDMOpen(false);
+			navigate(0);
 		} else {
-			console.log(values);
 			setLoading(true);
-			//	alert("Adding new exam!");
 			const newExam = {
-				createdTime: '2020-09-21:04:14:30',
+				createdTime: moment().format('YYYY-MM-DD HH:mm:ss') + '',
 				updatedTime: '',
 				creator: { id: 4, passWord: '', userName: '', role: '' },
 				id: -1,
 				locked: false,
-				questionList: [],
+				questionList: null,
 				status: 'CREATED',
 				subject: { id: subject.id, title: '', subjectCode: '' },
 				title: values.title
 			};
 			const a = await addNewExam(newExam)
-				.then(() => {
+				.then((res) => {
 					setLoading(false);
+					if (res.data == false) {
+						alert('Invalid session,Please login to continuee.');
+						navigate('/oea/subjects', { replace: true })
+					}
 					setOpenGreen(true);
-					//	alert("adding...");
 				})
 				.catch((error) => {
 					setLoading(false);
 					setOpen(true);
 					setError(error + '');
-					//			alert('Error from processDataAsycn() with async( When promise gets rejected ): ' + error);
 				});
 			console.log(a);
 		}
@@ -146,68 +152,120 @@ const Results = ({ className, customers, ...rest }) => {
 					<Table>
 						<TableHead>
 							<TableRow>
-								<TableCell padding="checkbox">
-									<Checkbox
-										checked={selectedCustomerIds.length === customers.length}
-										color="primary"
-										indeterminate={
-											selectedCustomerIds.length > 0 &&
-											selectedCustomerIds.length < customers.length
-										}
-										onChange={handleSelectAll}
-									/>
+								<TableCell />
+								<TableCell />
+								<TableCell />
+								<TableCell align="center" colSpan={3}>
+									Exams
 								</TableCell>
+								<TableCell />
+								<TableCell />
+							</TableRow>
+							<TableRow>
 								<TableCell>Subject Code</TableCell>
 								<TableCell>Subject Title</TableCell>
-								<TableCell>Exams</TableCell>
 								<TableCell>New Exam</TableCell>
+								<TableCell align="center">Title</TableCell>
+								<TableCell>Status</TableCell>
+								<TableCell>Creator</TableCell>
+								<TableCell>CreatedTime</TableCell>
 								<TableCell>Students</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{customers.slice(0, limit).map((customer) => (
-								<TableRow
-									hover
-									key={customer.title}
-									selected={selectedCustomerIds.indexOf(customer.id) !== -1}
-								>
-									<TableCell padding="checkbox">
-										<Checkbox
-											checked={selectedCustomerIds.indexOf(customer.id) !== -1}
-											onChange={(event) => handleSelectOne(event, customer.id)}
-											value="true"
-										/>
-									</TableCell>
-									<TableCell>
-										<Box alignItems="center" display="flex">
-											<Typography color="textPrimary" variant="body1">
-												{customer.subjectCode}
-											</Typography>
-										</Box>
-									</TableCell>
-									<TableCell>{customer.title}</TableCell>
-									<TableCell>
-										{customer.exams.map((item) => (
-											<TableRow><Link href={'./exam/id=' + item.id}>{item.title}</Link></TableRow>
-										))}
-										<br />
-									</TableCell>
-									<TableCell>
-										<Button
-											color="primary"
-											variant="contained"
-											onClick={(event) => handleOpen(event, customer)}
+							{customers.slice(0, limit).map(
+								(customer) =>
+									customer.exams.length !== 0 ? (
+										customer.exams.map((item, index) => (
+											<TableRow
+												hover
+												key={customer.title}
+												selected={selectedCustomerIds.indexOf(customer.id) !== -1}
+											>
+												<TableCell>
+													<Box alignItems="center" display="flex">
+														<Typography color="textPrimary" variant="body1">
+															{index == 0 ? customer.subjectCode : ''}
+														</Typography>
+													</Box>
+												</TableCell>
+												<TableCell>{index == 0 ? customer.title : ''}</TableCell>
+												<TableCell align="center">
+													{index == 0 ? (
+														<IconButton
+															color="secondary"
+															aria-label="add an alarm"
+															style={{ width: 50 }}
+															onClick={(event) => handleOpen(event, customer)}
+														>
+															<AddCircleOutlineIcon style={{ color: green[500] }} />
+														</IconButton>
+													) : (
+														<div />
+													)}
+												</TableCell>
+												<TableCell align="center">
+													<Link onClick={()=>navigate('../exam/id=' + item.id, { replace: true })}>{item.title}</Link>
+												</TableCell>
+												<TableCell>{item.status}</TableCell>
+												<TableCell>{item.creator.userName}</TableCell>
+												<TableCell>{item.createdTime}</TableCell>
+
+												<TableCell>
+													<Button
+														color="primary"
+														//	variant="contained"
+														onClick={() =>
+															navigate(
+																'/oea/students/subject=' +
+																	customer.id +
+																	'&exam=' +
+																	item.id,
+																{ replace: true }
+															)}
+													>
+														View
+													</Button>
+												</TableCell>
+											</TableRow>
+										))
+									) : (
+										<TableRow
+											hover
+											key={customer.title}
+											selected={selectedCustomerIds.indexOf(customer.id) !== -1}
 										>
-											Add
-										</Button>
-									</TableCell>
-									<TableCell>
-										<Button color="primary" variant="contained">
-											View
-										</Button>
-									</TableCell>
-								</TableRow>
-							))}
+											<TableCell>
+												<Box alignItems="center" display="flex">
+													<Typography color="textPrimary" variant="body1">
+														{customer.subjectCode}
+													</Typography>
+												</Box>
+											</TableCell>
+											<TableCell>
+												<Box alignItems="center" display="flex">
+													<Typography color="textPrimary" variant="body1">
+														{customer.title}
+													</Typography>
+												</Box>
+											</TableCell>
+											<TableCell />
+											<TableCell />
+											<TableCell />
+											<TableCell />
+											<TableCell />
+											<TableCell>
+												<Button
+													color="primary"
+													variant="contained"
+													onClick={(event) => handleOpen(event, customer)}
+												>
+													Add
+												</Button>
+											</TableCell>
+										</TableRow>
+									)
+							)}
 						</TableBody>
 					</Table>
 				</Box>

@@ -44,6 +44,7 @@ const EditExam = () => {
 	const routeResult = useRoutes(routes);
 	const examId = routeResult.props.value.params.id;
 	let questions = [];
+	console.log(routeResult);
 
 	const [ newquestion, setNewquestion ] = React.useState({
 		questionDescription: '',
@@ -75,9 +76,7 @@ const EditExam = () => {
 		});
 	}
 
-	const handleEdit = () => {
-		setEditable((pre) => !pre);
-	};
+	
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -114,13 +113,9 @@ const EditExam = () => {
 			questionMark: newquestion.questionMark,
 			questionNum: 0
 		};
-		console.log(q);
-		//	newQuestion.newquestion = newquestion;
 		setCount(count + 1);
-	//	setQuestion(...newQuestion,{ count, q });
 		console.log(newQuestion);
 		addNew([ ...newQuestion, { count, q } ]);
-	//	setCount(count + 1);
 
 	//	addNew([ ...newQuestion, { count, q } ]);
 		console.log(newQuestion);

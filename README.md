@@ -49,12 +49,17 @@ All deliverables will be uploaded and managed here.
 │   │   └── MANIFEST.MF
 │   ├── WEB-INF
 │   │   ├── lib
+│   │   │   ├── fastjson-1.1.6.jar
+│   │   │   └── postgresql-42.2.14.jar
 │   │   └── web.xml
 │   └── test.jsp
 ├── build
 │   └── classes
 │       ├── database
-│       │   └── DatabaseConnection.class
+│       │   ├── ConnectionPool.class
+│       │   ├── DBMaintain.class
+│       │   ├── DatabaseConnection.class
+│       │   └── QueryExecutor.class
 │       ├── domain
 │       │   ├── Admin.class
 │       │   ├── Answer.class
@@ -74,16 +79,41 @@ All deliverables will be uploaded and managed here.
 │       │   ├── AnswerMapper.class
 │       │   ├── DataMapper.class
 │       │   ├── ExamMapper.class
+│       │   ├── LockingMapper.class
 │       │   ├── QuestionMapper.class
 │       │   ├── SubjectMapper.class
 │       │   ├── SubmissionMapper.class
 │       │   └── UserMapper.class
+│       ├── service
+│       │   ├── ExamService.class
+│       │   ├── StudentService.class
+│       │   ├── SubjectService.class
+│       │   └── UserService.class
+│       ├── serviceImp
+│       │   ├── ExamServiceImp.class
+│       │   ├── StudentServiceImp.class
+│       │   ├── SubjectServiceImp.class
+│       │   ├── SubmissionServiceImp.class
+│       │   └── UserServiceImp.class
 │       ├── servlet
-│       │   └── HelloServlet.class
-│       └── shared
-│           ├── IdentityMap.class
-│           ├── LazyLoad.class
-│           └── UnitOfWork.class
+│       │   ├── AddExamController.class
+│       │   ├── DeleteExamController.class
+│       │   ├── DeleteQuestionController.class
+│       │   ├── EditExamController.class
+│       │   ├── ExamController.class
+│       │   ├── LoginController.class
+│       │   ├── LogoutController.class
+│       │   ├── MarkExamController.class
+│       │   ├── StudentController.class
+│       │   ├── SubjectController.class
+│       │   └── TakeExamController.class
+│       ├── shared
+│       │   ├── IdentityMap.class
+│       │   └── UnitOfWork.class
+│       └── util
+│           ├── JsonToObject.class
+│           ├── ResponseHeader.class
+│           └── SSOLogin.class
 ├── docs
 │   ├── architecture
 │   │   └── SWEN90007_CIS-TMPLT-ARCH-1.docx
@@ -97,11 +127,166 @@ All deliverables will be uploaded and managed here.
 │       ├── SWEN90007_2020_Part1_SuperGirls.pdf
 │       ├── [01.00-D05]SWEN90007_2020_Part1_SuperGirls.doc
 │       └── [01.00-D06]SWEN90007_2020_Part1_SuperGirls(1).doc
-├── lib
-│   └── postgresql-42.2.14.jar
+├── frontend
+│   ├── Dockerfile
+│   ├── LICENSE.md
+│   ├── build
+│   │   ├── _redirects
+│   │   ├── asset-manifest.json
+│   │   ├── favicon.ico
+│   │   ├── index.html
+│   │   ├── manifest.json
+│   │   ├── precache-manifest.7e42a1135817bdbd1a7786be666c75d7.js
+│   │   ├── service-worker.js
+│   │   └── static
+│   │       ├── css
+│   │       │   ├── 2.18fb2ca0.chunk.css
+│   │       │   └── 2.18fb2ca0.chunk.css.map
+│   │       ├── images
+│   │       │   ├── auth.jpeg
+│   │       │   ├── avatars
+│   │       │   │   ├── avatar_1.png
+│   │       │   │   ├── avatar_10.png
+│   │       │   │   ├── avatar_11.png
+│   │       │   │   ├── avatar_2.png
+│   │       │   │   ├── avatar_3.png
+│   │       │   │   ├── avatar_4.png
+│   │       │   │   ├── avatar_5.png
+│   │       │   │   ├── avatar_6.png
+│   │       │   │   ├── avatar_7.png
+│   │       │   │   ├── avatar_8.png
+│   │       │   │   └── avatar_9.png
+│   │       │   ├── not_found.png
+│   │       │   ├── products
+│   │       │   │   ├── product_1.png
+│   │       │   │   ├── product_2.png
+│   │       │   │   ├── product_3.png
+│   │       │   │   ├── product_4.png
+│   │       │   │   ├── product_5.png
+│   │       │   │   └── product_6.png
+│   │       │   ├── undraw_page_not_found_su7k.svg
+│   │       │   └── undraw_resume_folder_2_arse.svg
+│   │       ├── js
+│   │       │   ├── 2.1879194a.chunk.js
+│   │       │   ├── 2.1879194a.chunk.js.LICENSE.txt
+│   │       │   ├── 2.1879194a.chunk.js.map
+│   │       │   ├── main.f7e824f0.chunk.js
+│   │       │   ├── main.f7e824f0.chunk.js.map
+│   │       │   ├── runtime-main.6a771f16.js
+│   │       │   └── runtime-main.6a771f16.js.map
+│   │       └── logo.svg
+│   ├── jsconfig.json
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── public
+│   │   ├── _redirects
+│   │   ├── favicon.ico
+│   │   ├── index.html
+│   │   ├── manifest.json
+│   │   └── static
+│   │       ├── images
+│   │       │   ├── auth.jpeg
+│   │       │   ├── avatars
+│   │       │   │   ├── avatar_1.png
+│   │       │   │   ├── avatar_10.png
+│   │       │   │   ├── avatar_11.png
+│   │       │   │   ├── avatar_2.png
+│   │       │   │   ├── avatar_3.png
+│   │       │   │   ├── avatar_4.png
+│   │       │   │   ├── avatar_5.png
+│   │       │   │   ├── avatar_6.png
+│   │       │   │   ├── avatar_7.png
+│   │       │   │   ├── avatar_8.png
+│   │       │   │   └── avatar_9.png
+│   │       │   ├── not_found.png
+│   │       │   ├── products
+│   │       │   │   ├── product_1.png
+│   │       │   │   ├── product_2.png
+│   │       │   │   ├── product_3.png
+│   │       │   │   ├── product_4.png
+│   │       │   │   ├── product_5.png
+│   │       │   │   └── product_6.png
+│   │       │   ├── undraw_page_not_found_su7k.svg
+│   │       │   └── undraw_resume_folder_2_arse.svg
+│   │       └── logo.svg
+│   ├── setupProxy.js
+│   ├── src
+│   │   ├── App.js
+│   │   ├── api
+│   │   │   ├── examAPI.js
+│   │   │   └── instructorAPI.js
+│   │   ├── components
+│   │   │   ├── GlobalStyles.js
+│   │   │   ├── Logo.js
+│   │   │   └── Page.js
+│   │   ├── icons
+│   │   │   ├── Facebook.js
+│   │   │   └── Google.js
+│   │   ├── index.js
+│   │   ├── layouts
+│   │   │   ├── DashboardLayout
+│   │   │   │   ├── NavBar
+│   │   │   │   │   ├── NavItem.js
+│   │   │   │   │   └── index.js
+│   │   │   │   ├── TopBar.js
+│   │   │   │   └── index.js
+│   │   │   └── MainLayout
+│   │   │       ├── TopBar.js
+│   │   │       └── index.js
+│   │   ├── mixins
+│   │   │   └── chartjs.js
+│   │   ├── routes.js
+│   │   ├── serviceWorker.js
+│   │   ├── theme
+│   │   │   ├── index.js
+│   │   │   ├── shadows.js
+│   │   │   └── typography.js
+│   │   ├── utils
+│   │   │   ├── getInitials.js
+│   │   │   ├── loading.js
+│   │   │   └── setAuthToken.js
+│   │   └── views
+│   │       ├── auth
+│   │       │   ├── LoginView.js
+│   │       │   └── RegisterView.js
+│   │       ├── exam
+│   │       │   ├── EditExamView
+│   │       │   │   ├── ExamBasicInfo.js
+│   │       │   │   ├── NewQuestion.js
+│   │       │   │   └── index.js
+│   │       │   ├── ExamView
+│   │       │   │   ├── ExamBasicInfo.js
+│   │       │   │   ├── NewQuestion.js
+│   │       │   │   ├── QuestionCard.js
+│   │       │   │   └── index.js
+│   │       │   ├── MarkExamView
+│   │       │   │   ├── QuestionCard.js
+│   │       │   │   ├── SubmissionInfo.js
+│   │       │   │   └── index.js
+│   │       │   └── TakeExam
+│   │       │       ├── ExamInfo.js
+│   │       │       ├── QuestionCard.js
+│   │       │       └── index.js
+│   │       ├── student
+│   │       │   └── UserListView
+│   │       │       ├── Results.js
+│   │       │       ├── Toolbar.js
+│   │       │       ├── data.js
+│   │       │       └── index.js
+│   │       └── subject
+│   │           └── SubjectListView
+│   │               ├── Results.js
+│   │               ├── ResultsforStudent.js
+│   │               ├── Toolbar.js
+│   │               ├── data.json
+│   │               └── index.js
+│   └── yarn.lock
 ├── src
 │   ├── database
-│   │   └── DatabaseConnection.java
+│   │   ├── ConnectionPool.java
+│   │   ├── DBMaintain.java
+│   │   ├── DatabaseConnection.java
+│   │   └── QueryExecutor.java
 │   ├── domain
 │   │   ├── Admin.java
 │   │   ├── Answer.java
@@ -121,16 +306,41 @@ All deliverables will be uploaded and managed here.
 │   │   ├── AnswerMapper.java
 │   │   ├── DataMapper.java
 │   │   ├── ExamMapper.java
+│   │   ├── LockingMapper.java
 │   │   ├── QuestionMapper.java
 │   │   ├── SubjectMapper.java
 │   │   ├── SubmissionMapper.java
 │   │   └── UserMapper.java
+│   ├── service
+│   │   ├── ExamService.java
+│   │   ├── StudentService.java
+│   │   ├── SubjectService.java
+│   │   └── UserService.java
+│   ├── serviceImp
+│   │   ├── ExamServiceImp.java
+│   │   ├── StudentServiceImp.java
+│   │   ├── SubjectServiceImp.java
+│   │   ├── SubmissionServiceImp.java
+│   │   └── UserServiceImp.java
 │   ├── servlet
-│   │   └── HelloServlet.java
-│   └── shared
-│       ├── IdentityMap.java
-│       ├── LazyLoad.java
-│       └── UnitOfWork.java
+│   │   ├── AddExamController.java
+│   │   ├── DeleteExamController.java
+│   │   ├── DeleteQuestionController.java
+│   │   ├── EditExamController.java
+│   │   ├── ExamController.java
+│   │   ├── LoginController.java
+│   │   ├── LogoutController.java
+│   │   ├── MarkExamController.java
+│   │   ├── StudentController.java
+│   │   ├── SubjectController.java
+│   │   └── TakeExamController.java
+│   ├── shared
+│   │   ├── IdentityMap.java
+│   │   └── UnitOfWork.java
+│   └── util
+│       ├── JsonToObject.java
+│       ├── ResponseHeader.java
+│       └── SSOLogin.java
 ├── test
 │   └── SWEN90007-CIS-SW-TSTD.doc
 └── tree.text

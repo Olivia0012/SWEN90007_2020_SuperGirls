@@ -3,10 +3,11 @@
  */
 package service;
 
-import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import domain.Exam;
-import domain.Question;
+import domain.Submission;
 import domain.User;
 
 /**
@@ -14,14 +15,26 @@ import domain.User;
  *
  */
 public interface ExamService {
-	public String findExamById(int examId);
-	public String findAllExams();
-	public String updateExam(Exam exam);
 	
-	public String addNewExam(Exam exam);
-	public boolean addNewExamCheckingUser(Exam exam, User instructor);
+	// Exam
+	public boolean updateExam(HttpServletRequest request);//update exam
+	public boolean publishExam(String examId); // edit exam status
 	
-	public String deleteQuestionById(int questionId);
-	public String deleteExamById(int examId);
+	public boolean addNewExam(HttpServletRequest request,User user);//add new exam
+	
+	public boolean deleteExamById(int examId);//delete exam
+	public boolean deleteQuestionById(int questionId);//delete question
+	
+	public String findExamById(int examId);//find exam
+	public boolean takeExam(HttpServletRequest request,User user);//take exam
+	
+	
+	// Submission
+	public Submission findSubmissionById(int submissionId,User user);//find submission by its id
+	public Submission findSubmissionByUserId_ExamId(int userId, int examId);
+	public boolean markSubmission(HttpServletRequest request,User user);//mark a submission
+	public boolean addSubmission(Exam exam, User user);//add a new submission
+	public boolean addAnswers(Submission submission);//add new answers for a submission
+	
 
 }

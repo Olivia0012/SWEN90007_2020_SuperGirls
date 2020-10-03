@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Container, makeStyles } from '@material-ui/core';
+import { useRoutes,useNavigate} from 'react-router-dom';
 import Page from 'src/components/Page';
 import Results from './Results';
 import Toolbar from './Toolbar';
-import { getAllStudentsBySubjectId } from '../../../api/instructorAPI';
+import routes from 'src/routes';
+import { getAllStudentsBySubject_Exam } from '../../../api/instructorAPI';
+import Loading from 'src/utils/loading';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -16,32 +19,51 @@ const useStyles = makeStyles((theme) => ({
 
 const StudentListView = () => {
 	const classes = useStyles();
-	const [ data, setData ] = useState([]);
+	const navigate = useNavigate();
+	const [ data, setData ] = useState();
 	const [ isLoading, setLoading ] = useState(false);
+	const routeResult = useRoutes(routes);
+	console.log(routeResult.props.value.params.subject);
 
 	useEffect(() => {
 		const fetchData = async () => {
 			setLoading(true);
-			const result = await getAllStudentsBySubjectId(1);
-			setData(result.data);
-			setLoading(false);
-			console.log(data);
-			console.log(isLoading);
+
+			await getAllStudentsBySubject_Exam(
+				routeResult.props.value.params.subject,
+				routeResult.props.value.params.exam
+			).then((response) => {
+				console.log(response);
+				const result = response.data;
+				if (response.data == false) {
+					alert('Please login to continue.');
+					navigate('/', { replace: true });
+				}
+				setData(result);
+				setLoading(false);
+			});
 		};
 
 		fetchData();
 	}, []);
 
+	console.log(data);
 	return (
-		<Page className={classes.root} title="Customers">
-			<Container maxWidth={false}>
-				<Toolbar />
-				{data.map((item) => (
-					<Box mt={3}>
-						<Results exam={item} customers={data}/>
-					</Box>
-				))}
-			</Container>
+		<Page className={classes.root} title="Subjects">
+			{!isLoading && data ? (
+				<Container maxWidth={false}>
+					<Toolbar subject={data.subject} exam={data.exam} />
+					{
+						//data.map((item) => (
+						<Box mt={3}>
+							<Results customers={data.submissions} />
+						</Box>
+						//))
+					}
+				</Container>
+			) : (
+				<Loading />
+			)}
 		</Page>
 	);
 };

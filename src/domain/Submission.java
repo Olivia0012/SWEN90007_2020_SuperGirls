@@ -1,8 +1,9 @@
 package domain;
 
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
+
+import mapper.AnswerMapper;
+import mapper.QuestionMapper;
 
 public class Submission extends DomainObject{
 	private User student;
@@ -10,13 +11,13 @@ public class Submission extends DomainObject{
 	private float totalMark;
 	private String comment;
 	private User marker;
-	private Date markTime;
-	private Date subTime;
+	private String markTime;
+	private String subTime;
 	private boolean isLock;
 	private List<Answer> answers;
 	
-	public Submission(Integer id, Exam exam, User student, float totalmark, String comment, User marker,
-			Date marktime, Date subTime, boolean isLocked) {
+	public Submission(Integer id, Exam exam, User student, float totalMark, String comment, User marker,
+			String markTime, String subTime, boolean isLocked, List<Answer> answers) {
 		super(id);
 		this.setExam(exam);
 		this.setStudent(student);
@@ -94,13 +95,13 @@ public class Submission extends DomainObject{
 	/**
 	 * @return the markTime
 	 */
-	public Date getMarkTime() {
+	public String getMarkTime() {
 		return markTime;
 	}
 	/**
 	 * @param markTime the markTime to set
 	 */
-	public void setMarkTime(Date markTime) {
+	public void setMarkTime(String markTime) {
 		this.markTime = markTime;
 	}
 
@@ -120,6 +121,9 @@ public class Submission extends DomainObject{
 	 * @return the answers
 	 */
 	public List<Answer> getAnswers() {
+		if(answers == null) {
+			load();
+		}
 		return answers;
 	}
 	/**
@@ -131,14 +135,29 @@ public class Submission extends DomainObject{
 	/**
 	 * @return the subTime
 	 */
-	public Date getSubTime() {
+	public String getSubTime() {
 		return subTime;
 	}
 	/**
 	 * @param subTime the subTime to set
 	 */
-	public void setSubTime(Date subTime) {
+	public void setSubTime(String subTime) {
 		this.subTime = subTime;
 	}
+	
 
+	void load() {
+		try {
+			AnswerMapper answerMapper = new AnswerMapper();
+			List<Answer> answerList = answerMapper.findAnswersBySubmissionId(Id);
+			answers = answerList;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	
+	
 }

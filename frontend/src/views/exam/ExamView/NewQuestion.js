@@ -1,13 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
-import { NewQuestionCon } from './index';
 
 import {
 	Box,
 	Card,
 	Collapse,
-	IconButton,
 	TextField,
 	InputLabel,
 	Select,
@@ -19,44 +16,32 @@ import {
 	makeStyles
 } from '@material-ui/core';
 
-const useStyles = makeStyles({
-	root: {},
-	item: {
-		display: 'flex',
-		flexDirection: 'column'
-	}
-});
 
-const NewQuestion = ({ className, ...rest }) => {
-	const classes = useStyles();
-	//	const [ editable, setEditable ] = React.useState(false);
-	const [ isOpen, setOpen ] = React.useState(false);
+
+const NewQuestion = (props) => {
 	const [ values, setValues ] = React.useState({
 		questionType: '',
 		questionMark: '',
-		questionDescription: ''
-	});
-	const [ choices, setChoices ] = React.useState({
-		choice1: '',
-		choice2: '',
-		choice3: '',
-		choice4: ''
+		id: -1,
+		choices: [ '', '', '', '' ],
+		examId: 0,
+		questionDescription: '',
+		questionNum: 0
 	});
 
-	let { newquestion, setNewquestion } = useContext(NewQuestionCon);
-	console.log(newquestion);
-
-	//  console.log(t)
-	console.log(values.description);
+	const { handleAdd, qIndex } = props;
 
 	const handleChange = (prop) => (event) => {
 		setValues({ ...values, [prop]: event.target.value });
-		setNewquestion({ ...newquestion, [prop]: event.target.value });
-		//	setChoices({ ...choices, [prop]: event.target.value });
-		//	setNewquestion({...newquestion, choices:choices});
+		handleAdd(qIndex,{ ...values, [prop]: event.target.value });
 	};
 
-	
+	const handleEditChoice = (event, index) => {
+		const curChoice = event.target.value;
+		values.choices[index] = curChoice;
+		handleAdd(qIndex, values);
+	};
+
 	return (
 		<Card>
 			<CardContent>
@@ -70,7 +55,7 @@ const NewQuestion = ({ className, ...rest }) => {
 						<Grid item xs={9} lg={10}>
 							<TextField
 								id="standard-basic"
-								defaultValue={values.description}
+								defaultValue={values.questionDescription}
 								fullWidth
 								onChange={handleChange('questionDescription')}
 							/>
@@ -100,7 +85,7 @@ const NewQuestion = ({ className, ...rest }) => {
 								<Grid item xs={12} sm={4}>
 									<TextField
 										id="standard-basic"
-										defaultValue={values.mark}
+										defaultValue={values.questionMark}
 										fullWidth
 										onChange={handleChange('questionMark')}
 										label="Mark"
@@ -117,47 +102,20 @@ const NewQuestion = ({ className, ...rest }) => {
 											</Typography>
 										</Box>
 									</Grid>
-
-									<Grid item xs={12}>
-										<Box p={1}>
-											<TextField
-												id="standard-basic"
-												defaultValue={newquestion.choice1}
-												fullWidth
-												onChange={handleChange('choice1')}
-											/>
-										</Box>
-									</Grid>
-									<Grid item xs={12}>
-										<Box p={1}>
-											<TextField
-												id="standard-basic"
-												defaultValue={newquestion.choice2}
-												fullWidth
-												onChange={handleChange('choice2')}
-											/>
-										</Box>
-									</Grid>
-									<Grid item xs={12}>
-										<Box p={1}>
-											<TextField
-												id="standard-basic"
-												defaultValue={newquestion.choice3}
-												fullWidth
-												onChange={handleChange('choice3')}
-											/>
-										</Box>
-									</Grid>
-									<Grid item xs={12}>
-										<Box p={1}>
-											<TextField
-												id="standard-basic"
-												defaultValue={newquestion.choice4}
-												fullWidth
-												onChange={handleChange('choice4')}
-											/>
-										</Box>
-									</Grid>
+									{values.choices.map((item, index) => (
+										<Grid item xs={12} key={index}>
+											<Box p={1}>
+												<TextField
+													id="standard-basic"
+													defaultValue={item}
+													fullWidth
+													onChange={(event) => {
+														handleEditChoice(event, index);
+													}}
+												/>
+											</Box>
+										</Grid>
+									))}
 								</Grid>
 							</Collapse>
 						</Grid>

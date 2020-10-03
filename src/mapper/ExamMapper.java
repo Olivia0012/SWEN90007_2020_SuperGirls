@@ -24,7 +24,7 @@ import domain.User;
 import enumeration.ExamStatus;
 import enumeration.Role;
 import shared.IdentityMap;
-import shared.UnitOfWorkImp;
+import shared.UnitOfWork;
 
 /**
  * This class is the data mapper for exam.
@@ -38,7 +38,7 @@ public class ExamMapper extends DataMapper {
 	 * @return indication whether the insert is successful or not
 	 */
 	@Override
-	public Boolean insert(DomainObject obj) {
+	public int insert(DomainObject obj) {
 		Exam exam = (Exam) obj;
 		Date createTime = new Date();
 
@@ -46,7 +46,7 @@ public class ExamMapper extends DataMapper {
 				+ "VALUES (?,?,?,?,?,?)";
 
 		try {
-			PreparedStatement stmt = DatabaseConnection.prepare(addNewExamStm);
+			PreparedStatement stmt = DatabaseConnection.prepareInsert(addNewExamStm);
 			stmt.setInt(1, exam.getSubject().getId());
 			stmt.setInt(2, exam.getCreator().getId());
 			stmt.setString(3, createTime + "");
@@ -55,24 +55,24 @@ public class ExamMapper extends DataMapper {
 			stmt.setBoolean(6, exam.isLocked());
 
 			stmt.executeUpdate();
+			
 			ResultSet keys = stmt.getGeneratedKeys();
 			keys.next();
 			int id = keys.getInt(1);
-
 			exam.setId(id);
 
+			// add the new exam into the exam identity map.
 			IdentityMap<Exam> examMap = IdentityMap.getInstance(exam);
 			examMap.put(exam.getId(), exam);
-			System.out.println(id);
 
 			keys.close();
 			stmt.close();
-			return true;
+			return id;
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return false;
+			return 0;
 		} finally {
 			DatabaseConnection.closeConnection();
 		}
@@ -87,11 +87,10 @@ public class ExamMapper extends DataMapper {
 	 */
 	@Override
 	public Boolean update(DomainObject obj) {
-		UnitOfWorkImp.newCurrent();
+		UnitOfWork.newCurrent();
 		Exam exam = (Exam) obj;
-		LocalDateTime updateTime = LocalDateTime.now();
 
-		String updateSubjectStm = "UPDATE exam SET subjectid = ?,examtitle = ?,islock = ? WHERE examid = ?";
+		String updateSubjectStm = "UPDATE exam SET subjectid = ?,examtitle = ?,islock = ?,examstatus = ? WHERE examid = ?";
 
 		try {
 			PreparedStatement stmt = DatabaseConnection.prepare(updateSubjectStm);
@@ -100,17 +99,16 @@ public class ExamMapper extends DataMapper {
 			stmt.setString(2, exam.getTitle());
 			// stmt.setString(3, exam.getStatus() + "");
 			stmt.setBoolean(3, exam.isLocked());
-			stmt.setInt(4, exam.getId());
+			stmt.setString(4, exam.getStatus() + "");
+			stmt.setInt(5, exam.getId());
 			stmt.executeUpdate();
 
 			IdentityMap<Exam> examMap = IdentityMap.getInstance(exam);
-			Exam examInMap = examMap.get(exam.getId());
 
 			// add the updated subject into subject identity map if it is not there.
-			if (examInMap == null) {
-				examMap.put(exam.getId(), exam);
-			}
-			UnitOfWorkImp.getCurrent().commit();
+			examMap.put(exam.getId(), exam);
+			
+			UnitOfWork.getCurrent().commit();
 			stmt.close();
 			return true;
 		} catch (SQLException e) {
@@ -130,7 +128,6 @@ public class ExamMapper extends DataMapper {
 	 */
 	@Override
 	public Boolean delete(DomainObject obj) {
-		UnitOfWorkImp.newCurrent();
 		Exam exam = (Exam) obj;
 
 		String deleteSubjectStm = "DELETE FROM exam WHERE examid = ?";
@@ -146,7 +143,6 @@ public class ExamMapper extends DataMapper {
 				examMap.put(exam.getId(), null);
 			}
 
-			UnitOfWorkImp.getCurrent().commit();
 			stmt.close();
 			return true;
 		} catch (SQLException e) {
@@ -171,6 +167,10 @@ public class ExamMapper extends DataMapper {
 
 		IdentityMap<Exam> examMap = IdentityMap.getInstance(exam);
 		exam = examMap.get(examId);
+
+		String r1 = JSONObject.toJSONString(exam);
+		System.out.println("findById exam: " + r1);
+
 		SubjectMapper subjectMapper = new SubjectMapper();
 		QuestionMapper questisonMapper = new QuestionMapper();
 		UserMapper instructorMapper = new UserMapper();
@@ -190,15 +190,15 @@ public class ExamMapper extends DataMapper {
 					Integer id = rs.getInt(1);
 					Integer subjectId = rs.getInt(2);
 					Integer instructorId = rs.getInt(3);
-					// Date updateTime = rs.getDate(5);
 					String title = rs.getString(4);
-					boolean isLocked = rs.getBoolean(5);
-					String createTime = rs.getString(6);
-					String status = rs.getString(7);
+					String createTime = rs.getString(5);
+					String status = rs.getString(6);
+					boolean isLocked = rs.getBoolean(7);
 
-					List<Question> questionList = questisonMapper.findQuestionByExamId(examId);
+					List<Question> questionList = questisonMapper.findQuestionByExamId(id);
 					Subject subject = subjectMapper.findById(subjectId);
 					User instrctor = instructorMapper.findById(instructorId);
+					
 					exam = new Exam(id, subject, instrctor, createTime, null, title, ExamStatus.valueOf(status),
 							isLocked, questionList);
 					result.add(exam);
@@ -212,8 +212,8 @@ public class ExamMapper extends DataMapper {
 						}
 
 					}
-					String result1 = JSONObject.toJSONString(exam);
-					System.out.println(result1);
+					String result1 = JSONObject.toJSONString(result);
+					System.out.println("examMap result : " + result1);
 				}
 
 				rs.close();
@@ -264,6 +264,7 @@ public class ExamMapper extends DataMapper {
 				boolean isLocked = rs.getBoolean("isLock");
 
 				List<Question> questionList = questisonMapper.findQuestionByExamId(id);
+				
 				Subject subject = subjectMapper.findById(subjectId);
 				User instrctor = instructorMapper.findById(instructorId);
 				exam = new Exam(id, subject, instrctor, createTime, null, title, ExamStatus.valueOf(status), isLocked,
@@ -302,13 +303,12 @@ public class ExamMapper extends DataMapper {
 	 *
 	 * @return all the exams records.
 	 */
-	public List<Exam> FindAllExamsBySubjectId(int subjectid) {
+	public List<Exam> FindAllExamsBySubjectId(int subjectid, Role role) {
 		Exam exam = new Exam();
 
 		String queryAllExamBySubjetIdStm = "SELECT * FROM exam WHERE subjectid=?"; // query all exams by subjectId
 		IdentityMap<Exam> examMap = IdentityMap.getInstance(exam);
 		List<Exam> result = new ArrayList<Exam>();
-		QuestionMapper questisonMapper = new QuestionMapper();
 		SubjectMapper subjectMapper = new SubjectMapper();
 		UserMapper instructorMapper = new UserMapper();
 
@@ -322,25 +322,40 @@ public class ExamMapper extends DataMapper {
 				Integer subjectId = rs.getInt("subjectId");
 				Integer instructorId = rs.getInt("instructorId");
 				String createTime = rs.getString("createTime");
-				// Date updateTime = rs.getDate("updatetime");
 				String title = rs.getString("examTitle");
 				String status = rs.getString("examStatus");
 				boolean isLocked = rs.getBoolean("isLock");
 
-				List<Question> questionList = questisonMapper.findQuestionByExamId(id);
+				User instrctor = new User();
+
+				User instructor = instructorMapper.findById(instructorId);
+				User creator = new User();
+				creator.setId(instructor.getId());
+				creator.setUserName(instructor.getUserName());
+				
 				Subject subject = subjectMapper.findById(subjectId);
-				User instrctor = instructorMapper.findById(instructorId);
-				exam = new Exam(id, subject, instrctor, createTime, null, title, ExamStatus.valueOf(status), isLocked,
-						questionList);
-				result.add(exam);
+
+				if(role.equals(Role.STUDENT)) {
+					if(status.equals("PUBLISHED") || status.equals("RELEASED")) {
+						exam = new Exam(id, subject, instrctor, createTime, null, title, ExamStatus.valueOf(status), isLocked,
+								null);
+						result.add(exam);
+					}
+				}else {
+					exam = new Exam(id, subject, creator, createTime, null, title, ExamStatus.valueOf(status), isLocked,
+							null);
+					result.add(exam);
+				}
+				
+
 			}
 
 			if (result.size() > 0) {
 				for (int i = 0; i < result.size(); i++) {
-					Exam s = examMap.get(result.get(i).getId());
-					if (s == null) {
-						examMap.put(result.get(i).getId(), result.get(i));
-					}
+				//	Exam s = examMap.get(result.get(i).getId());
+				//	if (s == null) {
+						 examMap.put(result.get(i).getId(), result.get(i));
+				//	}
 					/*
 					 * System.out.println(result.get(i).getId() + "," + result.get(i).getTitle() +
 					 * "," + result.get(i).getStatus() + "," +
@@ -373,9 +388,14 @@ public class ExamMapper extends DataMapper {
 		 * ExamStatus.CREATED, false,null);
 		 */
 		Exam e1 = em.findById(1);
+		String result1 = JSONObject.toJSONString(e1);
+		System.out.println("Original: "+result1);
+		e1.setStatus(ExamStatus.RELEASED);
+		em.update(e1);
+		Exam e2 = em.findById(1);
 		// em.insert(e);
-		// String result = JSONObject.toJSONString(e1);
-		// System.out.println(result);
+		String result = JSONObject.toJSONString(e2);
+		System.out.println("Updated : "+result);
 	}
 
 }

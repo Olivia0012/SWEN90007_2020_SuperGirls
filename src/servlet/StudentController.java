@@ -10,10 +10,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 
-import service.StudentServiceImp;
-import service.SubjectServiceImp;
-import service.ExamServiceImp;
+import domain.Exam;
+import domain.Subject;
+import domain.User;
+import enumeration.Role;
+import mapper.ExamMapper;
+import mapper.SubjectMapper;
+import service.UserService;
+import serviceImp.ExamServiceImp;
+import serviceImp.StudentServiceImp;
+import serviceImp.SubjectServiceImp;
+import serviceImp.UserServiceImp;
+import util.ResponseHeader;
+import util.SSOLogin;
 
 /**
  * Servlet implementation class SubjectController
@@ -21,39 +32,62 @@ import service.ExamServiceImp;
 @WebServlet("/StudentController")
 public class StudentController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public StudentController() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+	private UserService us = new UserServiceImp();
+	private ResponseHeader header = new ResponseHeader();
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		String data =new String(request.getParameter("subjectId").getBytes("ISO-8859-1"),"UTF-8");
-	//	String data = request.getParameter("data");
-	//	System.out.println(data);
-        int subjectId = Integer. valueOf(data);
-	//	response.getWriter().append("Served at: ").append(request.getContextPath());
-		StudentServiceImp a = new StudentServiceImp();
-		String result = a.findAllStudentsBySubjectId(subjectId);
-		response.setHeader("Access-Control-Allow-Origin", "*");  
-        response.setContentType("text/json;charset=UTF-8");
-		response.getWriter().write(result);
+	public StudentController() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * Finding all students with their submissions
+	 * 
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// getting subjectId and examId from the request
+		String examIdStr = new String(request.getParameter("exam").getBytes("ISO-8859-1"), "UTF-8");
+		String subjectIdStr = new String(request.getParameter("subject").getBytes("ISO-8859-1"), "UTF-8");
+		int examId = Integer.valueOf(examIdStr);
+		int subjectId = Integer.valueOf(subjectIdStr);
+
+		ResponseHeader header = new ResponseHeader();
+
+		// Login check.
+		SSOLogin ssoCheck = new SSOLogin();
+		User user = ssoCheck.checkLogin(request);
+
+		if (user == null) {
+			response.getWriter().write("false"); // invalid token.
+		} else {
+
+			// Only instructor can view the students with their submissions lists.
+			if (user.getRole().equals(Role.INSTRUCTOR)) {
+				StudentServiceImp a = new StudentServiceImp();
+				String result = a.findAllStudentsAndSubmissions(subjectId, examId);
+				response.getWriter().write(result);
+			} else {
+				response.getWriter().write("false");
+			}
+
+		}
+		header.setResponseHeader(response);
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
 
-	
 }

@@ -1,7 +1,6 @@
 package servlet;
 
 import java.io.IOException;
-import java.util.Enumeration;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,49 +9,62 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 
-import service.SubjectServiceImp;
-import service.ExamServiceImp;
+import domain.User;
+import service.UserService;
+import serviceImp.SubjectServiceImp;
+import serviceImp.UserServiceImp;
+import util.ResponseHeader;
+import util.SSOLogin;
 
 /**
- * Servlet implementation class SubjectController
+ * Querying all enrolled subjects.
  */
 @WebServlet("/SubjectController")
 public class SubjectController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public SubjectController() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+	private SSOLogin ssoCheck = new SSOLogin();
+	private ResponseHeader header = new ResponseHeader();
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		String data =new String(request.getParameter("userId").getBytes("ISO-8859-1"),"UTF-8");
-	//	String data = request.getParameter("data");
-	//	System.out.println(data);
-        int userId = Integer. valueOf(data);
-	//	response.getWriter().append("Served at: ").append(request.getContextPath());
-		SubjectServiceImp a = new SubjectServiceImp();
-		String result = a.findAllSubjectsByUserId(userId);
-		response.setHeader("Access-Control-Allow-Origin", "*");  
-        response.setContentType("text/json;charset=UTF-8");
-		response.getWriter().write(result);
+	public SubjectController() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// Login check.
+		User user = ssoCheck.checkLogin(request);
+		
+		if(user == null) {
+			response.getWriter().write("false"); //invalid token.
+		}else {
+			 // finding all enrolled subjects for the user.
+		     SubjectServiceImp a = new SubjectServiceImp();
+		     String subjects = a.findAllSubjectsByUserId(user.getId(), user.getRole());
+		     System.out.println("subjects； "+subjects);
+		     String result = "{\"user\":"+JSONObject.toJSONString(user)+",\"subjects\":"+subjects+"}";
+		     response.getWriter().write(result);
+		}
+		header.setResponseHeader(response);
+	}
+	
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
 
-	
 }

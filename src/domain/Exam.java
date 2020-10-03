@@ -1,11 +1,10 @@
 package domain;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import enumeration.ExamStatus;
-import shared.UnitOfWorkImp;
+import mapper.QuestionMapper;
 
 public class Exam extends DomainObject{
 	private Subject subject;
@@ -15,12 +14,10 @@ public class Exam extends DomainObject{
 	private String title;
 	private ExamStatus status;
 	private boolean isLocked;
-	private List<Question> questionList = new ArrayList<Question>();
+	private List<Question> questionList;
 	
 	public Exam() {
 		super();
-		UnitOfWorkImp.newCurrent();
-		UnitOfWorkImp.getCurrent().registerNew(this);
 	}
 
 
@@ -33,16 +30,11 @@ public class Exam extends DomainObject{
 		this.setTitle(title);
 		this.setStatus(status);
 		this.setLocked(isLocked);
-		this.setQuestionList(questionList);
-		UnitOfWorkImp.newCurrent();
-		UnitOfWorkImp.getCurrent().registerNew(this);
 	}
 
 	public Exam(Integer id, String title) {
 		super(id);
 		this.setTitle(title);
-		UnitOfWorkImp.newCurrent();
-		UnitOfWorkImp.getCurrent().registerNew(this);
 	}
 
 
@@ -59,7 +51,6 @@ public class Exam extends DomainObject{
 	 */
 	public void setSubject(Subject subject) {
 		this.subject = subject;
-		UnitOfWorkImp.getCurrent().registerDirty(this);
 	}
 
 
@@ -76,7 +67,6 @@ public class Exam extends DomainObject{
 	 */
 	public void setCreator(User creator) {
 		this.creator = creator;
-		UnitOfWorkImp.getCurrent().registerDirty(this);
 	}
 
 
@@ -94,7 +84,6 @@ public class Exam extends DomainObject{
 	 */
 	public void setCreatedTime(String createdTime) {
 		this.createdTime = createdTime;
-		UnitOfWorkImp.getCurrent().registerDirty(this);
 	}
 
 
@@ -111,7 +100,6 @@ public class Exam extends DomainObject{
 	 */
 	public void setUpdatedTime(Date updatedTime) {
 		this.updatedTime = updatedTime;
-		UnitOfWorkImp.getCurrent().registerDirty(this);
 	}
 
 
@@ -128,7 +116,6 @@ public class Exam extends DomainObject{
 	 */
 	public void setTitle(String title) {
 		this.title = title;
-		UnitOfWorkImp.getCurrent().registerDirty(this);
 	}
 
 
@@ -145,7 +132,6 @@ public class Exam extends DomainObject{
 	 */
 	public void setStatus(ExamStatus status) {
 		this.status = status;
-		UnitOfWorkImp.getCurrent().registerDirty(this);
 	}
 
 
@@ -162,24 +148,39 @@ public class Exam extends DomainObject{
 	 */
 	public void setLocked(boolean isLocked) {
 		this.isLocked = isLocked;
-		UnitOfWorkImp.getCurrent().registerDirty(this);
 	}
+
 
 	/**
 	 * @return the questionList
 	 */
 	public List<Question> getQuestionList() {
-		return this.questionList; 
+		if (questionList == null) {
+			load();
+		}
+		return questionList;
 	}
+
 
 	/**
 	 * @param questionList the questionList to set
 	 */
 	public void setQuestionList(List<Question> questionList) {
 		this.questionList = questionList;
-		UnitOfWorkImp.getCurrent().registerDirty(this);
 	}
 
+
+	void load() {
+		try {
+			QuestionMapper questionMapper = new QuestionMapper();
+			List<Question> questions = questionMapper.findQuestionByExamId(Id);
+			questionList = questions;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
 
 
 }

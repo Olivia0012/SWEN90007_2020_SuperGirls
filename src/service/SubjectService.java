@@ -3,15 +3,14 @@
  */
 package service;
 
-import java.util.List;
 
-import domain.Subject;
+import enumeration.Role;
 
 /**
  * @author manlo
  *
  */
 public interface SubjectService {
-	public String findAllSubjectsByUserId(int userId);
+	public String findAllSubjectsByUserId(int userId, Role role);
 
 }

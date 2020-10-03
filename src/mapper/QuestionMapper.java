@@ -33,13 +33,13 @@ public class QuestionMapper extends DataMapper {
 	 * @return indication whether the insert is successful or not
 	 */
 	@Override
-	public Boolean insert(DomainObject obj) {
+	public int insert(DomainObject obj) {
 		Question question = (Question) obj;
 		String addNewQuestionStm = "INSERT INTO QUESTION (questionnum,questionType,questiondes,questionmark,examid, choice1, choice2, choice3, choice4) "
 				+ "VALUES (?,?,?,?,?,?,?,?,?)";// insert new subject 1
 		// into subject table
 		try {
-			PreparedStatement stmt = DatabaseConnection.prepare(addNewQuestionStm);
+			PreparedStatement stmt = DatabaseConnection.prepareInsert(addNewQuestionStm);
 			stmt.setInt(1, question.getQuestionNum());
 			stmt.setString(2, question.getQuestionType() + "");
 			stmt.setString(3, question.getQuestionDescription());
@@ -60,12 +60,12 @@ public class QuestionMapper extends DataMapper {
 
 			keys.close();
 			stmt.close();
-			return true;
+			return id;
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return false;
+			return 0;
 		} finally {
 			DatabaseConnection.closeConnection();
 		}
@@ -99,13 +99,10 @@ public class QuestionMapper extends DataMapper {
 			stmt.executeUpdate();
 
 			IdentityMap<Question> questionMap = IdentityMap.getInstance(question);
-			questionMap.put(question.getId(), question);
-			Question questionInMap = questionMap.get(question.getId());
 
 			// add the updated question into question identity map if it is not there.
-			if (questionInMap == null) {
-				questionMap.put(question.getId(), question);
-			}
+			questionMap.put(question.getId(), question);
+
 			stmt.close();
 			return true;
 		} catch (SQLException e) {

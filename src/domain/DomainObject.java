@@ -8,7 +8,7 @@ package domain;
  *
  */
 public abstract class DomainObject {
-	private int Id;
+	protected int Id;
 
 	/**
 	 * 

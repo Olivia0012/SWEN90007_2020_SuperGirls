@@ -7,10 +7,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import service.ExamServiceImp;
+import domain.User;
+import serviceImp.ExamServiceImp;
+import util.ResponseHeader;
+import util.SSOLogin;
 
-/**
- * Servlet implementation class DeleteExamController
+/** 
+ * Delete Exam Controller
  */
 @WebServlet("/DeleteExamController")
 public class DeleteExamController extends HttpServlet {
@@ -25,19 +28,32 @@ public class DeleteExamController extends HttpServlet {
     }
 
 	/**
+	 * 
+	 * delete an exam
+	 * 
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String data =new String(request.getParameter("examId").getBytes("ISO-8859-1"),"UTF-8");
 	    int examId = Integer. valueOf(data);
-	    System.out.println("examId-->" + examId);
-		ExamServiceImp a = new ExamServiceImp();
-		String result = a.deleteExamById(examId);
-		response.setHeader("Access-Control-Allow-Origin", "*"); 
+	    
+	    ResponseHeader header = new ResponseHeader();
 
-        response.setContentType("text/json;charset=UTF-8");
-        
-		response.getWriter().write(result);
+		// Login check.
+		SSOLogin ssoCheck = new SSOLogin();
+		User user = ssoCheck.checkLogin(request);
+
+		if (user == null) {
+			response.getWriter().write("false"); // invalid token.
+		} else {
+			//delete the question
+			ExamServiceImp deleteExam = new ExamServiceImp();
+			boolean success = deleteExam.deleteExamById(examId);
+
+			response.getWriter().write(success + "");
+		}
+		header.setResponseHeader(response);
+	    
 	}
 
 	/**

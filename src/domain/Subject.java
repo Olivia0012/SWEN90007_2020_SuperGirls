@@ -3,16 +3,18 @@
  */
 package domain;
 
+import java.sql.ResultSet;
 import java.util.List;
+
+import mapper.SubjectMapper;
 
 /**
  * @author manlo
  *
  */
-public class Subject extends DomainObject{
+public class Subject extends DomainObject {
 	private String title;
 	private String subjectCode;
-	private List<Student> students;
 	private List<Exam> exams;
 
 	public Subject(int Id, String title, String subjectCode) {
@@ -20,17 +22,16 @@ public class Subject extends DomainObject{
 		this.setTitle(title);
 		this.setSubjectCode(subjectCode);
 	}
-	
-	public Subject(int Id, String title, String subjectCode, List<Student> students, List<Exam> exams) {
+
+	public Subject(int Id, String title, String subjectCode, List<Exam> exams) {
 		super(Id);
 		this.setTitle(title);
 		this.setSubjectCode(subjectCode);
 		this.setExams(exams);
-		this.setStudents(students);
 	}
 
 	public Subject() {
-		// TODO Auto-generated constructor stub
+		super();
 	}
 
 	/**
@@ -47,7 +48,6 @@ public class Subject extends DomainObject{
 		this.title = title;
 	}
 
-
 	/**
 	 * @return the subjectCode
 	 */
@@ -63,20 +63,6 @@ public class Subject extends DomainObject{
 	}
 
 	/**
-	 * @return the students
-	 */
-	public List<Student> getStudents() {
-		return students;
-	}
-
-	/**
-	 * @param students the students to set
-	 */
-	public void setStudents(List<Student> students) {
-		this.students = students;
-	}
-
-	/**
 	 * @return the exams
 	 */
 	public List<Exam> getExams() {
@@ -89,8 +75,6 @@ public class Subject extends DomainObject{
 	public void setExams(List<Exam> exams) {
 		this.exams = exams;
 	}
-
-
 
 	
 
