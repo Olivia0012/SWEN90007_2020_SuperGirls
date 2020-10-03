@@ -8,7 +8,7 @@ app.use(serveStatic(__dirname));
 app.use(
 	'/api',
 	createProxyMiddleware({
-		target: 'https://online-exam-app-supergirls.herokuapp.com/',
+		target: 'http://localhost:8080/SWEN90007_2020_SuperGirls',//'https://online-exam-app-supergirls.herokuapp.com/',
 		changeOrigin: true,
 		pathRewrite: {
 			'^/api': ''

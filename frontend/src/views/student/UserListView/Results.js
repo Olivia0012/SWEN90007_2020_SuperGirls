@@ -18,7 +18,7 @@ import {
 	makeStyles,
 	Button
 } from '@material-ui/core';
-import getInitials from '../../../utils/getInitials';
+import { useNavigate} from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
 	root: {},
@@ -29,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Results = ({ className, customers, ...rest }) => {
 	const classes = useStyles();
+	const navigate = useNavigate();
 	const [ selectedCustomerIds, setSelectedCustomerIds ] = useState([]);
 	const [ limit, setLimit ] = useState(10);
 	const [ page, setPage ] = useState(0);
@@ -132,26 +133,26 @@ const Results = ({ className, customers, ...rest }) => {
 										</Box>
 									</TableCell>
 									<TableCell align="center">
-										{customer.submissions[0].id !== 0 ? customer.submissions[0].totalMark : '-'}
+										{customer.submissions[0] && customer.submissions[0].id !== 0 ? customer.submissions[0].totalMark : '-'}
 									</TableCell>
 									<TableCell align="center">
-										{customer.submissions[0].id !== 0 && customer.submissions[0].comment ? (
+										{customer.submissions[0] &&customer.submissions[0].id !== 0 && customer.submissions[0].comment ? (
 											customer.submissions[0].comment
 										) : (
 											'-'
 										)}
 									</TableCell>
 									<TableCell align="center">
-										{customer.submissions[0].id !== 0 && customer.submissions[0].marker ? (
+										{customer.submissions[0] &&customer.submissions[0].id !== 0 && customer.submissions[0].marker ? (
 											customer.submissions[0].marker.userName
 										) : (
 											'-'
 										)}
 									</TableCell>
 									<TableCell align="center">
-										{customer.submissions[0].id !== 0 ? (
-											<Button href={'./submission=' + customer.submissions[0].id} color="primary">
-												{customer.submissions[0].totalMark == 0 ? 'Mark' : 'View'}
+										{customer.submissions[0] && customer.submissions[0].id !== 0 ? (
+											<Button onClick={()=>navigate('/oea/students/submission=' + customer.submissions[0].id, { replace: true })} color="primary">
+												{customer.submissions[0] &&customer.submissions[0].comment == null ? 'Mark' : 'View'}
 											</Button>
 										) : (
 											<div>-</div>

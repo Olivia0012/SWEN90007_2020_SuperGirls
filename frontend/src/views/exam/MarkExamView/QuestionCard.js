@@ -67,7 +67,7 @@ function QuestionCard(props) {
 						label="Mark"
 						onChange={handleChange}
 						//	placeholder={answer.mark}
-						disabled={marker.id!==0}
+						disabled={marker && marker.userName ? true:false}
 						defaultValue={answer.mark}
 						id="standard-start-adornment"
 						className={clsx(classes.margin, classes.textField)}

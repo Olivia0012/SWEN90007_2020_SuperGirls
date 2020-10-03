@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Container, makeStyles } from '@material-ui/core';
-import { useRoutes } from 'react-router-dom';
+import { useRoutes,useNavigate} from 'react-router-dom';
 import Page from 'src/components/Page';
 import Results from './Results';
 import Toolbar from './Toolbar';
@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
 
 const StudentListView = () => {
 	const classes = useStyles();
+	const navigate = useNavigate();
 	const [ data, setData ] = useState();
 	const [ isLoading, setLoading ] = useState(false);
 	const routeResult = useRoutes(routes);
@@ -36,7 +37,7 @@ const StudentListView = () => {
 				const result = response.data;
 				if (response.data == false) {
 					alert('Please login to continue.');
-					window.location.href = '../../';
+					navigate('/', { replace: true });
 				}
 				setData(result);
 				setLoading(false);

@@ -20,8 +20,10 @@ public class SSOLogin {
 	 */
 	public User checkLogin(HttpServletRequest request) {
 		String token = request.getHeader("token");
-	//	System.out.println("token: "+token);
+		System.out.println("token: "+token);
 		User user = SSOLogin.loginList.get(token);
+		if(user !=null)
+		 System.out.println("check key:"+token +" username:"+user.getUserName());
 		return user;
 		
 	}
@@ -39,17 +41,23 @@ public class SSOLogin {
 		  User userInList = (User)entry.getValue(); 
 		  // delete the previous login user
 		  if(userInList.getId() == user.getId()) {
-			  SSOLogin.loginList.remove(key);
+			  System.out.println("login key:"+key);
+			//  SSOLogin.loginList.remove(key);
+			 
 			  break;
 		  }	  
 		}
+		
 		SSOLogin.loginList.put(token, user);
+		 System.out.println("login key:"+SSOLogin.loginList.get(token).getUserName() +" token:"+token);
+		
 	}
 
 	/**
 	 * @param loginList the loginList to set
 	 */
 	public void logout(String token, User user) {
+		 System.out.println("logout key:"+token +" username:"+user.getUserName());
 		SSOLogin.loginList.remove(token, user);
 	}
 	

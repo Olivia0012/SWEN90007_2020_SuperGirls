@@ -1,15 +1,19 @@
+//import { useNavigate } from 'react-router-dom';
+
+
 const axios = require('axios');
 axios.defaults.withCredentials = true;
 
-const proxy = `https://online-exam-app-supergirls.herokuapp.com`;
 
+const proxy = `https://online-exam-app-supergirls.herokuapp.com`;
+//const navigate = useNavigate();
 //login
 export async function login(username, password) {
 	console.log(proxy);
 	console.log(username);
 	let storage = window.localStorage;
 	storage.setItem('token', null);
-	const endpoint = `/login?userName=` + username + `&passWord=` + password; //subjectId=`+subjectId;
+	const endpoint = `/api/login?userName=` + username + `&passWord=` + password; //subjectId=`+subjectId;
 	console.log(endpoint);
 	const dataFetched = await axios({
 		url: endpoint, // send a request to the library API
@@ -19,30 +23,15 @@ export async function login(username, password) {
 			withCredentials: 'true',
 			'Access-Control-Allow-Origin':'*'
 		}
-	}).then( res => {
-		if(res.headers.token  !== 'undefined' || res.headers.token  !== null || typeof res.headers.token  !== 'undefined'){
-		   window.location.href = "./oea";
-		}
-		localStorage.setItem('token', res.headers.token);
-		// 登录成功后，将token存储到localStorage中
-	//	storage.token = response.headers.token;
-		// 设置以后的请求配置：把token放在请求头中(不需要每次传入用户名和密码)
-		axios.interceptors.request.use(function(config) {
-		  config.withCredentials = true
-		  config.headers = {
-			token : res.headers.token
-		  }
-		  return config;
-		}, function (error) {
-		  return Promise.reject(error);
-		});
-	  });
+	})
 	console.log(dataFetched);
+	localStorage.setItem('token', dataFetched.headers.token);
 	return dataFetched;
 }
 
 //logout
 export async function logout(token) {
+//	let storage = window.localStorage;
 	const endpoint = '/api/logout'; //subjectId=`+subjectId;
 	const dataFetched = await axios({
 		url: endpoint, // send a request to the library API
@@ -53,13 +42,14 @@ export async function logout(token) {
 			'token':localStorage.getItem("token")
 		}
 	});
+//	storage.setItem('token', null);
 	console.log(dataFetched);
 	return dataFetched;
 }
 
 //fetch all exams by subjectId
 export async function getAllStudentsBySubjectId(subjectId) {
-	const endpoint = `/student?subjectId=` + subjectId; //subjectId=`+subjectId;
+	const endpoint = `/api/student?subjectId=` + subjectId; //subjectId=`+subjectId;
 	const dataFetched = await axios({
 		url: endpoint, // send a request to the library API
 		//		method: "POST", // HTTP POST method
@@ -77,7 +67,7 @@ export async function getAllStudentsBySubjectId(subjectId) {
 
 //fetch all exams by subjectId
 export async function getAllStudentsBySubject_Exam(subjectId,examId) {
-	const endpoint = `/student?subject=` + subjectId+`&exam=`+examId; //subjectId=`+subjectId;
+	const endpoint = `/api/student?subject=` + subjectId+`&exam=`+examId; //subjectId=`+subjectId;
 	const dataFetched = await axios({
 		url: endpoint, // send a request to the library API
 		//		method: "POST", // HTTP POST method
@@ -97,7 +87,7 @@ export async function getAllStudentsBySubject_Exam(subjectId,examId) {
 
 export async function getSubmission(submissionId) {
 	//	const endpoint = '/subject?userName=Edu&passWord=111';//?userId='+userId;//subjectId=`+subjectId;
-	const endpoint = '/submission?id='+submissionId;
+	const endpoint = '/api/submission?id='+submissionId;
 	const dataFetched = await axios({
 		url: endpoint, // send a request to the library API
 		//		method: "POST", // HTTP POST method
@@ -117,7 +107,8 @@ export async function getSubmission(submissionId) {
 }
 
 export async function markExam(submissions) {
-	const endpoint = '/markExam';
+
+	const endpoint = '/api/markExam';
 	const dataFetched = await axios({
 		url: endpoint, // send a request to the library API
 		//		method: "POST", // HTTP POST method
@@ -132,11 +123,13 @@ export async function markExam(submissions) {
 		},
 		data: JSON.stringify(submissions),
 	});
-	console.log(dataFetched);
+//	console.log(dataFetched.config.data);
 	return dataFetched;
 }
 
-export async function getSubjectsByUserId(token) {
+export async function getSubjectsByUserId() {
+	console.log(localStorage.getItem("token"));
+	const token = localStorage.getItem("token");
 	const endpoint = "/api/subject"; //subjectId=`+subjectId;
 	const dataFetched = await axios({
 		url: endpoint, // send a request to the library API
@@ -145,7 +138,7 @@ export async function getSubjectsByUserId(token) {
 		headers: {
 			'withCredentials' : true,
 			'Content-Type': 'application/json',
-			'token':localStorage.getItem("token")
+			'token':token//localStorage.getItem("token")
 		}
 	});
 	console.log(dataFetched);

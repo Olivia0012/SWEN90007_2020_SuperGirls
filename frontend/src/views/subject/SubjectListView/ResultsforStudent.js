@@ -59,7 +59,6 @@ const ResultsforStudent = ({ className, customers, ...rest }) => {
 	const [ subject, setSubject ] = React.useState();
 	const handleOpen = (event, subject) => {
 		setDMOpen(true);
-		console.log(subject);
 		setSubject(subject);
 		setValues({ ...values, subjectTitle: subject.title });
 	};
@@ -77,22 +76,20 @@ const ResultsforStudent = ({ className, customers, ...rest }) => {
 					const result = response.data;
 					if (response.data == false) {
 						alert('Please login to continue.');
-						window.location.href = '../';
-					}
-
-					if(response.data == -1){
-						alert('You have taken this exam.');
+						navigate('/', { replace: true });
 					}else{
-						window.location.href = './takeExam/submission=' + result;
+						if(response.data == -1){
+							alert('You have taken this exam.');
+						}else{
+							navigate('/oea/takeExam/submission=' + result, { replace: true });
+						}
 					}
-
-					
 				})
 				.catch((error) => {
 					alert('Error from processDataAsycn() with async( When promise gets rejected ): ' + error);
 				});
 		} else {
-			window.location.href = './viewResult/examId=' + exam.id;
+			navigate('/oea/viewResult/examId=' + exam.id, { replace: true });
 		}
 	};
 

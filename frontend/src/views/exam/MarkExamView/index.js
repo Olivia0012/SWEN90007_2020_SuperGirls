@@ -15,9 +15,9 @@ import Page from 'src/components/Page';
 import SubmissionInfo from './SubmissionInfo';
 import QuestionCard from './QuestionCard';
 import { getSubmission, markExam } from '../../../api/instructorAPI';
-import {viewResult} from '../../../api/examAPI';
+import { viewResult } from '../../../api/examAPI';
 import routes from 'src/routes';
-import { useRoutes } from 'react-router-dom';
+import { useNavigate, useRoutes } from 'react-router-dom';
 import Loading from '../../../utils/loading';
 import moment from 'moment';
 
@@ -37,6 +37,7 @@ export const NewQuestionCon = createContext();
 
 const MarkExamView = () => {
 	const classes = useStyles();
+	const navigate = useNavigate();
 	const [ isLoading, setLoading ] = React.useState(false);
 	const [ data, setData ] = React.useState();
 	const [ submissionInfo, setSubmissionInfo ] = React.useState('');
@@ -50,23 +51,23 @@ const MarkExamView = () => {
 		const fetchData = async () => {
 			setLoading(true);
 			let result = {};
-			if(typeof id !== 'undefined'){
+			if (typeof id !== 'undefined') {
 				await getSubmission(id).then((response) => {
 					console.log(response);
 					result = response.data;
 					if (response.data == false) {
 						alert('Please login to continue.');
-						window.location.href = '../../';
-					};
+						navigate('/', { replace: true });
+					}
 				});
-			} else await viewResult(examId).then((response) => {
-				console.log(response);
-			    result = response.data;
-				if (response.data == false) {
-					alert('Please login to continue.');
-					window.location.href = '../../';
-				};
-			});
+			} else
+				await viewResult(examId).then((response) => {
+					result = response.data;
+					if (response.data == false) {
+						alert('Please login to continue.');
+						navigate('/', { replace: true });
+					}
+				});
 			console.log(result);
 			const a = result;
 			setData(result);
@@ -117,16 +118,20 @@ const MarkExamView = () => {
 		console.log(data);
 		await markExam(data)
 			.then((a) => {
-				setLoading(false);
-				alert('Saving mark Successfully!');
-				window.location.href = '/oea/students/subject=' +
-				data.exam.subject.id +
-				'&exam=' +
-				data.exam.id;
+				console.log(a);
+				if (a.data !== false) {
+					setLoading(false);
+					alert('Saving mark Successfully!');
+					navigate('/oea/students/subject=' + data.exam.subject.id + '&exam=' + data.exam.id, {
+						replace: true
+					});
+				} else {
+					alert('Save marks failed, please contact admin for help.');
+				}
 			})
 			.catch((error) => {
 				setLoading(false);
-				alert('Error from processDataAsycn() with async( When promise gets rejected ): ' + error);
+				alert('Error : ' + error);
 			});
 	};
 
@@ -162,7 +167,7 @@ const MarkExamView = () => {
 								fullWidth
 								multiline
 								rows={4}
-								disabled={data.marker.id!==0}
+								disabled={data.marker && data.marker.userName}
 								defaultValue={data.comment}
 								variant="outlined"
 								onChange={handleComment}
@@ -171,7 +176,7 @@ const MarkExamView = () => {
 					</Card>
 					<Box p={2} />
 					<Grid item xs={12}>
-						<Collapse in={data.marker.id===0}>
+						<Collapse in={!data.marker || !data.marker.userName}>
 							<Button color="primary" fullWidth variant="contained" onClick={handleSubmit}>
 								Submit
 							</Button>

@@ -177,10 +177,10 @@ public class ExamServiceImp implements ExamService {
 	public Submission findSubmissionById(int submissionId, User user) {
 		Submission submission = submissionMapper.findById(submissionId);
 		if (user.getRole().equals(Role.STUDENT)) {
-			if (submission.getAnswers() == null) {
+			if (submission.getAnswers().size() == 0 || submission.getAnswers() == null) {
 				addAnswers(submission);
-				submission.getAnswers();
-			//	submission.setAnswers(answerMapper.findAnswersBySubmissionId(submissionId));
+			//	submission.getAnswers();
+				submission.setAnswers(answerMapper.findAnswersBySubmissionId(submissionId));
 			}
 		} else {
 			return submission;
@@ -270,8 +270,17 @@ public class ExamServiceImp implements ExamService {
 	@Override
 	public Submission findSubmissionByUserId_ExamId(int userId, int examId) {
 		Submission submission = submissionMapper.FindSubmissionsByUserId_ExamId(userId, examId);
-
+		User user = userMapper.findById(userId);
+		if (user.getRole().equals(Role.STUDENT)) {
+			if (submission.getAnswers() == null) {
+				addAnswers(submission);
+			//	submission.getAnswers();
+			//	submission.setAnswers(answerMapper.findAnswersBySubmissionId(submissionId));
+			}
+		}
+		
 		if (submission != null) {
+			
 			submission.getAnswers();
 			return submission;
 		} else

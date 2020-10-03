@@ -1,18 +1,15 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { green } from '@material-ui/core/colors';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
-import EditIcon from '@material-ui/icons/Edit';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import { QuestionContent, Editable } from './index';
+import { Editable } from './index';
 import { deleteQuestion } from '../../../api/examAPI';
 import Loading from '../../../utils/loading';
+import { useNavigate } from 'react-router-dom';
 
 import {
 	Box,
 	Card,
 	Collapse,
-	Button,
 	IconButton,
 	TextField,
 	InputLabel,
@@ -35,6 +32,7 @@ const useStyles = makeStyles({
 });
 
 const QuestionCard = (props) => {
+	const navigate = useNavigate();
 	//	const classes = useStyles();
 	//	const [ editable, setEditable ] = React.useState(false);
 	const [ isLoading, setLoading ] = React.useState(false);
@@ -75,7 +73,7 @@ const QuestionCard = (props) => {
 			.then((a) => {
 				setLoading(false);
 				alert('Deleted Successfully!');
-				window.location.href = './id=' + question.examId;
+				navigate('/oea/subjects', { replace: true });
 			})
 			.catch((error) => {
 				setLoading(false);

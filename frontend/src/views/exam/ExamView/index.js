@@ -6,7 +6,7 @@ import NewQuestion from './NewQuestion';
 import QuestionCard from './QuestionCard';
 import { getExams, setExamStatus, deleteExam, editExam } from '../../../api/examAPI';
 import routes from 'src/routes';
-import { useRoutes } from 'react-router-dom';
+import { useNavigate, useRoutes } from 'react-router-dom';
 import Loading from '../../../utils/loading';
 
 const useStyles = makeStyles((theme) => ({
@@ -37,6 +37,7 @@ export const NewQuestionCon = createContext();
 
 const Exam = () => {
 	const classes = useStyles();
+	const navigate = useNavigate();
 	const [ isLoading, setLoading ] = React.useState(false);
 	const [ newQuestion, addNew ] = React.useState([]);
 	const [ data, setData ] = React.useState({});
@@ -44,6 +45,7 @@ const Exam = () => {
 	const [ editable, setEditable ] = React.useState(false);
 	const routeResult = useRoutes(routes);
 	const examId = routeResult.props.value.params.id;
+	
 	let questions = [];
 	const [ questionList, setQuestionList ] = React.useState([]);
 	const [ newQ, setNewQ ] = React.useState({
@@ -61,14 +63,11 @@ const Exam = () => {
 	const handleAdd = (index, question) => {
 		console.log(question);
 		question.examId = examId;
-		//	newQuestion[index] = question;
 		console.log(newQuestion);
 		const curData = [ ...newQuestion ];
 		newQuestion[index] = question;
 		console.log(newQuestion);
 		setTemp(curData);
-		//	newQuestion = curData;
-		//	questionList.push(curData);
 	};
 
 	console.log(temp);
@@ -94,16 +93,13 @@ const Exam = () => {
 		const fetchData = async () => {
 			setLoading(true);
 			 await getExams(examId).then((response) => {
-				console.log(response);
 				const result = response.data;
 				if (response.data == false) {
 					alert('Please login to continue.');
-					window.location.href = '../';
+					navigate('/', { replace: true });
 				}
-				console.log(result);
 				setData(result);
 				const a = result;
-				console.log(result);
 				setQuestionList(result.questionList);
 				var readyData = {
 					subjectCode: a.subject.subjectCode,
@@ -124,17 +120,14 @@ const Exam = () => {
 	const handleEditExam = async (e) => {
 		e.preventDefault();
 		setLoading(true);
-		//	console.log(data);
-		//	console.log(newQuestion);
 		const c = questionList.concat(newQuestion);
 		data.questionList = c;
-		//	console.log(data);
 
 		await editExam(data)
 			.then(() => {
 				setLoading(false);
 				alert('Edited Successfully!');
-				window.location.href = './id=' + examId;
+				navigate('/oea/exam/id='+examId, { replace: true });
 			})
 			.catch((error) => {
 				setLoading(false);
@@ -148,7 +141,7 @@ const Exam = () => {
 			.then((a) => {
 				setLoading(false);
 				alert('Deleted Successfully!');
-				window.location.href = '../subjects';
+				navigate('/oea/subjects', { replace: true });
 			})
 			.catch((error) => {
 				setLoading(false);
@@ -162,11 +155,11 @@ const Exam = () => {
 			.then(() => {
 				setLoading(false);
 				alert('Successfully!');
-				window.location.href = './id=' + examId;
+				navigate(0);
 			})
 			.catch((error) => {
 				setLoading(false);
-				alert('Error from processDataAsycn() with async( When promise gets rejected ): ' + error);
+				alert('Error:' + error);
 			});
 	};
 
@@ -258,7 +251,7 @@ const Exam = () => {
 						<Box p={2}>
 							<Grid container spacing={5} justify="center">
 								<Grid item xs={3} lg={3}>
-									<Button color="secondary" variant="contained" fullWidth>
+									<Button color="secondary" variant="contained" fullWidth  onClick={()=>setEditable(false)}>
 										Cancel
 									</Button>
 								</Grid>

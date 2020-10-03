@@ -6,7 +6,7 @@ const PROXY_URL = 'http://127.0.0.1:8080/SWEN90007_2020_SuperGirls/';
 
 //fetch all exams by subjectId
 export async function getExams(examId) {
-	const endpoint = `/exam?examId=` + examId;
+	const endpoint = `/api/exam?examId=` + examId;
 	const dataFetched = await axios({
 		url: endpoint, // send a request to the library API
 		//		method: "POST", // HTTP POST method
@@ -38,7 +38,7 @@ export async function getSubjectsByUserId(token) {
 }
 
 export async function addNewQuestion(newQuestion) {
-	const endpoint = '/exam/addnewquestion';
+	const endpoint = '/api/exam/addnewquestion';
 	const dataFetched = await axios({
 		url: endpoint, // send a request to the library API
 		method: 'POST', // HTTP POST method
@@ -54,7 +54,7 @@ export async function addNewQuestion(newQuestion) {
 }
 
 export async function deleteQuestion(questionId) {
-	const endpoint = '/question/delete?questionId='+questionId;
+	const endpoint = '/api/question/delete?questionId='+questionId;
 	const dataFetched = await axios({
 		url: endpoint, // send a request to the library API
 		method: 'GET', // HTTP POST method
@@ -70,7 +70,7 @@ export async function deleteQuestion(questionId) {
 }
 
 export async function addNewExam(newExam) {
-	const endpoint = '/addexam';
+	const endpoint = '/api/addexam';
 	const dataFetched = await axios({
 		url: endpoint, // send a request to the library API
 		method: 'POST', // HTTP POST method
@@ -86,7 +86,7 @@ export async function addNewExam(newExam) {
 }
 
 export async function deleteExam(examId) {
-	const endpoint = '/exam/delete?examId='+examId;
+	const endpoint = '/api/exam/delete?examId='+examId;
 	const dataFetched = await axios({
 		url: endpoint, // send a request to the library API
 		method: 'GET', // HTTP POST method
@@ -102,7 +102,7 @@ export async function deleteExam(examId) {
 }
 
 export async function editExam(exam) {
-	const endpoint = '/editExam';
+	const endpoint = '/api/editExam';
 	const dataFetched = await axios({
 		url: endpoint, // send a request to the library API
 		//		method: "POST", // HTTP POST method
@@ -124,7 +124,7 @@ export async function editExam(exam) {
 
 
 export async function setExamStatus(examId) {
-	const endpoint = '/publishExam?id='+examId;
+	const endpoint = '/api/publishExam?id='+examId;
 	const dataFetched = await axios({
 		url: endpoint, // send a request to the library API
 		//		method: "POST", // HTTP POST method
@@ -145,7 +145,7 @@ export async function setExamStatus(examId) {
 
 
 export async function submitExam(submission) {
-	const endpoint = '/takeExam';
+	const endpoint = '/api/takeExam';
 	const dataFetched = await axios({
 		url: endpoint, // send a request to the library API
 		//		method: "POST", // HTTP POST method
@@ -166,7 +166,7 @@ export async function submitExam(submission) {
 }
 
 export async function addSubmission(submission) {
-	const endpoint = '/addsubmission';
+	const endpoint = '/api/addsubmission';
 	const dataFetched = await axios({
 		url: endpoint, // send a request to the library API
 		//		method: "POST", // HTTP POST method
@@ -188,7 +188,7 @@ export async function addSubmission(submission) {
 
 export async function viewResult(examId) {
 	//	const endpoint = '/subject?userName=Edu&passWord=111';//?userId='+userId;//subjectId=`+subjectId;
-	const endpoint = '/examResult?examId='+examId;
+	const endpoint = '/api/examResult?examId='+examId;
 	const dataFetched = await axios({
 		url: endpoint, // send a request to the library API
 		//		method: "POST", // HTTP POST method
