@@ -10,6 +10,7 @@
 ```
 This repository is used for managing deliverables of SWEN90007. 
 All deliverables will be uploaded and managed here.
+
 ```
 
 ## Contributors
@@ -38,6 +39,57 @@ All deliverables will be uploaded and managed here.
 <!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
+## Description
+### Online-Exam-Application: http://35.174.205.208:3000/
+
+### Patterns:
+
+1. Domain Logic
+
+    [Domain model](https://github.com/Olivia0012/SWEN90007_2020_SuperGirls/tree/master/src/domain)
+
+    [Service Interface](https://github.com/Olivia0012/SWEN90007_2020_SuperGirls/tree/master/src/service) ; [Service Implementation](https://github.com/Olivia0012/SWEN90007_2020_SuperGirls/tree/master/src/serviceImp)
+
+2. Data-source layer
+
+   [Data mapper](https://github.com/Olivia0012/SWEN90007_2020_SuperGirls/tree/master/src/mapper)
+
+3. Object-to-relational behavioural design
+
+    [Unit of Work](https://github.com/Olivia0012/SWEN90007_2020_SuperGirls/blob/master/src/shared/UnitOfWork.java)
+
+    [Identity Map](https://github.com/Olivia0012/SWEN90007_2020_SuperGirls/blob/master/src/shared/IdentityMap.java)
+
+    Lazy load: question list in the Exam and answer list in the Submission.
+
+    Identity Field: all tables
+
+4. Presentation layer:
+  
+   Implemented with React: [frontend](http://35.174.205.208:3000/)
+
+## Design Diagrams:
+
+![DomainModel](./Figure%201%20Domain%20Model.png)
+
+![Class](./Figure%204%20Class%20Diagram.png)
+
+![SQ_Instructor](./Figure%205%20Sequence%20Diagram%20of%20Instructor.png)
+
+![SQ_Student](./Figure%206%20Sequence%20Diagram%20of%20Student.png)
+
+![Component](./Figure%207%20Component%20Diagram.png)
+
+![UseCase](./Figure%209%20Use%20Case%20Diagram.png)
+
+
+## Environment:
+```
+Backend: JavaEE - Java SE 14.0.2; Tomcat v9.0; 
+Frontend: React v16.13.1; Node 11.0.0; npm: 6.14.8
+Database: PostgreSql
+```
+
 
 ## Repository Structure
 ```
@@ -53,128 +105,24 @@ All deliverables will be uploaded and managed here.
 │   │   │   └── postgresql-42.2.14.jar
 │   │   └── web.xml
 │   └── test.jsp
-├── build
-│   └── classes
-│       ├── database
-│       │   ├── ConnectionPool.class
-│       │   ├── DBMaintain.class
-│       │   ├── DatabaseConnection.class
-│       │   └── QueryExecutor.class
-│       ├── domain
-│       │   ├── Admin.class
-│       │   ├── Answer.class
-│       │   ├── DomainObject.class
-│       │   ├── Exam.class
-│       │   ├── Instructor.class
-│       │   ├── Question.class
-│       │   ├── Student.class
-│       │   ├── Subject.class
-│       │   ├── Submission.class
-│       │   └── User.class
-│       ├── enumeration
-│       │   ├── ExamStatus.class
-│       │   ├── QuestionType.class
-│       │   └── Role.class
-│       ├── mapper
-│       │   ├── AnswerMapper.class
-│       │   ├── DataMapper.class
-│       │   ├── ExamMapper.class
-│       │   ├── LockingMapper.class
-│       │   ├── QuestionMapper.class
-│       │   ├── SubjectMapper.class
-│       │   ├── SubmissionMapper.class
-│       │   └── UserMapper.class
-│       ├── service
-│       │   ├── ExamService.class
-│       │   ├── StudentService.class
-│       │   ├── SubjectService.class
-│       │   └── UserService.class
-│       ├── serviceImp
-│       │   ├── ExamServiceImp.class
-│       │   ├── StudentServiceImp.class
-│       │   ├── SubjectServiceImp.class
-│       │   ├── SubmissionServiceImp.class
-│       │   └── UserServiceImp.class
-│       ├── servlet
-│       │   ├── AddExamController.class
-│       │   ├── DeleteExamController.class
-│       │   ├── DeleteQuestionController.class
-│       │   ├── EditExamController.class
-│       │   ├── ExamController.class
-│       │   ├── LoginController.class
-│       │   ├── LogoutController.class
-│       │   ├── MarkExamController.class
-│       │   ├── StudentController.class
-│       │   ├── SubjectController.class
-│       │   └── TakeExamController.class
-│       ├── shared
-│       │   ├── IdentityMap.class
-│       │   └── UnitOfWork.class
-│       └── util
-│           ├── JsonToObject.class
-│           ├── ResponseHeader.class
-│           └── SSOLogin.class
 ├── docs
+│   ├── Part2_Figures
 │   ├── architecture
 │   │   └── SWEN90007_CIS-TMPLT-ARCH-1.docx
 │   ├── meetings
 │   │   ├── README.md
 │   │   ├── Week\ 2\ Minutes_Aug\ 10_Team\ Super\ Girls.pdf
 │   │   ├── Week\ 3\ Minutes_Aug\ 17_Team\ Super\ Girls.pdf
-│   │   └── Week\ 4\ Minutes_Aug\ 24_Team\ Super\ Girls.pdf
+│   │   ├── Week\ 4\ Minutes_Aug\ 24_Team\ Super\ Girls.pdf
+│   │   └── Week\ 5\ Minutes_Aug\ 31_Team\ Super\ Girls.pdf
 │   └── part1
 │       ├── README.md
 │       ├── SWEN90007_2020_Part1_SuperGirls.pdf
 │       ├── [01.00-D05]SWEN90007_2020_Part1_SuperGirls.doc
 │       └── [01.00-D06]SWEN90007_2020_Part1_SuperGirls(1).doc
 ├── frontend
-│   ├── Dockerfile
 │   ├── LICENSE.md
-│   ├── build
-│   │   ├── _redirects
-│   │   ├── asset-manifest.json
-│   │   ├── favicon.ico
-│   │   ├── index.html
-│   │   ├── manifest.json
-│   │   ├── precache-manifest.7e42a1135817bdbd1a7786be666c75d7.js
-│   │   ├── service-worker.js
-│   │   └── static
-│   │       ├── css
-│   │       │   ├── 2.18fb2ca0.chunk.css
-│   │       │   └── 2.18fb2ca0.chunk.css.map
-│   │       ├── images
-│   │       │   ├── auth.jpeg
-│   │       │   ├── avatars
-│   │       │   │   ├── avatar_1.png
-│   │       │   │   ├── avatar_10.png
-│   │       │   │   ├── avatar_11.png
-│   │       │   │   ├── avatar_2.png
-│   │       │   │   ├── avatar_3.png
-│   │       │   │   ├── avatar_4.png
-│   │       │   │   ├── avatar_5.png
-│   │       │   │   ├── avatar_6.png
-│   │       │   │   ├── avatar_7.png
-│   │       │   │   ├── avatar_8.png
-│   │       │   │   └── avatar_9.png
-│   │       │   ├── not_found.png
-│   │       │   ├── products
-│   │       │   │   ├── product_1.png
-│   │       │   │   ├── product_2.png
-│   │       │   │   ├── product_3.png
-│   │       │   │   ├── product_4.png
-│   │       │   │   ├── product_5.png
-│   │       │   │   └── product_6.png
-│   │       │   ├── undraw_page_not_found_su7k.svg
-│   │       │   └── undraw_resume_folder_2_arse.svg
-│   │       ├── js
-│   │       │   ├── 2.1879194a.chunk.js
-│   │       │   ├── 2.1879194a.chunk.js.LICENSE.txt
-│   │       │   ├── 2.1879194a.chunk.js.map
-│   │       │   ├── main.f7e824f0.chunk.js
-│   │       │   ├── main.f7e824f0.chunk.js.map
-│   │       │   ├── runtime-main.6a771f16.js
-│   │       │   └── runtime-main.6a771f16.js.map
-│   │       └── logo.svg
+│   ├── README.md
 │   ├── jsconfig.json
 │   ├── package-lock.json
 │   ├── package.json
@@ -209,12 +157,10 @@ All deliverables will be uploaded and managed here.
 │   │       │   ├── undraw_page_not_found_su7k.svg
 │   │       │   └── undraw_resume_folder_2_arse.svg
 │   │       └── logo.svg
-│   ├── setupProxy.js
 │   ├── src
 │   │   ├── App.js
 │   │   ├── api
-│   │   │   ├── examAPI.js
-│   │   │   └── instructorAPI.js
+│   │   │   └── examAPI.js
 │   │   ├── components
 │   │   │   ├── GlobalStyles.js
 │   │   │   ├── Logo.js
@@ -242,51 +188,32 @@ All deliverables will be uploaded and managed here.
 │   │   │   ├── shadows.js
 │   │   │   └── typography.js
 │   │   ├── utils
-│   │   │   ├── getInitials.js
-│   │   │   ├── loading.js
-│   │   │   └── setAuthToken.js
+│   │   │   └── getInitials.js
 │   │   └── views
-│   │       ├── auth
-│   │       │   ├── LoginView.js
-│   │       │   └── RegisterView.js
 │   │       ├── exam
 │   │       │   ├── EditExamView
+│   │       │   │   ├── BlogDetailComponent.js
 │   │       │   │   ├── ExamBasicInfo.js
-│   │       │   │   ├── NewQuestion.js
-│   │       │   │   └── index.js
-│   │       │   ├── ExamView
-│   │       │   │   ├── ExamBasicInfo.js
-│   │       │   │   ├── NewQuestion.js
+│   │       │   │   ├── Password.js
 │   │       │   │   ├── QuestionCard.js
 │   │       │   │   └── index.js
-│   │       │   ├── MarkExamView
-│   │       │   │   ├── QuestionCard.js
-│   │       │   │   ├── SubmissionInfo.js
-│   │       │   │   └── index.js
-│   │       │   └── TakeExam
-│   │       │       ├── ExamInfo.js
+│   │       │   └── ExamView
+│   │       │       ├── BlogDetailComponent.js
+│   │       │       ├── ExamBasicInfo.js
+│   │       │       ├── NewQuestion.js
+│   │       │       ├── Password.js
 │   │       │       ├── QuestionCard.js
 │   │       │       └── index.js
-│   │       ├── student
-│   │       │   └── UserListView
-│   │       │       ├── Results.js
-│   │       │       ├── Toolbar.js
-│   │       │       ├── data.js
-│   │       │       └── index.js
-│   │       └── subject
-│   │           └── SubjectListView
+│   │       └── student
+│   │           └── UserListView
 │   │               ├── Results.js
-│   │               ├── ResultsforStudent.js
 │   │               ├── Toolbar.js
-│   │               ├── data.json
+│   │               ├── data.js
 │   │               └── index.js
 │   └── yarn.lock
 ├── src
 │   ├── database
-│   │   ├── ConnectionPool.java
-│   │   ├── DBMaintain.java
-│   │   ├── DatabaseConnection.java
-│   │   └── QueryExecutor.java
+│   │   └── DatabaseConnection.java
 │   ├── domain
 │   │   ├── Admin.java
 │   │   ├── Answer.java
@@ -306,44 +233,28 @@ All deliverables will be uploaded and managed here.
 │   │   ├── AnswerMapper.java
 │   │   ├── DataMapper.java
 │   │   ├── ExamMapper.java
-│   │   ├── LockingMapper.java
 │   │   ├── QuestionMapper.java
 │   │   ├── SubjectMapper.java
 │   │   ├── SubmissionMapper.java
 │   │   └── UserMapper.java
 │   ├── service
-│   │   ├── ExamService.java
-│   │   ├── StudentService.java
-│   │   ├── SubjectService.java
-│   │   └── UserService.java
-│   ├── serviceImp
-│   │   ├── ExamServiceImp.java
-│   │   ├── StudentServiceImp.java
-│   │   ├── SubjectServiceImp.java
-│   │   ├── SubmissionServiceImp.java
-│   │   └── UserServiceImp.java
+│   │   ├── CreateNewExam.java
+│   │   ├── CreateNewExamImp.java
+│   │   ├── ViewExam.java
+│   │   └── ViewExamImp.java
 │   ├── servlet
-│   │   ├── AddExamController.java
-│   │   ├── DeleteExamController.java
-│   │   ├── DeleteQuestionController.java
-│   │   ├── EditExamController.java
 │   │   ├── ExamController.java
-│   │   ├── LoginController.java
-│   │   ├── LogoutController.java
-│   │   ├── MarkExamController.java
-│   │   ├── StudentController.java
-│   │   ├── SubjectController.java
-│   │   └── TakeExamController.java
-│   ├── shared
-│   │   ├── IdentityMap.java
-│   │   └── UnitOfWork.java
-│   └── util
-│       ├── JsonToObject.java
-│       ├── ResponseHeader.java
-│       └── SSOLogin.java
+│   │   └── HelloServlet.java
+│   └── shared
+│       ├── IdentityMap.java
+│       ├── LazyLoad.java
+│       └── UnitOfWork.java
+├── target
+│   └── test-classes
 ├── test
 │   └── SWEN90007-CIS-SW-TSTD.doc
 └── tree.text
+
 ```
 
 ## Git Workflow
@@ -420,22 +331,22 @@ All deliverables will be uploaded and managed here.
         - [X] The created release tag must be added to your report.
 
 ### 2. Part 2
-- [ ] The application coded and deployed. 
-    - [ ] The source code of your application must be committed to your Git repository. 
-    - [ ] The application must be deployed in Heroku.
-- [ ] You must create a tag in your Git repository for this deliverable in the following format: 
+- [X] The application coded and deployed. 
+    - [X] The source code of your application must be committed to your Git repository. 
+    - [X] The application must be deployed in Heroku.
+- [X] You must create a tag in your Git repository for this deliverable in the following format: 
 SWEN90007_2020_Part2_<team name>. The tag must be created before the submission 
 deadline as this will be used to assess your deliverable (no exceptions).
-- [ ]  A Software Architecture Design (SAD) report with the following items:
-    - [ ] The domain model of your application. 
-    - [ ] The class diagram of your application. 
-    - [ ] A description of all patterns used. The description must be contextualized, this means 
+- [X]  A Software Architecture Design (SAD) report with the following items:
+    - [X] The domain model of your application. 
+    - [X] The class diagram of your application. 
+    - [X] A description of all patterns used. The description must be contextualized, this means 
 it must include details of how the pattern was implemented as part of your particular 
 application design. A sequence diagram illustrating the use of the pattern in your 
 application must be included as part of your description. 
-    - [ ] Design rationale for unit of work and lazy load: an explanation on where the patterns 
+    - [X] Design rationale for unit of work and lazy load: an explanation on where the patterns 
 were used and why. 
-    - [ ] A link to your Heroku deployed app, including a populated database with a range of 
+    - [X] A link to your Heroku deployed app, including a populated database with a range of 
 realistic data samples/information that are necessary for the teaching team to test 
 your application. You also need to provide additional instructions on how to use the 
 existing data that you created in your system, for example: the administrator 
@@ -444,7 +355,7 @@ Again, this is your project. Make sure you test your deliverable before your sub
 and that you have real/appropriate data in the deployed system. Meaningless data 
 such as abc, 123, blah blah, subject ASDFG and so on will compromise the assessment 
 of your project (and your final marks). See Appendix D for more details. 
-  - [ ] The Git release tag.
+  - [X] The Git release tag.
 
     
 ### 3. Part 3
