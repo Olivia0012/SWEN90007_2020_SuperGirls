@@ -12,7 +12,6 @@ import domain.DomainObject;
 import domain.Question;
 import domain.Relationship;
 import domain.Submission;
-import shared.IdentityMap;
 import shared.UnitOfWork;
 
 public class RelationshipMapper  extends DataMapper{
@@ -43,7 +42,7 @@ public class RelationshipMapper  extends DataMapper{
 			e.printStackTrace();
 			return 0;
 		} finally {
-			DatabaseConnection.closeConnection();
+		//	DatabaseConnection.closeConnection();
 		}
 	}
 
@@ -71,7 +70,7 @@ public class RelationshipMapper  extends DataMapper{
 			e.printStackTrace();
 			return false;
 		} finally {
-			DatabaseConnection.closeConnection();
+		//	DatabaseConnection.closeConnection();
 		}
 	}
 

@@ -135,7 +135,7 @@ const MarkExamView = () => {
 			})
 			.catch((error) => {
 				setLoading(false);
-				alert('Error from processDataAsycn() with async( When promise gets rejected ): ' + error);
+				alert(error);
 			});
 	};
 
@@ -172,7 +172,7 @@ const MarkExamView = () => {
 								fullWidth
 								multiline
 								rows={4}
-								disabled={status !== 'CLOSED' || typeof data.submission.marker !== 'undefined'}
+								disabled={status !== 'CLOSED'}
 								defaultValue={data.submission.comment}
 								variant="outlined"
 								onChange={handleComment}
@@ -181,7 +181,7 @@ const MarkExamView = () => {
 					</Card>
 					<Box p={2} />
 					<Grid item xs={12}>
-						<Collapse in={status === 'CLOSED' && typeof data.submission.marker === 'undefined'}>
+						<Collapse in={status === 'CLOSED'}>
 							<Button color="primary" fullWidth variant="contained" onClick={handleSubmit}>
 								Submit
 							</Button>

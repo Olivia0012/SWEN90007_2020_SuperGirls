@@ -53,7 +53,8 @@ public class TakeExamController extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		ExamServiceImp examService = new ExamServiceImp();
+		String token = request.getHeader("token");
+		ExamServiceImp examService = new ExamServiceImp(SSOLogin.uowList.get(token));
 		String data = new String(request.getParameter("examId").getBytes("ISO-8859-1"), "UTF-8");
 		int examId = Integer.valueOf(data);
 
@@ -84,6 +85,7 @@ public class TakeExamController extends HttpServlet {
 		// Login check.
 		SSOLogin ssoCheck = new SSOLogin();
 		User user = ssoCheck.checkLogin(request);
+		String token = request.getHeader("token");
 
 		if (user == null) {
 			response.getWriter().write("invalid"); // invalid token.
@@ -93,7 +95,7 @@ public class TakeExamController extends HttpServlet {
 				response.getWriter().write("-1"); // invalid session.
 			} else {
 
-				ExamServiceImp takeExam = new ExamServiceImp();
+				ExamServiceImp takeExam = new ExamServiceImp(SSOLogin.uowList.get(token));
 				boolean success = takeExam.takeExam(request,user);
 				response.getWriter().write(success+"");
 

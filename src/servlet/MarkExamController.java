@@ -10,19 +10,12 @@ import javax.servlet.http.HttpServletResponse;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
-import domain.Answer;
-import domain.Exam;
 import domain.Submission;
 import domain.User;
 import enumeration.Role;
-import mapper.ExamMapper;
 import mapper.ExclusiveWriteLockManager;
 import mapper.LockManager;
-import mapper.SubmissionMapper;
-import service.UserService;
 import serviceImp.ExamServiceImp;
-import serviceImp.SubjectServiceImp;
-import serviceImp.UserServiceImp;
 import util.JsonToObject;
 import util.ResponseHeader;
 import util.SSOLogin;
@@ -58,11 +51,12 @@ public class MarkExamController extends HttpServlet {
 		// Login check.
 		SSOLogin ssoCheck = new SSOLogin();
 		User user = ssoCheck.checkLogin(request);
+		String token = request.getHeader("token");
 
 		if (user == null) {
 			response.getWriter().write("false"); // invalid token.
 		} else {
-			ExamServiceImp examService = new ExamServiceImp();
+			ExamServiceImp examService = new ExamServiceImp(SSOLogin.uowList.get(token));
 			Submission submission = examService.findSubmissionById(submissionId,user);
 			String exam = examService.findExamById(submission.getExamId());
 			String resultSubmission = JSONObject.toJSONString(submission);
@@ -104,7 +98,7 @@ public class MarkExamController extends HttpServlet {
 				submission.setMarker(user);
 				
 				//mark a submission
-				ExamServiceImp markExam = new ExamServiceImp();
+				ExamServiceImp markExam = new ExamServiceImp(SSOLogin.uowList.get(token));
 				boolean success = markExam.markSubmission(submission);
 				LockManager lock = ExclusiveWriteLockManager.getInstance();
 				

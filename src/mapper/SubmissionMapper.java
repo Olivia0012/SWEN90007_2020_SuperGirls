@@ -15,7 +15,6 @@ import domain.DomainObject;
 import domain.Exam;
 import domain.Submission;
 import domain.User;
-import shared.IdentityMap;
 
 /**
  * Submission Mapper class
@@ -62,8 +61,8 @@ public class SubmissionMapper extends DataMapper {
 
 			submission.setId(id);
 
-			IdentityMap<Submission> submissionMap = IdentityMap.getInstance(submission);
-			submissionMap.put(submission.getId(), submission);
+	//		IdentityMap1<Submission> submissionMap = IdentityMap1.getInstance(submission);
+	//		submissionMap.put(submission.getId(), submission);
 
 			stmt.close();
 
@@ -72,7 +71,7 @@ public class SubmissionMapper extends DataMapper {
 			e.printStackTrace();
 
 		} finally {
-			DatabaseConnection.closeConnection();
+		//	DatabaseConnection.closeConnection();
 		}
 		return id;
 
@@ -107,10 +106,10 @@ public class SubmissionMapper extends DataMapper {
 
 			stmt.executeUpdate();
 
-			IdentityMap<Submission> submissionMap = IdentityMap.getInstance(submission);
+	//		IdentityMap1<Submission> submissionMap = IdentityMap1.getInstance(submission);
 
 			// add the updated submission into submission identity map if it is not there.
-			submissionMap.put(submission.getId(), submission);
+	//		submissionMap.put(submission.getId(), submission);
 
 			stmt.close();
 			return true;
@@ -119,7 +118,7 @@ public class SubmissionMapper extends DataMapper {
 			e.printStackTrace();
 			return false;
 		} finally {
-			DatabaseConnection.closeConnection();
+		//	DatabaseConnection.closeConnection();
 		}
 	}
 
@@ -140,11 +139,11 @@ public class SubmissionMapper extends DataMapper {
 			stmt.setInt(1, submission.getId());
 			stmt.executeUpdate();
 
-			IdentityMap<Submission> submissionMap = IdentityMap.getInstance(submission);
-			Submission submissionInMap = submissionMap.get(submission.getId());
+	//		IdentityMap1<Submission> submissionMap = IdentityMap1.getInstance(submission);
+	/*		Submission submissionInMap = submissionMap.get(submission.getId());
 			if (submissionInMap != null) {
 				submissionMap.put(submission.getId(), null);
-			}
+			}*/
 
 			stmt.close();
 			return true;
@@ -153,7 +152,7 @@ public class SubmissionMapper extends DataMapper {
 			e.printStackTrace();
 			return false;
 		} finally {
-			DatabaseConnection.closeConnection();
+		//	DatabaseConnection.closeConnection();
 		}
 	}
 
@@ -168,14 +167,14 @@ public class SubmissionMapper extends DataMapper {
 		// find the exam in the identity map.
 		Submission submission = new Submission();
 
-		IdentityMap<Submission> submissionMap = IdentityMap.getInstance(submission);
-		submission = submissionMap.get(submissionId);
+	//	IdentityMap1<Submission> submissionMap = IdentityMap1.getInstance(submission);
+	//	submission = submissionMap.get(submissionId);
 	//	ExamMapper examMapper = new ExamMapper();
 		UserMapper userMapper = new UserMapper();
 		AnswerMapper answerMapper = new AnswerMapper();
 
 		// find from the DB when it is not in the identity map.
-		if (submission == null) {
+	//	if (submission == null) {
 			List<Submission> result = new ArrayList<Submission>();
 			// query a exam by examId
 			String findSubmissionbyIdStm = "SELECT * FROM submissions WHERE submissionid = ?";
@@ -210,12 +209,9 @@ public class SubmissionMapper extends DataMapper {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				DatabaseConnection.closeConnection();
-			}
-			if (result.size() > 0) {
-				submissionMap.put(result.get(0).getId(), result.get(0));
-				return result.get(0);
-			}
+			//	DatabaseConnection.closeConnection();
+	//		}
+			
 		}
 
 		return submission;
@@ -270,15 +266,15 @@ public class SubmissionMapper extends DataMapper {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			DatabaseConnection.closeConnection();
+		//	DatabaseConnection.closeConnection();
 		}
 
-		if (result.size() > 0) {
-			IdentityMap<Submission> submissionMap = IdentityMap.getInstance(submission);
+	/*	if (result.size() > 0) {
+			IdentityMap1<Submission> submissionMap = IdentityMap1.getInstance(submission);
 			submission = submissionMap.get(submission.getId());
 			submissionMap.put(result.get(0).getId(), result.get(0));
 			
-		}
+		}*/
 
 		return result;
 	}
@@ -292,7 +288,7 @@ public class SubmissionMapper extends DataMapper {
 	public List<Submission> FindAllSubmission() {
 		Submission submission = new Submission();
 		String queryAllSubmissionStm = "SELECT * FROM submission"; // query all subjects
-		IdentityMap<Submission> submissionMap = IdentityMap.getInstance(submission);
+//		IdentityMap1<Submission> submissionMap = IdentityMap1.getInstance(submission);
 		List<Submission> result = new ArrayList<Submission>();
 		ExamMapper examMapper = new ExamMapper();
 		UserMapper userMapper = new UserMapper();
@@ -324,7 +320,7 @@ public class SubmissionMapper extends DataMapper {
 				result.add(submission);
 			}
 
-			if (result.size() > 0) {
+	/*		if (result.size() > 0) {
 				for (int i = 0; i < result.size(); i++) {
 					Submission s = submissionMap.get(result.get(i).getId());
 					if (s == null) {
@@ -332,7 +328,7 @@ public class SubmissionMapper extends DataMapper {
 					}
 				}
 
-			}
+			}*/
 			rs.close();
 			stmt.close();
 		} catch (SQLException e) {
@@ -340,7 +336,7 @@ public class SubmissionMapper extends DataMapper {
 			e.printStackTrace();
 			return null;
 		} finally {
-			DatabaseConnection.closeConnection();
+		//	DatabaseConnection.closeConnection();
 		}
 		return result;
 
@@ -351,7 +347,7 @@ public class SubmissionMapper extends DataMapper {
 		Submission submission = new Submission();
 		String querySubmissionStm = "SELECT * FROM submissions WHERE studentid = ? AND examid = ?"; // query all
 																									// subjects
-		IdentityMap<Submission> submissionMap = IdentityMap.getInstance(submission);
+	//	IdentityMap1<Submission> submissionMap = IdentityMap1.getInstance(submission);
 		UserMapper userMapper = new UserMapper();
 		ExamMapper examMapper = new ExamMapper();
 		AnswerMapper answerMapper = new AnswerMapper();
@@ -387,14 +383,14 @@ public class SubmissionMapper extends DataMapper {
 				result.add(submission);
 			}
 
-			if (result.size() > 0) {
+		/*	if (result.size() > 0) {
 				for (int i = 0; i < result.size(); i++) {
 					Submission s = submissionMap.get(result.get(i).getId());
 					if (s == null) {
 						submissionMap.put(result.get(i).getId(), result.get(i));
 					}
 				}
-			}
+			}*/
 			rs.close();
 			stmt.close();
 		} catch (SQLException e) {
@@ -402,7 +398,7 @@ public class SubmissionMapper extends DataMapper {
 			e.printStackTrace();
 			return null;
 		} finally {
-			DatabaseConnection.closeConnection();
+		//	DatabaseConnection.closeConnection();
 		}
 		return submission;
 	}
@@ -426,7 +422,7 @@ public class SubmissionMapper extends DataMapper {
 		List<Submission> result = new ArrayList<Submission>();
 		Submission submission = new Submission();
 		String querySubmissionStm = "SELECT * FROM submissions WHERE examid = ?"; // query all subjects
-		IdentityMap<Submission> submissionMap = IdentityMap.getInstance(submission);
+//		IdentityMap1<Submission> submissionMap = IdentityMap1.getInstance(submission);
 		UserMapper userMapper = new UserMapper();
 		ExamMapper examMapper = new ExamMapper();
 
@@ -457,14 +453,14 @@ public class SubmissionMapper extends DataMapper {
 				result.add(submission);
 			}
 
-			if (result.size() > 0) {
+	/*		if (result.size() > 0) {
 				for (int i = 0; i < result.size(); i++) {
 					Submission s = submissionMap.get(result.get(i).getId());
 					if (s == null) {
 						submissionMap.put(result.get(i).getId(), result.get(i));
 					}
 				}
-			}
+			}*/
 			rs.close();
 			stmt.close();
 		} catch (SQLException e) {
@@ -472,7 +468,7 @@ public class SubmissionMapper extends DataMapper {
 			e.printStackTrace();
 			return null;
 		} finally {
-			DatabaseConnection.closeConnection();
+			//DatabaseConnection.closeConnection();
 		}
 		return submission;
 	}

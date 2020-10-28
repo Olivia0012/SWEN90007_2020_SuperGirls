@@ -23,7 +23,6 @@ import domain.Submission;
 import domain.User;
 import enumeration.ExamStatus;
 import enumeration.Role;
-import shared.IdentityMap;
 
 /**
  * This class is for managing user table.
@@ -56,8 +55,8 @@ public class UserMapper extends DataMapper {
 
 			newUser.setId(id);
 
-			IdentityMap<User> userMap = IdentityMap.getInstance(newUser);
-			userMap.put(newUser.getId(), newUser);
+	//		IdentityMap1<User> userMap = IdentityMap1.getInstance(newUser);
+	//		userMap.put(newUser.getId(), newUser);
 			keys.close();
 			stmt.close();
 			return id;
@@ -67,7 +66,7 @@ public class UserMapper extends DataMapper {
 			e.printStackTrace();
 			return 0;
 		} finally {
-			DatabaseConnection.closeConnection();
+	//		DatabaseConnection.closeConnection();
 		}
 	}
 
@@ -89,10 +88,10 @@ public class UserMapper extends DataMapper {
 			stmt.setString(2, user.getPassWord());
 			stmt.executeUpdate();
 
-			IdentityMap<User> userMap = IdentityMap.getInstance(user);
+		//	IdentityMap1<User> userMap = IdentityMap1.getInstance(user);
 
 			// add the updated subject into subject identity map if it is not there.
-			userMap.put(user.getId(), user);
+	//		userMap.put(user.getId(), user);
 
 			stmt.close();
 			return true;
@@ -101,7 +100,7 @@ public class UserMapper extends DataMapper {
 			e.printStackTrace();
 			return false;
 		} finally {
-			DatabaseConnection.closeConnection();
+		//	DatabaseConnection.closeConnection();
 		}
 	}
 
@@ -122,11 +121,11 @@ public class UserMapper extends DataMapper {
 			stmt.setInt(1, user.getId());
 			stmt.executeUpdate();
 
-			IdentityMap<User> userMap = IdentityMap.getInstance(user);
+		/*	IdentityMap1<User> userMap = IdentityMap1.getInstance(user);
 			User userInMap = userMap.get(user.getId());
 			if (userInMap != null) {
 				userMap.put(user.getId(), null);
-			}
+			}*/
 
 			stmt.close();
 			return true;
@@ -135,7 +134,7 @@ public class UserMapper extends DataMapper {
 			e.printStackTrace();
 			return false;
 		} finally {
-			DatabaseConnection.closeConnection();
+		//	DatabaseConnection.closeConnection();
 		}
 	}
 
@@ -151,11 +150,11 @@ public class UserMapper extends DataMapper {
 		// find the subject in the identity map.
 		User user = new User();
 
-		IdentityMap<User> userMap = IdentityMap.getInstance(user);
-		user = userMap.get(userId);
+	//	IdentityMap1<User> userMap = IdentityMap1.getInstance(user);
+	//	user = userMap.get(userId);
 
 		// find from the DB when it is not in the identity map.
-		if (user == null) {
+	//	if (user == null) {
 			List<User> result = new ArrayList<User>();
 			// query a subject by subjectId
 			String findSubjectbyIdStm = "SELECT * FROM users WHERE userid = ?";
@@ -179,13 +178,13 @@ public class UserMapper extends DataMapper {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				DatabaseConnection.closeConnection();
+			//	DatabaseConnection.closeConnection();
 			}
-			if (result.size() > 0) {
+		/*	if (result.size() > 0) {
 				userMap.put(result.get(0).getId(), result.get(0));
 				return result.get(0);
-			}
-		}
+			}*/
+	//	}
 		return user;
 	}
 
@@ -204,7 +203,7 @@ public class UserMapper extends DataMapper {
 		User user = new User();
 		// query all subjects
 
-		IdentityMap<User> userMap = IdentityMap.getInstance(user);
+//		IdentityMap1<User> userMap = IdentityMap1.getInstance(user);
 		List<User> result = new ArrayList<User>();
 
 		try {
@@ -223,7 +222,7 @@ public class UserMapper extends DataMapper {
 				result.add(user);
 			}
 
-			if (result.size() > 0) {
+	/*		if (result.size() > 0) {
 				for (int i = 0; i < result.size(); i++) {
 					User s = userMap.get(result.get(i).getId());
 					if (s == null) {
@@ -233,7 +232,7 @@ public class UserMapper extends DataMapper {
 							result.get(i).getId() + "," + result.get(i).getUserName() + "," + result.get(i).getRole());
 				}
 
-			}
+			}*/
 			rs.close();
 			stmt.close();
 		} catch (SQLException e) {
@@ -241,7 +240,7 @@ public class UserMapper extends DataMapper {
 			e.printStackTrace();
 			return null;
 		} finally {
-			DatabaseConnection.closeConnection();
+		//	DatabaseConnection.closeConnection();
 		}
 		return result;
 	}
@@ -254,7 +253,7 @@ public class UserMapper extends DataMapper {
 		User user = new User();
 		// query all subjects
 
-		IdentityMap<User> userMap = IdentityMap.getInstance(user);
+//		IdentityMap1<User> userMap = IdentityMap1.getInstance(user);
 		List<User> result = new ArrayList<User>();
 
 		try {
@@ -273,7 +272,7 @@ public class UserMapper extends DataMapper {
 				result.add(user);
 			}
 
-			if (result.size() > 0) {
+		/*	if (result.size() > 0) {
 				for (int i = 0; i < result.size(); i++) {
 					User s = userMap.get(result.get(i).getId());
 					if (s == null) {
@@ -283,7 +282,7 @@ public class UserMapper extends DataMapper {
 							result.get(i).getId() + "," + result.get(i).getUserName() + "," + result.get(i).getRole());
 				}
 
-			}
+			}*/
 			rs.close();
 			stmt.close();
 		} catch (SQLException e) {
@@ -291,7 +290,7 @@ public class UserMapper extends DataMapper {
 			e.printStackTrace();
 			return null;
 		} finally {
-			DatabaseConnection.closeConnection();
+		//	DatabaseConnection.closeConnection();
 		}
 		return result;
 	}
@@ -312,7 +311,7 @@ public class UserMapper extends DataMapper {
 
 	public User login(String userName, String passWord) {
 		User user = new User();
-		IdentityMap<User> userMap = IdentityMap.getInstance(user);
+	//	IdentityMap1<User> userMap = IdentityMap1.getInstance(user);
 
 		// find from the DB when it is not in the identity map.
 
@@ -340,15 +339,11 @@ public class UserMapper extends DataMapper {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			DatabaseConnection.closeConnection();
+		//	DatabaseConnection.closeConnection();
 		}
 
 		if (result.size() > 0) {
-			User userInMapper = userMap.get(user.getId());
-			if (userInMapper == null) {
-				userMap.put(user.getId(), user);
-			}
-			return user;
+			return result.get(0);
 		} else
 			return null;
 
@@ -405,7 +400,7 @@ public class UserMapper extends DataMapper {
 			e.printStackTrace();
 			return null;
 		} finally {
-			DatabaseConnection.closeConnection();
+		//	DatabaseConnection.closeConnection();
 		}
 		return result;
 	}
@@ -452,7 +447,7 @@ public class UserMapper extends DataMapper {
 			e.printStackTrace();
 			return null;
 		} finally {
-			DatabaseConnection.closeConnection();
+		//	DatabaseConnection.closeConnection();
 		}
 		return result;
 	}

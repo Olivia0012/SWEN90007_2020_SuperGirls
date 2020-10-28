@@ -56,6 +56,7 @@ public class InstructorEditMarkController extends HttpServlet {
 			throws ServletException, IOException {
 
 		ResponseHeader header = new ResponseHeader();
+		String token = request.getHeader("token");
 
 		// Login check.
 		SSOLogin ssoCheck = new SSOLogin();
@@ -66,7 +67,7 @@ public class InstructorEditMarkController extends HttpServlet {
 		} else if (user.getRole() != Role.INSTRUCTOR) {
 			response.getWriter().write("false"); // not instructor.
 		} else {
-			SubmissionServiceImp addExam = new SubmissionServiceImp();
+			SubmissionServiceImp addExam = new SubmissionServiceImp(SSOLogin.uowList.get(token));
 			boolean success = addExam.updateSubmission(request);
 
 			response.getWriter().write(success + "");

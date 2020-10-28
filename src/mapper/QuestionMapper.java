@@ -13,12 +13,8 @@ import com.alibaba.fastjson.JSONObject;
 
 import database.DatabaseConnection;
 import domain.DomainObject;
-import domain.Exam;
 import domain.Question;
-import domain.User;
 import enumeration.QuestionType;
-import enumeration.Role;
-import shared.IdentityMap;
 
 /**
  * This class is the question mapper.
@@ -55,8 +51,8 @@ public class QuestionMapper extends DataMapper {
 			keys.next();
 			int id = keys.getInt(1);
 			question.setId(id);
-			IdentityMap<Question> questionMap = IdentityMap.getInstance(question);
-			questionMap.put(question.getId(), question);
+	//		IdentityMap1<Question> questionMap = IdentityMap1.getInstance(question);
+	//		questionMap.put(question.getId(), question);
 
 			keys.close();
 			stmt.close();
@@ -67,7 +63,7 @@ public class QuestionMapper extends DataMapper {
 			e.printStackTrace();
 			return 0;
 		} finally {
-			DatabaseConnection.closeConnection();
+	//		DatabaseConnection.closeConnection();
 		}
 	}
 
@@ -98,10 +94,10 @@ public class QuestionMapper extends DataMapper {
 
 			stmt.executeUpdate();
 
-			IdentityMap<Question> questionMap = IdentityMap.getInstance(question);
+	//		IdentityMap1<Question> questionMap = IdentityMap1.getInstance(question);
 
 			// add the updated question into question identity map if it is not there.
-			questionMap.put(question.getId(), question);
+	//		questionMap.put(question.getId(), question);
 
 			stmt.close();
 			return true;
@@ -110,7 +106,7 @@ public class QuestionMapper extends DataMapper {
 			e.printStackTrace();
 			return false;
 		} finally {
-			DatabaseConnection.closeConnection();
+		//	DatabaseConnection.closeConnection();
 		}
 	}
 
@@ -131,11 +127,11 @@ public class QuestionMapper extends DataMapper {
 			stmt.setInt(1, question.getId());
 			stmt.executeUpdate();
 
-			IdentityMap<Question> questionMap = IdentityMap.getInstance(question);
-			Question questionInMap = questionMap.get(question.getId());
+	//		IdentityMap1<Question> questionMap = IdentityMap1.getInstance(question);
+	/*		Question questionInMap = questionMap.get(question.getId());
 			if (questionInMap != null) {
 				questionMap.put(question.getId(), null);
-			}
+			}*/
 
 			stmt.close();
 			return true;
@@ -144,7 +140,7 @@ public class QuestionMapper extends DataMapper {
 			e.printStackTrace();
 			return false;
 		} finally {
-			DatabaseConnection.closeConnection();
+		//	DatabaseConnection.closeConnection();
 		}
 	}
 
@@ -159,11 +155,11 @@ public class QuestionMapper extends DataMapper {
 		// find the subject in the identity map.
 		Question question = new Question();
 
-		IdentityMap<Question> questionMap = IdentityMap.getInstance(question);
-		question = questionMap.get(questionid);
+//		IdentityMap1<Question> questionMap = IdentityMap1.getInstance(question);
+//		question = questionMap.get(questionid);
 
 		// find from the DB when it is not in the identity map.
-		if (question == null) {
+	//	if (question == null) {
 			List<Question> result = new ArrayList<Question>();
 			// query a subject by subjectId
 			String findQuestionbyIdStm = "SELECT * FROM question WHERE questionid = ?";
@@ -200,13 +196,10 @@ public class QuestionMapper extends DataMapper {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				DatabaseConnection.closeConnection();
+		//		DatabaseConnection.closeConnection();
 			}
-			if (result.size() > 0) {
-				questionMap.put(result.get(0).getId(), result.get(0));
-				return result.get(0);
-			}
-		}
+		
+		
 		return question;
 	}
 
@@ -222,7 +215,7 @@ public class QuestionMapper extends DataMapper {
 		Question question = new Question();
 		// query all questions
 
-		IdentityMap<Question> questionMap = IdentityMap.getInstance(question);
+//		IdentityMap1<Question> questionMap = IdentityMap1.getInstance(question);
 		List<Question> result = new ArrayList<Question>();
 
 		try {
@@ -254,7 +247,7 @@ public class QuestionMapper extends DataMapper {
 				result.add(question);
 			}
 
-			if (result.size() > 0) {
+		/*	if (result.size() > 0) {
 				for (int i = 0; i < result.size(); i++) {
 					Question s = questionMap.get(result.get(i).getId());
 					if (s == null) {
@@ -264,7 +257,7 @@ public class QuestionMapper extends DataMapper {
 							+ result.get(i).getQuestionType() + "," + result.get(i).getQuestionDescription());
 				}
 
-			}
+			}*/
 			rs.close();
 			stmt.close();
 		} catch (SQLException e) {
@@ -272,7 +265,7 @@ public class QuestionMapper extends DataMapper {
 			e.printStackTrace();
 			return null;
 		} finally {
-			DatabaseConnection.closeConnection();
+		//	DatabaseConnection.closeConnection();
 		}
 		return result;
 	}
@@ -283,7 +276,7 @@ public class QuestionMapper extends DataMapper {
 		Question question = new Question();
 		// query all questions
 
-		IdentityMap<Question> questionMap = IdentityMap.getInstance(question);
+	//	IdentityMap1<Question> questionMap = IdentityMap1.getInstance(question);
 		List<Question> result = new ArrayList<Question>();
 
 		try {
@@ -315,7 +308,7 @@ public class QuestionMapper extends DataMapper {
 				result.add(question);
 			}
 
-			if (result.size() > 0) {
+	/*		if (result.size() > 0) {
 				for (int i = 0; i < result.size(); i++) {
 					Question s = questionMap.get(result.get(i).getId());
 					if (s == null) {
@@ -324,7 +317,7 @@ public class QuestionMapper extends DataMapper {
 					System.out.println(result.get(i).getId() + "," + result.get(i).getQuestionNum() + ","
 							+ result.get(i).getQuestionType() + "," + result.get(i).getQuestionDescription());
 				}
-			}
+			}*/
 			rs.close();
 			stmt.close();
 		} catch (SQLException e) {
@@ -332,7 +325,7 @@ public class QuestionMapper extends DataMapper {
 			e.printStackTrace();
 			return null;
 		} finally {
-			DatabaseConnection.closeConnection();
+		//	DatabaseConnection.closeConnection();
 		}
 		return result;
 	}

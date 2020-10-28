@@ -44,6 +44,7 @@ public class AdminUserInSubjectController extends HttpServlet {
 		// Login check.
 		SSOLogin ssoCheck = new SSOLogin();
 		User user = ssoCheck.checkLogin(request);
+		String token = request.getHeader("token");
 
 		if (user == null) {
 			response.getWriter().write("false"); // invalid token.
@@ -51,7 +52,7 @@ public class AdminUserInSubjectController extends HttpServlet {
 			response.getWriter().write("false"); // not admin.
 		} else {
 			// find all subjects
-			SubjectServiceImp subjectService = new SubjectServiceImp();
+			SubjectServiceImp subjectService = new SubjectServiceImp(SSOLogin.uowList.get(token));
 			String result = subjectService.findAllSubjects();
 
 			response.getWriter().write(result);
@@ -70,6 +71,7 @@ public class AdminUserInSubjectController extends HttpServlet {
 			throws ServletException, IOException {
 
 		ResponseHeader header = new ResponseHeader();
+		String token = request.getHeader("token");
 
 		// Login check.
 		SSOLogin ssoCheck = new SSOLogin();
@@ -87,7 +89,7 @@ public class AdminUserInSubjectController extends HttpServlet {
 			JsonToObject jo = new JsonToObject();
 			List<User> users = jo.ReqJsonToObjectList(request, user);
 
-			SubjectServiceImp addExam = new SubjectServiceImp();
+			SubjectServiceImp addExam = new SubjectServiceImp(SSOLogin.uowList.get(token));
 
 			boolean success = addExam.usersInSubject(subjectId, users,role);
 

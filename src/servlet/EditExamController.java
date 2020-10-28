@@ -53,6 +53,7 @@ public class EditExamController extends HttpServlet {
 		// Login check.
 		SSOLogin ssoCheck = new SSOLogin();
 		User user = ssoCheck.checkLogin(request);
+		String token = request.getHeader("token");
 
 		if (user == null) {
 			response.getWriter().write("false"); // invalid token.
@@ -61,7 +62,7 @@ public class EditExamController extends HttpServlet {
 			String data = new String(request.getParameter("id").getBytes("ISO-8859-1"), "UTF-8");
 
 			// update exam status.
-			ExamServiceImp a = new ExamServiceImp();
+			ExamServiceImp a = new ExamServiceImp(SSOLogin.uowList.get(token));
 			boolean success = a.publishExam(data);
 
 			response.getWriter().write(success+"");
@@ -81,6 +82,7 @@ public class EditExamController extends HttpServlet {
 		// Login check.
 		SSOLogin ssoCheck = new SSOLogin();
 		User user = ssoCheck.checkLogin(request);
+		String token = request.getHeader("token");
 
 		if (user == null) {
 			response.getWriter().write("false"); // invalid token.
@@ -97,7 +99,7 @@ public class EditExamController extends HttpServlet {
 				exam = JSON.toJavaObject(examJsonObject, Exam.class);
 				
 				// Update exam
-				ExamServiceImp markExam = new ExamServiceImp();
+				ExamServiceImp markExam = new ExamServiceImp(SSOLogin.uowList.get(token));
 				boolean success = markExam.updateExam(exam);
 				
 				//release the edit exam lock

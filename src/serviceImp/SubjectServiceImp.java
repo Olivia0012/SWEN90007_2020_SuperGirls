@@ -23,9 +23,10 @@ public class SubjectServiceImp implements SubjectService {
 	SubjectMapper subjectMapper = new SubjectMapper();
 	UserMapper userMapper = new UserMapper();
 	private JsonToObject jo = new JsonToObject();
+	private UnitOfWork current;
 
-	public SubjectServiceImp() {
-		// TODO Auto-generated constructor stub
+	public SubjectServiceImp(UnitOfWork current) {
+		this.current = current;
 	}
 
 	@Override
@@ -62,7 +63,7 @@ public class SubjectServiceImp implements SubjectService {
 
 	@Override
 	public boolean usersInSubject(int subjectId, List<User> users, String role) {
-		UnitOfWork.newCurrent();
+	//	UnitOfWork.newCurrent();
 
 		List<User> curUsers = userMapper.FindEnrolledUsers(Role.valueOf(role), subjectId);
 
@@ -71,7 +72,7 @@ public class SubjectServiceImp implements SubjectService {
 				Relationship relationship = new Relationship();
 				relationship.setSubjectId(subjectId);
 				relationship.setUser(curUsers.get(i));
-				UnitOfWork.getCurrent().registerDeleted(relationship);
+				current.registerDeleted(relationship);
 			}
 		}
 
@@ -80,7 +81,7 @@ public class SubjectServiceImp implements SubjectService {
 				Relationship relationship = new Relationship();
 				relationship.setSubjectId(subjectId);
 				relationship.setUser(users.get(i));
-				UnitOfWork.getCurrent().registerNew(relationship);
+				current.registerNew(relationship);
 			}
 		}
 
@@ -100,7 +101,7 @@ public class SubjectServiceImp implements SubjectService {
 					Relationship relationship = new Relationship();
 					relationship.setSubjectId(subjectId);
 					relationship.setUser(curUsers.get(i));
-					UnitOfWork.getCurrent().registerDeleted(relationship);
+					current.registerDeleted(relationship);
 				}
 			}
 
@@ -109,25 +110,25 @@ public class SubjectServiceImp implements SubjectService {
 					Relationship relationship = new Relationship();
 					relationship.setSubjectId(subjectId);
 					relationship.setUser(users.get(i));
-					UnitOfWork.getCurrent().registerNew(relationship);
+					current.registerNew(relationship);
 				}
 			}
 		}
-		return UnitOfWork.getCurrent().commit();
+		return current.commit();
 	}
 
 	@Override
 	public boolean addSubject(HttpServletRequest request) {
-		UnitOfWork.newCurrent();
+	//	UnitOfWork.newCurrent();
 		// get the new exam info from the request.
 		JSONObject subjectJsonObject = jo.ReqJsonToObject(request);
 
 		Subject subject = new Subject();
 		subject = JSON.toJavaObject(subjectJsonObject, Subject.class);
 
-		UnitOfWork.getCurrent().registerNew(subject);
+		current.registerNew(subject);
 		
-		return UnitOfWork.getCurrent().commit();
+		return current.commit();
 
 	}
 

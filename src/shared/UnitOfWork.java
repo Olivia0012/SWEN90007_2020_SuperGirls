@@ -8,35 +8,34 @@ import java.util.List;
 
 import domain.DomainObject;
 import mapper.DataMapper;
-import mapper.LockingMapper;
 
 /**
  * @author Super Girls
  *
  */
 public class UnitOfWork {
-	private static ThreadLocal current = new ThreadLocal();
+	private ThreadLocal current = new ThreadLocal();
 
 	private List<DomainObject> newObjects = new ArrayList<DomainObject>();
 	private List<DomainObject> dirtyObjects = new ArrayList<DomainObject>();
 	private List<DomainObject> deletedObjects = new ArrayList<DomainObject>();
 
-	public static void newCurrent() {
-		setCurrent(new UnitOfWork());
+	public UnitOfWork(ThreadLocal current) {
+		setCurrent(current);
 	}
 
 	/**
 	 * @return the current
 	 */
-	public static UnitOfWork getCurrent() {
+	public  UnitOfWork getCurrent() {
 		return (UnitOfWork) current.get();
 	}
 
 	/**
 	 * @param current the current to set
 	 */
-	public static void setCurrent(UnitOfWork uow) {
-		current.set(uow);
+	public  void setCurrent(ThreadLocal current) {
+		current.set(current);
 	}
 
 
@@ -79,9 +78,6 @@ public class UnitOfWork {
 		return false;
 
 	}
-
-
-	
 
 
 	public Boolean commit() {

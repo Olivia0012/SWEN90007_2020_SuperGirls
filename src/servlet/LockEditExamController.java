@@ -87,11 +87,12 @@ public class LockEditExamController extends HttpServlet {
 		// Login check.
 		SSOLogin ssoCheck = new SSOLogin();
 		User user = ssoCheck.checkLogin(request);
+		String token = request.getHeader("token");
 
 		if (user == null) {
 			response.getWriter().write("false"); // invalid token.
 		} else {
-			ExamServiceImp addExam = new ExamServiceImp();
+			ExamServiceImp addExam = new ExamServiceImp(SSOLogin.uowList.get(token));
 			boolean success = addExam.addNewExam(request,user);
 			
 			response.getWriter().write(success+"");

@@ -99,6 +99,7 @@ const Exam = () => {
 					setEditable((pre) => !pre);
 				else{
 					alert(response.data.acquirelock);
+					window.location.reload();
 				}
 			}
 				
@@ -236,7 +237,7 @@ const Exam = () => {
 							</Button>
 						</Grid>
 						<Grid item xs={1}>
-							{data.status === 'CREATED' ? (
+							{data.status === 'CREATED' && !editable ? (
 								<Button color="primary" variant="contained" fullWidth onClick={handleEdit}>
 									Edit
 								</Button>

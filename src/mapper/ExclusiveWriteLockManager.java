@@ -3,6 +3,9 @@ package mapper;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import database.DatabaseConnection;
 
 public class ExclusiveWriteLockManager implements LockManager {
@@ -19,18 +22,25 @@ public class ExclusiveWriteLockManager implements LockManager {
 
 	}
 
+	/**
+	 * Obtain a lock for 30 min.
+	 */
 	@Override
 	public String acquireLock(int id, String table,  String owner) {
 		String result = hasLock(id,table, owner);
+		SimpleDateFormat sdf = new SimpleDateFormat();
+        sdf.applyPattern("yyyy-MM-dd HH:mm:ss"); 
+        Date date = new Date(); 
 
 		if (result.equals("false")) {
 
-			String sql = "INSERT INTO LOCK (id,tablename,owner) VALUES(?,?,?)";
+			String sql = "INSERT INTO LOCK (id,tablename,owner,time) VALUES(?,?,?,?)";
 			try {
 				PreparedStatement stmt = DatabaseConnection.prepareInsert(sql);
 				stmt.setInt(1, id);
 				stmt.setString(2, table);
 				stmt.setString(3, owner);
+				stmt.setString(4, sdf.format(date));
 
 				stmt.executeUpdate();
 				
@@ -42,7 +52,7 @@ public class ExclusiveWriteLockManager implements LockManager {
 				e.printStackTrace();
 				result = "Errors happened during acquiring the lock.";
 			} finally {
-				DatabaseConnection.closeConnection();
+			//	DatabaseConnection.closeConnection();
 			}
 		}
 		return result;
@@ -65,7 +75,7 @@ public class ExclusiveWriteLockManager implements LockManager {
 				if(token.equals(owner)) {
 					result = "true";
 				}else {
-					result = "Others are holding the lock.";
+					result = "Sorry, other instructors are editing now, please try again later.";
 				}
 			}
 			
@@ -74,7 +84,7 @@ public class ExclusiveWriteLockManager implements LockManager {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			DatabaseConnection.closeConnection();
+		//	DatabaseConnection.closeConnection();
 		}
 
 		return result;
@@ -97,10 +107,12 @@ public class ExclusiveWriteLockManager implements LockManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			DatabaseConnection.closeConnection();
+		//	DatabaseConnection.closeConnection();
 		}
 
 	}
+	
+	
 
 	public void releaseAllLocks(String owner) {
 		String deleteSubjectStm = "DELETE FROM lock WHERE owner=?";
@@ -115,8 +127,35 @@ public class ExclusiveWriteLockManager implements LockManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			DatabaseConnection.closeConnection();
+		//	DatabaseConnection.closeConnection();
 		}
 
+	}
+	
+	/**
+	 *  Delete expired locks
+	 */
+	@Override
+	public void releaseExpiredLocks() {
+		SimpleDateFormat sdf = new SimpleDateFormat(); 
+        sdf.applyPattern("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+        String time = sdf.format(date);
+       
+		String deleteSubjectStm = "DELETE FROM lock WHERE timestamp '"+ time+"' - to_timestamp(time,'yyyy-MM-dd HH24:MI:ss') > interval '30 min' ";
+
+		try {
+			PreparedStatement stmt = DatabaseConnection.prepare(deleteSubjectStm);
+			
+			stmt.executeUpdate();
+
+			stmt.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+		//	DatabaseConnection.closeConnection();
+		}
+		
 	}
 }

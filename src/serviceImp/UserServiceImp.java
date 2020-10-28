@@ -21,6 +21,7 @@ import util.JsonToObject;
 public class UserServiceImp implements UserService {
 	UserMapper userMapper = new UserMapper();
 	private JsonToObject jo = new JsonToObject();
+	
 
 	@Override
 	public User login(String userName, String passWord) {
@@ -88,8 +89,8 @@ public class UserServiceImp implements UserService {
 	}
 
 	@Override
-	public boolean addNewUser(HttpServletRequest request) {
-		UnitOfWork.newCurrent();
+	public boolean addNewUser(HttpServletRequest request, UnitOfWork current) {
+	//	UnitOfWork.newCurrent();
 
 		// get the new exam info from the request.
 		JSONObject userJsonObject = jo.ReqJsonToObject(request);
@@ -99,9 +100,9 @@ public class UserServiceImp implements UserService {
 		
 		System.out.println(user.getId()+user.getUserName()+user.getPassWord()+user.getRole());
 
-		UnitOfWork.getCurrent().registerNew(user);
+		current.registerNew(user);
 
-		return UnitOfWork.getCurrent().commit();
+		return current.commit();
 	}
 
 }

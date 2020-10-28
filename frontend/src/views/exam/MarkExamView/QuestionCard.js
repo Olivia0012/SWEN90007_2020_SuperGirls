@@ -60,7 +60,7 @@ function QuestionCard(props) {
 						label="Mark"
 						onChange={handleChange}
 						//	placeholder={answer.mark}
-						disabled={status !=='CLOSED' || typeof marker !== 'undefined'}
+						disabled={status !=='CLOSED'}
 						defaultValue={answer?answer.mark:0}
 						id="standard-start-adornment"
 						className={clsx(classes.margin, classes.textField)}

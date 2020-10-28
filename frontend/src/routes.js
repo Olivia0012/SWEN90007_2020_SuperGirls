@@ -13,30 +13,32 @@ import SubjectManagement from './views/admin/SubjectManagement/SubjectManagement
 import UserManagement from './views/admin/UserManagement/UserManagement';
 
 const routes = [
-	{
-		path: 'oea',
-		element: <DashboardLayout />,
-		children: [
-		  { path: 'subjects', element: <SubjectListView /> },
-		  { path: 'students/subject=:subject&exam=:exam', element: <StudentListView /> },
-		  { path: 'exam?user=:user', element: <EditExam /> },
-		  { path: 'exam/id=:id', element: <Exam />},
-		  { path: 'students/submission=:submission', element: <MarkExamView />},
-		  { path: 'takeExam/submission=:submission', element: <TakeExam />},
-		  { path: 'viewResult/examId=:examId', element: <MarkExamView />},
-		]
-	  },
+  {
+    path: 'oea',
+    element: <DashboardLayout />,
+    children: [
+      { path: 'subjects', element: <SubjectListView /> },
+      { path: 'students/subject=:subject&exam=:exam', element: <StudentListView /> },
+      { path: 'exam?user=:user', element: <EditExam /> },
+      { path: 'exam/id=:id', element: <Exam />},
+      { path: 'students/submission=:submission', element: <MarkExamView />},
+      { path: 'takeExam/submission=:submission', element: <TakeExam />},
+      { path: 'viewResult/examId=:examId', element: <MarkExamView />},
+    ]
+  },
 	{
 		path: 'admin',
 		element: <DashboardAdmin />,
 		children: [ { path: 'subjects', element: <SubjectManagement /> }, 
 		{ path: 'user', element: <UserManagement /> } ]
 	},
-	{
-		path: '/',
-		element: <MainLayout />,
-		children: [ { path: '', element: <LoginView /> } ]
-	}
+  {
+    path: '/',
+    element: <MainLayout />,
+    children: [
+      { path: '', element: <LoginView /> },
+    ]
+  }
 ];
 
 export default routes;

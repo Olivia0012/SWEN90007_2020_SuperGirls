@@ -8,10 +8,12 @@ import javax.servlet.http.HttpServletRequest;
 import domain.User;
 import mapper.ExclusiveWriteLockManager;
 import mapper.LockManager;
+import shared.UnitOfWork;
 
 public class SSOLogin {
 
 	private static Map<String, User> loginList = new HashMap<String, User>();
+	public static Map<String, UnitOfWork> uowList = new HashMap<String, UnitOfWork>();
 	LockManager lock = ExclusiveWriteLockManager.getInstance();
 
 	/**
@@ -29,6 +31,8 @@ public class SSOLogin {
 			
 			SSOLogin.loginList.remove(token, user);
 		}
+		
+		lock.releaseExpiredLocks();
 			
 
 		return user;
@@ -39,6 +43,9 @@ public class SSOLogin {
 	 * @param add user to the login list
 	 */
 	public void login(String token, User user) {
+		ThreadLocal current = new ThreadLocal();
+		UnitOfWork uow = new UnitOfWork(current);
+		SSOLogin.uowList.put(token, uow);
 		SSOLogin.loginList.put(token, user);
 	}
 

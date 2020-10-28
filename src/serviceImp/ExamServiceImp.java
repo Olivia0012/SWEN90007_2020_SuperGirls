@@ -33,14 +33,16 @@ public class ExamServiceImp implements ExamService {
 	private AnswerMapper answerMapper;
 	private QuestionMapper questionMapper;
 	private JsonToObject jo = new JsonToObject();
+	private UnitOfWork current;
 
-	public ExamServiceImp() {
+	public ExamServiceImp(UnitOfWork current) {
 		examMapper = new ExamMapper();
 		subjectMapper = new SubjectMapper();
 		userMapper = new UserMapper();
 		submissionMapper = new SubmissionMapper();
 		answerMapper = new AnswerMapper();
 		questionMapper = new QuestionMapper();
+		this.current = current;
 	}
 
 	/**
@@ -63,24 +65,24 @@ public class ExamServiceImp implements ExamService {
 	 */
 	@Override
 	public boolean updateExam(Exam exam) {
-		UnitOfWork.newCurrent();
+	//	UnitOfWork.newCurrent();
 		
 		
 		// update the exam
-		UnitOfWork.getCurrent().registerDirty(exam);
+		current.registerDirty(exam);
 
 		// update questions
 		for (int i = 0; i < exam.getQuestionList().size(); i++) {
 			// add new questions
 			if (exam.getQuestionList().get(i).getId() == -1) {
-				UnitOfWork.getCurrent().registerNew(exam.getQuestionList().get(i));
+				current.registerNew(exam.getQuestionList().get(i));
 			} else {
 				// update existing questions
-				UnitOfWork.getCurrent().registerDirty(exam.getQuestionList().get(i));
+				current.registerDirty(exam.getQuestionList().get(i));
 			}
 		}
 
-		return UnitOfWork.getCurrent().commit();
+		return current.commit();
 
 	}
 
@@ -89,15 +91,14 @@ public class ExamServiceImp implements ExamService {
 	 */
 	@Override
 	public boolean deleteQuestionById(int questionId) {
-		UnitOfWork.newCurrent();
 
 		Question question = questionMapper.findById(questionId);
 
 		if (question == null) {
 			return false;
 		} else {
-			UnitOfWork.getCurrent().registerDeleted(question);
-			return UnitOfWork.getCurrent().commit();
+			current.registerDeleted(question);
+			return current.commit();
 		}
 
 	}
@@ -107,7 +108,7 @@ public class ExamServiceImp implements ExamService {
 	 */
 	@Override
 	public boolean addNewExam(HttpServletRequest request, User user) {
-		UnitOfWork.newCurrent();
+	//	UnitOfWork.newCurrent();
 
 		// get the new exam info from the request.
 		JSONObject examJsonObject = jo.ReqJsonToObject(request);
@@ -116,9 +117,9 @@ public class ExamServiceImp implements ExamService {
 		exam = JSON.toJavaObject(examJsonObject, Exam.class);
 		exam.setCreator(user);
 
-		UnitOfWork.getCurrent().registerNew(exam);
+		current.registerNew(exam);
 
-		return UnitOfWork.getCurrent().commit();
+		return current.commit();
 
 	}
 
@@ -127,7 +128,7 @@ public class ExamServiceImp implements ExamService {
 	 */
 	@Override
 	public boolean deleteExamById(int examId) {
-		UnitOfWork.newCurrent();
+	//	UnitOfWork.newCurrent();
 
 		Exam exam = examMapper.findById(examId);
 
@@ -135,8 +136,8 @@ public class ExamServiceImp implements ExamService {
 			return false;
 		} else {
 
-			UnitOfWork.getCurrent().registerDeleted(exam);
-			return UnitOfWork.getCurrent().commit();
+			current.registerDeleted(exam);
+			return current.commit();
 		}
 	}
 
@@ -145,7 +146,7 @@ public class ExamServiceImp implements ExamService {
 	 */
 	@Override
 	public boolean markSubmission(Submission submission) {
-		UnitOfWork.newCurrent();
+	//	UnitOfWork.newCurrent();
 		
 
 		// calculate the total mark
@@ -157,12 +158,12 @@ public class ExamServiceImp implements ExamService {
 			submission.setTotalMark(totalMark);
 		}
 
-		UnitOfWork.getCurrent().registerDirty(submission);
+		current.registerDirty(submission);
 
 		for (Answer an : submission.getAnswers()) {
-			UnitOfWork.getCurrent().registerDirty(an);
+			current.registerDirty(an);
 		}
-		return UnitOfWork.getCurrent().commit();
+		return current.commit();
 	}
 
 	/**
@@ -186,7 +187,7 @@ public class ExamServiceImp implements ExamService {
 
 	@Override
 	public boolean publishExam(String examId) {
-		UnitOfWork.newCurrent();
+	//	UnitOfWork.newCurrent();
 		int examid = Integer.valueOf(examId);
 
 		// update exam status
@@ -199,14 +200,14 @@ public class ExamServiceImp implements ExamService {
 			exam.setStatus(ExamStatus.RELEASED);
 		}
 
-		UnitOfWork.getCurrent().registerDirty(exam);
+		current.registerDirty(exam);
 
-		return UnitOfWork.getCurrent().commit();
+		return current.commit();
 	}
 
 	@Override
 	public boolean addSubmission(Exam exam, User user) {
-		UnitOfWork.newCurrent();
+	//	UnitOfWork.newCurrent();
 
 		// check if this student has taken this exam.
 		Submission checkSub = submissionMapper.FindSubmissionsByUserId_ExamId(user.getId(), exam.getId());
@@ -221,12 +222,12 @@ public class ExamServiceImp implements ExamService {
 			newSub.setStudent(user);
 
 			// add new submission and its answers into database
-			UnitOfWork.getCurrent().registerNew(newSub);
+			current.registerNew(newSub);
 		} else {
 			return false;
 		}
 
-		return UnitOfWork.getCurrent().commit();
+		return current.commit();
 
 	}
 
@@ -235,7 +236,7 @@ public class ExamServiceImp implements ExamService {
 	 */
 	@Override
 	public boolean takeExam(HttpServletRequest request, User user) {
-		UnitOfWork.newCurrent();
+	//	UnitOfWork.newCurrent();
 		Submission submission = new Submission();
 		JsonToObject jo = new JsonToObject();
 		JSONObject SubmissionJsonObject = jo.ReqJsonToObject(request);
@@ -249,15 +250,15 @@ public class ExamServiceImp implements ExamService {
 			return false;
 		} else {
 			// update submission info
-			UnitOfWork.getCurrent().registerDirty(submission);
+			current.registerDirty(submission);
 
 			if (submission.getAnswers().size() > 0)
 				for (Answer an : submission.getAnswers()) {
 					// update answers
-					UnitOfWork.getCurrent().registerDirty(an);
+					current.registerDirty(an);
 				}
 
-			return UnitOfWork.getCurrent().commit();
+			return current.commit();
 		}
 
 	}
@@ -287,17 +288,17 @@ public class ExamServiceImp implements ExamService {
 	 */
 	@Override
 	public boolean addAnswers(Submission submission) {
-		UnitOfWork.newCurrent();
+	//	UnitOfWork.newCurrent();
 		List<Question> questions = questionMapper.findQuestionByExamId(submission.getExamId());
 
 		for (Question question : questions) {
 			Answer answer = new Answer();
 			answer.setQuestionId(question.getId());
 			answer.setSubmissionId(submission.getId());
-			UnitOfWork.getCurrent().registerNew(answer);
+			current.registerNew(answer);
 		}
 
-		return UnitOfWork.getCurrent().commit();
+		return current.commit();
 	}
 
 }

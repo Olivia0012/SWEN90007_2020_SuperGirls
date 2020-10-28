@@ -286,14 +286,10 @@ const Results = ({ className, exam, customers, ...rest }) => {
 										)}
 									</TableCell>
 									<TableCell align="center">
-										{customer.submissions[0].id !== 0 ? customer.submissions[0].totalMark == 0 &&
+										{customer.submissions[0].id !== 0 &&
 										exam.status == 'CLOSED' ? (
 											<Button onClick={() => handleMark(customer.submissions[0].id)} color="primary">
 												Mark
-											</Button>
-										) : (
-											<Button href={'./submission=' + customer.submissions[0].id} color="primary">
-												View
 											</Button>
 										) : (
 											<div>-</div>

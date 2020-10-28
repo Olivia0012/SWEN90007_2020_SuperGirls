@@ -42,6 +42,7 @@ public class AdminUsersController extends HttpServlet {
 		// Login check.
 		SSOLogin ssoCheck = new SSOLogin();
 		User user = ssoCheck.checkLogin(request);
+		String token = request.getHeader("token");
 
 		if (user == null) {
 			response.getWriter().write("false"); // invalid token.
@@ -52,7 +53,7 @@ public class AdminUsersController extends HttpServlet {
 			String subjectId = new String(request.getParameter("subjectId").getBytes("ISO-8859-1"), "UTF-8");
 			// find all users
 			UserServiceImp userService = new UserServiceImp();
-			SubjectServiceImp subjectService = new SubjectServiceImp();
+			SubjectServiceImp subjectService = new SubjectServiceImp(SSOLogin.uowList.get(token));
 	//		subjectService.findAllUsersBySubjectId(Integer.parseInt(subjectId));
 			String result = userService.findAllUsers(Role.valueOf(userType),Integer.parseInt(subjectId));
 
@@ -72,6 +73,7 @@ public class AdminUsersController extends HttpServlet {
 			throws ServletException, IOException {
 
 		ResponseHeader header = new ResponseHeader();
+		String token = request.getHeader("token");
 
 		// Login check.
 		SSOLogin ssoCheck = new SSOLogin();
@@ -81,7 +83,8 @@ public class AdminUsersController extends HttpServlet {
 			response.getWriter().write("false"); // invalid token.
 		} else {
 			UserServiceImp addExam = new UserServiceImp();
-			boolean success = addExam.addNewUser(request);
+			
+			boolean success = addExam.addNewUser(request,SSOLogin.uowList.get(token));
 
 			response.getWriter().write(success + "");
 

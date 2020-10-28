@@ -38,6 +38,7 @@ public class DeleteExamController extends HttpServlet {
 	    int examId = Integer. valueOf(data);
 	    
 	    ResponseHeader header = new ResponseHeader();
+	    String token = request.getHeader("token");
 
 		// Login check.
 		SSOLogin ssoCheck = new SSOLogin();
@@ -47,7 +48,7 @@ public class DeleteExamController extends HttpServlet {
 			response.getWriter().write("false"); // invalid token.
 		} else {
 			//delete the question
-			ExamServiceImp deleteExam = new ExamServiceImp();
+			ExamServiceImp deleteExam = new ExamServiceImp(SSOLogin.uowList.get(token));
 			boolean success = deleteExam.deleteExamById(examId);
 
 			response.getWriter().write(success + "");
