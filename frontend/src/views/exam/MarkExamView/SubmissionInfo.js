@@ -18,9 +18,9 @@ const SubmissionInfo = ({ className, ...rest }) => {
 	const classes = useStyles();
 	const submissionInfo = useContext(SubmissionContent);
 	const [ value, setValue ] = React.useState('');
-	console.log(value);
+	
 	var a = submissionInfo.examTitle;
-
+	console.log(submissionInfo);
 
 	return (
 		<form className={clsx(classes.root, className)} {...rest}>
@@ -50,6 +50,9 @@ const SubmissionInfo = ({ className, ...rest }) => {
 						</Typography>
 						<Typography color="textPrimary" gutterBottom variant="body1">
 							SubTime :  {submissionInfo.subTime}
+						</Typography>
+						<Typography color="textPrimary" gutterBottom variant="body1">
+							Status :  {submissionInfo.status}
 						</Typography>
 					</Grid>
 					</Box>

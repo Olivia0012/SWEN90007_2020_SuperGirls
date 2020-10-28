@@ -1,17 +1,26 @@
 package serviceImp;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
+import domain.Exam;
 import domain.User;
+import enumeration.Role;
 import mapper.UserMapper;
 import service.UserService;
+import shared.UnitOfWork;
+import util.JsonToObject;
 
 public class UserServiceImp implements UserService {
 	UserMapper userMapper = new UserMapper();
+	private JsonToObject jo = new JsonToObject();
 
 	@Override
 	public User login(String userName, String passWord) {
@@ -56,6 +65,43 @@ public class UserServiceImp implements UserService {
 		}
 		return result;
 		
+	}
+
+	@Override
+	public String findAllUsers(Role role, int id) {
+		List<User> userList = new ArrayList<User>();
+		List<User> enrolledusers = new ArrayList<User>();
+		String result = "";
+		if(!role.equals(Role.ADMIN)) {
+			enrolledusers = userMapper.FindEnrolledUsers(role,id);
+			userList = userMapper.FindAllUsers(role, id);
+			String enUsers = JSONObject.toJSONString(enrolledusers);
+			String unUsers = JSONObject.toJSONString(userList);
+			result = "{\"enrolled\":"+enUsers+",\"unenrolled\":"+unUsers+"}";
+		}else {
+			userList = userMapper.FindAllUsers(role, id);
+			result = JSONObject.toJSONString(userList);
+		}
+		
+		
+		return result;
+	}
+
+	@Override
+	public boolean addNewUser(HttpServletRequest request) {
+		UnitOfWork.newCurrent();
+
+		// get the new exam info from the request.
+		JSONObject userJsonObject = jo.ReqJsonToObject(request);
+
+		User user = new User();
+		user = JSON.toJavaObject(userJsonObject, User.class);
+		
+		System.out.println(user.getId()+user.getUserName()+user.getPassWord()+user.getRole());
+
+		UnitOfWork.getCurrent().registerNew(user);
+
+		return UnitOfWork.getCurrent().commit();
 	}
 
 }

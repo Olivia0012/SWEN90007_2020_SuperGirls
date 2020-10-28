@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
-	Grid,
+	InputAdornment,
 	Box,
 	Card,
 	Checkbox,
@@ -14,11 +14,22 @@ import {
 	TableHead,
 	TablePagination,
 	TableRow,
+	IconButton,
 	Typography,
 	makeStyles,
-	Button
+	Button,
+	Dialog,
+	DialogTitle,
+	Collapse,
+	DialogContent,
+	DialogContentText,
+	DialogActions,
+	TextField
 } from '@material-ui/core';
-import { useNavigate} from 'react-router-dom';
+import Alert from '@material-ui/lab/Alert';
+import EditIcon from '@material-ui/icons/Edit';
+import { editTotalMark } from '../../../api/instructorAPI';
+import { lockMarkExam } from '../../../api/examAPI';
 
 const useStyles = makeStyles((theme) => ({
 	root: {},
@@ -27,16 +38,129 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-const Results = ({ className, customers, ...rest }) => {
+const Results = ({ className, exam, customers, ...rest }) => {
 	const classes = useStyles();
-	const navigate = useNavigate();
 	const [ selectedCustomerIds, setSelectedCustomerIds ] = useState([]);
 	const [ limit, setLimit ] = useState(10);
 	const [ page, setPage ] = useState(0);
-
-	customers.map((i) => {
-		console.log(i.userName);
+	const [ openAlert, setOpen ] = React.useState(false);
+	const [ openGreen, setOpenGreen ] = React.useState(false);
+	const [ error, setError ] = React.useState();
+	const [ open, setDMOpen ] = React.useState(false);
+	const [ student, setStudent ] = useState();
+	const [ mark, setMark ] = useState(0);
+	var m = 0;
+	exam.questionList.map((q) => {
+		m += parseFloat(q.questionMark);
 	});
+	console.log(customers[0].submissions[0]);
+
+	const [ tMark, setTMark ] = useState(m);
+	//setTMark(m);
+
+	const handleChange = (event) => {
+		setMark(event.target.value);
+		//	student.submissions[0].totalMark = event.target.value;
+	};
+
+	const handleOpen = async (customer) => {
+		await lockMarkExam(customer.submissions[0].id, true)
+			.then((response) => {
+				console.log(response);
+				const result = response.data;
+				if (response.data.valid == false) {
+					alert('Please login to continue.');
+					window.location.replace('/');
+				} else {
+					if (response.data.acquirelock == 'true') {
+						setStudent(customer);
+						setMark(customer.submissions[0].totalMark);
+						setDMOpen(!open);
+					} else {
+						alert(response.data.acquirelock);
+					}
+				}
+			})
+			.catch((error) => {
+				alert(error);
+				window.location.replace('../');
+			});
+	};
+
+	const handleClose = async () => {
+		await lockMarkExam(student.submissions[0].id, false)
+			.then((response) => {
+				console.log(response);
+				const result = response.data;
+				if (response.data.valid == false) {
+					alert('Please login to continue.');
+					window.location.replace('/');
+				} else {
+					if (response.data.acquirelock == 'true') {
+						setDMOpen(false);
+					} else {
+						alert(response.data.acquirelock);
+					}
+				}
+			})
+			.catch((error) => {
+				alert(error);
+				window.location.replace('../');
+			});
+	};
+
+	const handleMark = async(submissionId) => {
+		await lockMarkExam(submissionId, true)
+		.then((response) => {
+			console.log(response);
+			const result = response.data;
+			if (response.data.valid == false) {
+				alert('Please login to continue.');
+				window.location.replace('/');
+			} else {
+				if (response.data.acquirelock == 'true') {
+					setDMOpen(false);
+					window.location.replace('./submission=' + submissionId);
+				} else {
+					alert(response.data.acquirelock);
+				}
+			}
+		})
+		.catch((error) => {
+			alert(error);
+			window.location.replace('../');
+		});
+		
+	}
+
+	const handleSubmit = async () => {
+		if (parseFloat(mark) > tMark) {
+			setError('Invalid mark');
+			setOpen(!openAlert);
+		} else {
+			student.submissions[0].totalMark = mark;
+			student.submissions[0].answers = [];
+			student.submissions[0].exam = customers[0].submissions[0].exam;
+			student.submissions[0].questionList = customers[0].submissions[0].questionList;
+			console.log('Student', student);
+			//	student.submissions[0].exam={id:parseInt(id)};
+
+			await editTotalMark(student.submissions[0])
+				.then((res) => {
+					if (res.data == false) {
+						alert('Please login to continue.');
+						//	  window.location.replace('/');
+					} else {
+						alert('Update successfully.');
+						window.location.reload();
+					}
+				})
+				.catch((error) => {
+					alert(error + ', Please login to continue.');
+					window.location.replace('/');
+				});
+		}
+	};
 
 	const handleSelectAll = (event) => {
 		let newSelectedCustomerIds;
@@ -105,7 +229,7 @@ const Results = ({ className, customers, ...rest }) => {
 									/>
 								</TableCell>
 								<TableCell>Student Name</TableCell>
-								<TableCell align="center">Total Mark</TableCell>
+								<TableCell align="center">Total Mark [Out of {tMark}]</TableCell>
 								<TableCell align="center">Comment</TableCell>
 								<TableCell align="center">Marker</TableCell>
 								<TableCell align="center">Action</TableCell>
@@ -133,26 +257,43 @@ const Results = ({ className, customers, ...rest }) => {
 										</Box>
 									</TableCell>
 									<TableCell align="center">
-										{customer.submissions[0] && customer.submissions[0].id !== 0 ? customer.submissions[0].totalMark : '-'}
+										{customer.submissions[0].id !== 0 ? (
+											customer.submissions[0].totalMark + '/' + tMark
+										) : (
+											'-'
+										)}
+										{'  '}
+										{customer.submissions[0].id !== 0 && exam.status == 'CLOSED' ? (
+											<IconButton color="primary" onClick={() => handleOpen(customer)}>
+												<EditIcon fontSize="small" />
+											</IconButton>
+										) : (
+											<div />
+										)}
 									</TableCell>
 									<TableCell align="center">
-										{customer.submissions[0] &&customer.submissions[0].id !== 0 && customer.submissions[0].comment ? (
+										{customer.submissions[0].id !== 0 && customer.submissions[0].comment ? (
 											customer.submissions[0].comment
 										) : (
 											'-'
 										)}
 									</TableCell>
 									<TableCell align="center">
-										{customer.submissions[0] &&customer.submissions[0].id !== 0 && customer.submissions[0].marker ? (
+										{customer.submissions[0].id !== 0 && customer.submissions[0].marker ? (
 											customer.submissions[0].marker.userName
 										) : (
 											'-'
 										)}
 									</TableCell>
 									<TableCell align="center">
-										{customer.submissions[0] && customer.submissions[0].id !== 0 ? (
-											<Button onClick={()=>navigate('/oea/students/submission=' + customer.submissions[0].id, { replace: true })} color="primary">
-												{customer.submissions[0] &&customer.submissions[0].comment == null ? 'Mark' : 'View'}
+										{customer.submissions[0].id !== 0 ? customer.submissions[0].totalMark == 0 &&
+										exam.status == 'CLOSED' ? (
+											<Button onClick={() => handleMark(customer.submissions[0].id)} color="primary">
+												Mark
+											</Button>
+										) : (
+											<Button href={'./submission=' + customer.submissions[0].id} color="primary">
+												View
 											</Button>
 										) : (
 											<div>-</div>
@@ -162,6 +303,51 @@ const Results = ({ className, customers, ...rest }) => {
 							))}
 						</TableBody>
 					</Table>
+					<Dialog
+						open={open}
+						onClose={handleClose}
+						aria-labelledby="max-width-dialog-title"
+						maxWidth="small"
+						//	fullWidth
+					>
+						<DialogTitle id="form-dialog-title">Total Mark</DialogTitle>
+						<DialogContent>
+							<Collapse in={!openGreen}>
+								<DialogContentText>Please input the total mark in the textField.</DialogContentText>
+								<TextField
+									id="outlined-multiline-flexible"
+									required
+									fullWidth
+									value={mark}
+									onChange={handleChange}
+									label="Total Mark"
+									variant="outlined"
+									className={clsx(classes.margin, classes.textField)}
+									InputProps={{
+										endAdornment: <InputAdornment position="end">{' / ' + tMark}</InputAdornment>
+									}}
+								/>
+							</Collapse>
+						</DialogContent>
+						<DialogContent>
+							<Collapse in={openAlert}>
+								<Alert severity="error">{error}</Alert>
+							</Collapse>
+							<Collapse in={openGreen}>
+								<Alert severity="success">Save Total Mark Successfully!</Alert>
+							</Collapse>
+						</DialogContent>
+						<DialogActions>
+							<Collapse in={!openGreen}>
+								<Button onClick={handleClose} color="primary">
+									Cancel
+								</Button>
+							</Collapse>
+							<Button onClick={handleSubmit} color="primary" type="submit">
+								Confirm
+							</Button>
+						</DialogActions>
+					</Dialog>
 				</Box>
 			</PerfectScrollbar>
 			<TablePagination

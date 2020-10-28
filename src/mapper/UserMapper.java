@@ -195,9 +195,12 @@ public class UserMapper extends DataMapper {
 	 *
 	 * @return all the subject records.
 	 */
-	public List<User> FindAllInstructor() {
-		String queryAllUser = "select * from users"; // query all users
-
+	public List<User> FindAllUsers(Role type, int subjectId) {
+		String queryAllUser = ""; 
+		if(type != Role.ADMIN && subjectId != -1)
+			queryAllUser = "SELECT * FROM users WHERE userid NOT IN (SELECT userid FROM userandsubject WHERE subjectId = "+subjectId+") AND role = '"+type+"'";
+		else queryAllUser = "SELECT * FROM users";
+			
 		User user = new User();
 		// query all subjects
 
@@ -242,16 +245,68 @@ public class UserMapper extends DataMapper {
 		}
 		return result;
 	}
+	
+	
+	public List<User> FindEnrolledUsers(Role type, int subjectId) {
+		String queryAllUser = ""; 
+		queryAllUser = "SELECT * FROM users WHERE userid IN (SELECT userid FROM userandsubject WHERE subjectId = "+subjectId+") AND role = '"+type+"'";
+			
+		User user = new User();
+		// query all subjects
+
+		IdentityMap<User> userMap = IdentityMap.getInstance(user);
+		List<User> result = new ArrayList<User>();
+
+		try {
+			PreparedStatement stmt = DatabaseConnection.prepare(queryAllUser);
+
+			ResultSet rs = stmt.executeQuery();
+			// Subject subject = new Subject();
+
+			while (rs.next()) {
+				Integer id = rs.getInt(1);
+				String userName = rs.getString(2);
+				String password = rs.getString(3);
+				String role = rs.getString(4);
+
+				user = new User(id, userName, password, Role.valueOf(role));
+				result.add(user);
+			}
+
+			if (result.size() > 0) {
+				for (int i = 0; i < result.size(); i++) {
+					User s = userMap.get(result.get(i).getId());
+					if (s == null) {
+						userMap.put(result.get(i).getId(), result.get(i));
+					}
+					System.out.println(
+							result.get(i).getId() + "," + result.get(i).getUserName() + "," + result.get(i).getRole());
+				}
+
+			}
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} finally {
+			DatabaseConnection.closeConnection();
+		}
+		return result;
+	}
+	
 
 	public static void main(String args[]) {
 		UserMapper sm = new UserMapper();
 		User newUser = new User();
-		newUser.setUserName("Olivia");
-		newUser.setPassWord("123");
+		newUser.setUserName("Amanda");
+		newUser.setPassWord("111");
+		newUser.setRole(Role.STUDENT);
 		// newUser.setRole(role);
-		// sm.insert(newUser);
-		sm.FindAllInstructor();
-		sm.findById(1);
+		sm.insert(newUser);
+	//	sm.FindAllUsers(Role.INSTRUCTOR,1);
+	//	sm.findById(1);
 
 	}
 
@@ -277,7 +332,7 @@ public class UserMapper extends DataMapper {
 				String password = rs.getString(3);
 				String role = rs.getString(4);
 
-				user = new User(id, uName, password, Role.valueOf(role));
+				user = new User(id, userName, password, Role.valueOf(role));
 				result.add(user);
 			}
 			rs.close();

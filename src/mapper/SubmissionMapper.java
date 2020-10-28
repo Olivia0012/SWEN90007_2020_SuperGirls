@@ -40,7 +40,7 @@ public class SubmissionMapper extends DataMapper {
 		try {
 			PreparedStatement stmt = DatabaseConnection.prepareInsert(addNewSubmissionStm);
 			stmt.setInt(1, submission.getStudent().getId());
-			stmt.setInt(2, submission.getExam().getId());
+			stmt.setInt(2, submission.getExamId());
 			stmt.setFloat(3, submission.getTotalMark());
 			stmt.setBoolean(4, submission.isLock());
 
@@ -93,7 +93,7 @@ public class SubmissionMapper extends DataMapper {
 		try {
 			PreparedStatement stmt = DatabaseConnection.prepare(updateSubjectStm);
 			stmt.setInt(1, submission.getStudent().getId());
-			stmt.setInt(2, submission.getExam().getId());
+			stmt.setInt(2, submission.getExamId());
 			stmt.setFloat(3, submission.getTotalMark());
 			stmt.setString(4, submission.getComment());
 			if (submission.getMarker() != null)
@@ -170,7 +170,7 @@ public class SubmissionMapper extends DataMapper {
 
 		IdentityMap<Submission> submissionMap = IdentityMap.getInstance(submission);
 		submission = submissionMap.get(submissionId);
-		ExamMapper examMapper = new ExamMapper();
+	//	ExamMapper examMapper = new ExamMapper();
 		UserMapper userMapper = new UserMapper();
 		AnswerMapper answerMapper = new AnswerMapper();
 
@@ -196,12 +196,12 @@ public class SubmissionMapper extends DataMapper {
 					String subTime = rs.getString(8);
 					String comment = rs.getString(9);
 
-					Exam exam = examMapper.findById(examid);
+				//	Exam exam = examMapper.findById(examid);
 					User student = userMapper.findById(studentid);
 					User marker = userMapper.findById(markerid);
 					List<Answer> answers = answerMapper.findAnswersBySubmissionId(submissionId);
 
-					submission = new Submission(id, exam, student, totalmark, comment, marker, marktime, subTime,
+					submission = new Submission(id, examid, student, totalmark, comment, marker, marktime, subTime,
 							isLocked, answers);
 					result.add(submission);
 				}
@@ -231,7 +231,7 @@ public class SubmissionMapper extends DataMapper {
 		// find the exam in the identity map.
 		Submission submission = new Submission();
 
-		ExamMapper examMapper = new ExamMapper();
+	//	ExamMapper examMapper = new ExamMapper();
 		UserMapper userMapper = new UserMapper();
 
 		// find from the DB when it is not in the identity map.
@@ -261,7 +261,7 @@ public class SubmissionMapper extends DataMapper {
 				// User student = userMapper.findById(studentid);
 				// User marker = userMapper.findById(markerid);
 
-				submission = new Submission(id, null, null, totalmark, comment, null, marktime, subTime, isLocked,
+				submission = new Submission(id, examid, null, totalmark, comment, null, marktime, subTime, isLocked,
 						null);
 				result.add(submission);
 			}
@@ -313,13 +313,13 @@ public class SubmissionMapper extends DataMapper {
 				String subTime = rs.getString(8);
 				String comment = rs.getString(9);
 
-				Exam exam = examMapper.findById(examid);
+			//	Exam exam = examMapper.findById(examid);
 
 				// exam.setId(examId);
 				User student = userMapper.findById(studentid);
 				User marker = userMapper.findById(markerid);
 
-				submission = new Submission(id, exam, student, totalmark, comment, marker, marktime, subTime, isLocked,
+				submission = new Submission(id, examid, student, totalmark, comment, marker, marktime, subTime, isLocked,
 						null);
 				result.add(submission);
 			}
@@ -330,9 +330,6 @@ public class SubmissionMapper extends DataMapper {
 					if (s == null) {
 						submissionMap.put(result.get(i).getId(), result.get(i));
 					}
-					System.out.println(result.get(i).getId() + "," + result.get(i).getStudent().getUserName() + ","
-							+ result.get(i).getTotalMark() + "," + result.get(i).getExam().getTitle() + ","
-							+ result.get(i).getExam().getSubject().getSubjectCode());
 				}
 
 			}
@@ -376,16 +373,16 @@ public class SubmissionMapper extends DataMapper {
 				String subTime = rs.getString(8);
 				String comment = rs.getString(9);
 
-				Exam exam = examMapper.findById(examid);
+			//	Exam exam = examMapper.findById(examid);
 				List<Answer> answers = null;//answerMapper.findAnswersBySubmissionId(id);
 
 				User student = userMapper.findById(studentid);
-				User marker1 = userMapper.findById(markerid);
-				User marker = new User();
-				if (marker1 != null)
-					marker.setUserName(marker1.getUserName());
+				User marker = userMapper.findById(markerid);
+			//	User marker = new User();
+		//		if (marker1 != null)
+			//		marker.setUserName(marker1.getUserName());
 
-				submission = new Submission(id, exam, student, totalmark, comment, marker, marktime, subTime, isLocked,
+				submission = new Submission(id, examid, student, totalmark, comment, marker, marktime, subTime, isLocked,
 						answers);
 				result.add(submission);
 			}
@@ -412,15 +409,17 @@ public class SubmissionMapper extends DataMapper {
 
 	// test
 	public static void main(String args[]) {
-		Submission s = new Submission();
+	/*	Submission s = new Submission();
 		Exam e = new Exam();
 		User u = new User();
 		u.setId(7);
 		e.setId(5);
 		s.setExam(e);
 		s.setStudent(u);
+		
+		sm.insert(s);*/
 		SubmissionMapper sm = new SubmissionMapper();
-		sm.insert(s);
+		sm.FindSubmissionsByExamId(3);
 	}
 
 	public Submission FindSubmissionsByExamId(int examId) {
@@ -447,13 +446,13 @@ public class SubmissionMapper extends DataMapper {
 				String subTime = rs.getString(8);
 				String comment = rs.getString(9);
 
-				Exam exam = examMapper.findById(examid);
+			//	Exam exam = examMapper.findById(examid);
 
 				// exam.setId(examId);
 				User student = userMapper.findById(studentid);
 				User marker = userMapper.findById(markerid);
 
-				submission = new Submission(id, exam, student, totalmark, comment, marker, marktime, subTime, isLocked,
+				submission = new Submission(id, examid, student, totalmark, comment, marker, marktime, subTime, isLocked,
 						null);
 				result.add(submission);
 			}

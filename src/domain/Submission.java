@@ -3,11 +3,10 @@ package domain;
 import java.util.List;
 
 import mapper.AnswerMapper;
-import mapper.QuestionMapper;
 
 public class Submission extends DomainObject{
 	private User student;
-	private Exam exam;
+	private int examId;
 	private float totalMark;
 	private String comment;
 	private User marker;
@@ -16,10 +15,10 @@ public class Submission extends DomainObject{
 	private boolean isLock;
 	private List<Answer> answers;
 	
-	public Submission(Integer id, Exam exam, User student, float totalMark, String comment, User marker,
+	public Submission(Integer id, int examId, User student, float totalMark, String comment, User marker,
 			String markTime, String subTime, boolean isLocked, List<Answer> answers) {
 		super(id);
-		this.setExam(exam);
+		this.setExamId(examId);
 		this.setStudent(student);
 		this.setTotalMark(totalMark);
 		this.setComment(comment);
@@ -44,18 +43,7 @@ public class Submission extends DomainObject{
 	public void setStudent(User student) {
 		this.student = student;
 	}
-	/**
-	 * @return the exam
-	 */
-	public Exam getExam() {
-		return exam;
-	}
-	/**
-	 * @param exam the exam to set
-	 */
-	public void setExam(Exam exam) {
-		this.exam = exam;
-	}
+	
 	/**
 	 * @return the totalMark
 	 */
@@ -156,6 +144,18 @@ public class Submission extends DomainObject{
 			e.printStackTrace();
 		}
 
+	}
+	/**
+	 * @return the examId
+	 */
+	public int getExamId() {
+		return examId;
+	}
+	/**
+	 * @param examId the examId to set
+	 */
+	public void setExamId(int examId) {
+		this.examId = examId;
 	}
 
 	

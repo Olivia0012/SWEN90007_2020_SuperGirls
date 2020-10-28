@@ -57,7 +57,7 @@ public class AnswerMapper extends DataMapper{
 
 		try {
 			PreparedStatement stmt = DatabaseConnection.prepareInsert(addNewStm);
-			stmt.setInt(1, answer.getQuestion().getId());
+			stmt.setInt(1, answer.getQuestionId());
 			stmt.setString(2, answer.getAnswer());
 			stmt.setFloat(3, answer.getMark());
 			stmt.setInt(4, answer.getSubmissionId());
@@ -178,9 +178,9 @@ public class AnswerMapper extends DataMapper{
 				Float mark = rs.getFloat(6);
 				Integer submissionid = rs.getInt(7);
 				
-				Question q = questionMapper.findById(questionid);
+			//	Question q = questionMapper.findById(questionid);
 				
-				answer = new Answer(id,sanswer, q,mark,submissionid) ;
+				answer = new Answer(id,sanswer, questionid,mark,submissionid) ;
 				result.add(answer);
 			}
 

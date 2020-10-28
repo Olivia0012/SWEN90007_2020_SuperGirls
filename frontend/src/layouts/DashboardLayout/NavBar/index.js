@@ -8,9 +8,11 @@ import {
   Drawer,
   Hidden,
   List,
+  IconButton,
   Typography,
   makeStyles
 } from '@material-ui/core';
+import InputIcon from '@material-ui/icons/Input';
 import {
   AlertCircle as AlertCircleIcon,
   BarChart as BarChartIcon,
@@ -23,6 +25,7 @@ import {
 } from 'react-feather';
 import NavItem from './NavItem';
 import routes from 'src/routes';
+import { logout } from '../../../api/instructorAPI';
  
 
 
@@ -54,16 +57,16 @@ const NavBar = ({ onMobileClose, openMobile }) => {
  // const token = (location.state.token);
  
   
-  const [user,setUser] = React.useState({
-    avatar: '/static/images/avatars/avatar_6.png',//location.state.user.userName === 'Edu'?'/static/images/avatars/avatar_3.png':'/static/images/avatars/avatar_6.png',
-	  jobTitle: '',//location.state.user.role,
-	  name:'',// location.state.user.userName,
-    });
+ const user = {
+  avatar: window.localStorage.name === 'Edu'?'/static/images/avatars/avatar_3.png':'/static/images/avatars/avatar_6.png',
+  jobTitle: window.localStorage.role,
+  name: window.localStorage.name,
+};
 
 
   const items = [
     {
-      href: '/oea/subjects/',
+      href: './subjects/',
       icon: ShoppingBagIcon,
       title: 'Subjects'
     }
@@ -75,6 +78,21 @@ const NavBar = ({ onMobileClose, openMobile }) => {
       replace: true, state: location.state
     });
 
+  }
+
+  const handleLogout = async () => {
+    const user = await logout();
+    if(user.data == true){
+      alert("Logout successfully.");
+      navigate('/', {
+				replace: true
+			});
+    }else{
+      alert(user.data);
+      navigate('/', {
+				replace: true
+			});
+    }
   }
 
   useEffect(() => {
@@ -129,6 +147,18 @@ const NavBar = ({ onMobileClose, openMobile }) => {
             />
           ))}
         </List>
+      </Box>
+      <Divider />
+      <Box   alignItems="center"
+        display="flex"
+        flexDirection="column"
+        p={2} >
+       <IconButton color="inherit" onClick={handleLogout}>
+            <InputIcon /> <Typography
+          color="textSecondary"
+          variant="body2"
+        >Logout</Typography>
+          </IconButton>
       </Box>
     </Box>
   );

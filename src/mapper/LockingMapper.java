@@ -3,39 +3,50 @@ package mapper;
 import domain.DomainObject;
 
 public class LockingMapper extends DataMapper{
-	private DataMapper mapper;
+	private String token;
+	private ExclusiveWriteLockManager lm;
+	private DataMapper dmImp;
+	private String table;
 
-	public LockingMapper(DataMapper mapper) {
-		this.setMapper(mapper);
+
+	public LockingMapper(DataMapper dmImp,String token,String table) {
+		this.dmImp = dmImp;
+		this.lm = ExclusiveWriteLockManager.getInstance();
+		this.token = token;
+		this.table = table;
 	}
-
-	private void setMapper(DataMapper mapper) {
-		this.mapper = mapper;
-		
-	}
-
+	
 	@Override
 	public int insert(DomainObject obj) {
-		// TODO Auto-generated method stub
-		return 0;
+		return dmImp.insert(obj);
 	}
 
 	@Override
 	public Boolean update(DomainObject obj) {
-		// TODO Auto-generated method stub
-		return null;
+		if(lm.acquireLock(obj.getId(),table, token).equals("true")) {
+			return dmImp.update(obj);
+		}else {
+			return false;
+		}
 	}
 
 	@Override
 	public Boolean delete(DomainObject obj) {
-		// TODO Auto-generated method stub
-		return null;
+		if(lm.acquireLock(obj.getId(),table, token).equals("true")) {
+			return dmImp.delete(obj);
+		}else {
+			return false;
+		}
 	}
 
 	@Override
 	public DomainObject findById(int id) {
-		// TODO Auto-generated method stub
-		return null;
+		if(lm.acquireLock(id,table, token).equals("true")) {
+			return dmImp.findById(id);
+		}else {
+			return null;
+		}
+		
 	}
 	
 	

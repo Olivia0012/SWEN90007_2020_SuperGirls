@@ -7,6 +7,7 @@
 package servlet;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.UUID;
 
 import javax.servlet.ServletException;
@@ -23,6 +24,7 @@ import domain.User;
 import enumeration.Role;
 import serviceImp.SubjectServiceImp;
 import serviceImp.UserServiceImp;
+import util.AESCrypto;
 import util.ResponseHeader;
 import util.SSOLogin;
 
@@ -50,13 +52,16 @@ public class LoginController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String result = null;
-		
+		String key = "1538663015386630";
 		String userName = new String(request.getParameter("userName").getBytes("ISO-8859-1"), "UTF-8");
 		String passWord = new String(request.getParameter("passWord").getBytes("ISO-8859-1"), "UTF-8");
+        
+		// decrypt password
+        String decryptPsw = AESCrypto.decrypt(passWord, key);
 		
 		// Authenticate the user info.
 		UserServiceImp userlogin = new UserServiceImp();
-		User user = userlogin.login(userName, passWord);
+		User user = userlogin.login(userName, decryptPsw);
 		
 		// Authenticated successfully  
 		if (user != null) {
@@ -85,5 +90,7 @@ public class LoginController extends HttpServlet {
 			throws ServletException, IOException {
 		doGet(request, response);
 	}
+	
+	
 
 }

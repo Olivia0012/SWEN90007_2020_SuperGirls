@@ -70,10 +70,11 @@ public class StudentServiceImp implements StudentService {
     	}
     	// find all students and their submissions
     	String resultSubject = JSONObject.toJSONString(subject);
+    	String resultExam = JSONObject.toJSONString(exam);
 		studentList = studentMapper.findAllStudentsAndSubmissions(subjectId, examId);
 		String resultSubmissions = JSONObject.toJSONString(studentList);
 		
-		String result = "{\"subject\":"+resultSubject+",\"submissions\":"+resultSubmissions+",\"exam\":\""+exam.getTitle()+"\"}";
+		String result = "{\"subject\":"+resultSubject+",\"submissions\":"+resultSubmissions+",\"exam\":"+resultExam+",\"examState\":\""+exam.getStatus()+"\"}";
 		return result;
 	}
 

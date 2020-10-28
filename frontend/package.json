@@ -4,6 +4,7 @@
   "licence": "MIT",
   "version": "1.0.0",
   "private": false,
+  "homepage": ".",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -33,9 +34,11 @@
     "axios": "^0.20.0",
     "chart.js": "^2.9.3",
     "clsx": "^1.1.1",
+    "crypto-js": "^4.0.0",
     "formik": "^2.1.5",
     "history": "^5.0.0",
     "hookrouter": "^1.2.3",
+    "http-proxy-middleware": "^1.0.5",
     "lodash": "^4.17.19",
     "moment": "^2.27.0",
     "nprogress": "^0.2.0",
@@ -62,10 +65,8 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.20.3",
     "eslint-plugin-react-hooks": "^2.5.1",
-    "http-proxy-middleware": "^1.0.5",
     "prettier": "^1.19.1"
   },
-  "proxy":"https://swen90007-banckend.herokuapp.com/",
-  "secure": false,
-  "changeOrigin": true
+  "proxy": "http://127.0.0.1:8080/SWEN90007_2020_SuperGirls",
+  "secure": false
 }

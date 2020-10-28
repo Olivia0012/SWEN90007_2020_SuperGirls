@@ -29,6 +29,7 @@
 	</servlet-mapping>
 
 
+	<!-- Features for instrcutor -->
 	
 	<servlet>
 		<!-- class name -->
@@ -107,6 +108,30 @@
 	
 	<servlet>
 		<!-- class name -->
+		<servlet-name>LockEditExamController</servlet-name>
+		<!-- package name -->
+		<servlet-class>servlet/LockEditExamController</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LockEditExamController</servlet-name>
+		<!-- access path -->
+		<url-pattern>/lockEditExam</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<!-- class name -->
+		<servlet-name>LockMarkExamController</servlet-name>
+		<!-- package name -->
+		<servlet-class>servlet/LockMarkExamController</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LockMarkExamController</servlet-name>
+		<!-- access path -->
+		<url-pattern>/lockMarkExam</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<!-- class name -->
 		<servlet-name>EditExamController</servlet-name>
 		<!-- package name -->
 		<servlet-class>servlet/EditExamController</servlet-class>
@@ -133,6 +158,21 @@
 	
 	<servlet>
 		<!-- class name -->
+		<servlet-name>InstructorEditMarkController</servlet-name>
+		<!-- package name -->
+		<servlet-class>servlet/InstructorEditMarkController</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>InstructorEditMarkController</servlet-name>
+		<!-- access path -->
+		<url-pattern>/edittotalmark</url-pattern>
+	</servlet-mapping>
+	
+	
+	<!-- Student features -->
+	
+	<servlet>
+		<!-- class name -->
 		<servlet-name>TakeExamController</servlet-name>
 		<!-- package name -->
 		<servlet-class>servlet/TakeExamController</servlet-class>
@@ -142,6 +182,52 @@
 		<!-- access path -->
 		<url-pattern>/takeExam</url-pattern>
 		<url-pattern>/examResult</url-pattern>
+	</servlet-mapping>
+	
+	
+	<!-- Admin functions controller -->
+	
+	<!-- find all subjects and add new subjects -->
+	<servlet>
+		<!-- class name -->
+		<servlet-name>AdminSubjectsController</servlet-name>
+		<!-- package name -->
+		<servlet-class>servlet/AdminSubjectsController</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AdminSubjectsController</servlet-name>
+		<!-- GET method: find all subjects for admin. -->
+		<url-pattern>/admin/subjects</url-pattern>
+		<!-- POST method: add new subjects. -->
+		<url-pattern>/admin/addsubject</url-pattern>
+	</servlet-mapping>
+	
+	<!-- find all users and add new users -->
+	<servlet>
+		<!-- class name -->
+		<servlet-name>AdminUsersController</servlet-name>
+		<!-- package name -->
+		<servlet-class>servlet/AdminUsersController</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AdminUsersController</servlet-name>
+		<!-- GET method: find all users for admin. -->
+		<url-pattern>/admin/users</url-pattern>
+		<!-- POST method: add new users. -->
+		<url-pattern>/admin/adduser</url-pattern>
+	</servlet-mapping>
+	
+	<!-- manage users in subjects -->
+	<servlet>
+		<!-- class name -->
+		<servlet-name>AdminUserInSubjectController</servlet-name>
+		<!-- package name -->
+		<servlet-class>servlet/AdminUserInSubjectController</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AdminUserInSubjectController</servlet-name>
+		<!-- POST method: add new users. -->
+		<url-pattern>/admin/userinsubject</url-pattern>
 	</servlet-mapping>
 
 </web-app>

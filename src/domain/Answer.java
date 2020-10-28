@@ -11,7 +11,7 @@ package domain;
 public class Answer extends DomainObject{
 	private float mark;
 	private String answer;
-	private Question question;
+	private int questionId;
 	private int submissionId;
 
 	/**
@@ -23,11 +23,11 @@ public class Answer extends DomainObject{
 	 * @param sanswer 
 	 * 
 	 */
-	public Answer(Integer id,String answer, Question q, float mark, int submissionId) {
+	public Answer(Integer id,String answer, int q, float mark, int submissionId) {
 		super(id);
 		this.setAnswer(answer);
 		this.setMark(mark);
-		this.setQuestion(q);
+		this.setQuestionId(q);
 		this.setSubmissionId(submissionId);
 	}
 	public Answer() {
@@ -35,20 +35,6 @@ public class Answer extends DomainObject{
 	}
 
 
-	
-	/**
-	 * @return the question
-	 */
-	public Question getQuestion() {
-		return question;
-	}
-
-	/**
-	 * @param question the question to set
-	 */
-	public void setQuestion(Question question) {
-		this.question = question;
-	}
 
 	/**
 	 * @return the mark
@@ -86,6 +72,18 @@ public class Answer extends DomainObject{
 	 */
 	public void setSubmissionId(int submissionId) {
 		this.submissionId = submissionId;
+	}
+	/**
+	 * @return the questionId
+	 */
+	public int getQuestionId() {
+		return questionId;
+	}
+	/**
+	 * @param questionId the questionId to set
+	 */
+	public void setQuestionId(int questionId) {
+		this.questionId = questionId;
 	}
 
 }

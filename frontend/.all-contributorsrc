@@ -1,0 +1,42 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "Olivia0012",
+      "name": "Lu Wang",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/55537942?v=4",
+      "profile": "https://github.com/Olivia0012",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Susan-Yao",
+      "name": "Jianjing Yao",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/26871369?v=4",
+      "profile": "https://github.com/Susan-Yao",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Susan-Yao",
+      "name": "rudy renjie meng",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/36201915?v=4",
+      "profile": "https://github.com/lucyliu13",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 3,
+  "projectName": "SWEN90007_2020_SuperGirls",
+  "projectOwner": "Lu Wang",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}

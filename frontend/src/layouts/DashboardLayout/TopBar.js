@@ -56,7 +56,7 @@ const TopBar = ({
       {...rest}
     >
       <Toolbar>
-        <RouterLink to="/">
+        <RouterLink to="/oea">
           <Logo />
         </RouterLink>
         <Box flexGrow={1} />

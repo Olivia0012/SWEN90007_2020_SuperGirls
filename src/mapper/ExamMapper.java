@@ -106,6 +106,10 @@ public class ExamMapper extends DataMapper {
 			IdentityMap<Exam> examMap = IdentityMap.getInstance(exam);
 
 			// add the updated subject into subject identity map if it is not there.
+			Exam examInMap = examMap.get(exam.getId());
+			if (examInMap != null) {
+				examMap.put(exam.getId(), null);
+			}
 			examMap.put(exam.getId(), exam);
 			
 			UnitOfWork.getCurrent().commit();

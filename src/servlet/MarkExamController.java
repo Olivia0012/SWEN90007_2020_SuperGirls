@@ -16,6 +16,8 @@ import domain.Submission;
 import domain.User;
 import enumeration.Role;
 import mapper.ExamMapper;
+import mapper.ExclusiveWriteLockManager;
+import mapper.LockManager;
 import mapper.SubmissionMapper;
 import service.UserService;
 import serviceImp.ExamServiceImp;
@@ -62,7 +64,10 @@ public class MarkExamController extends HttpServlet {
 		} else {
 			ExamServiceImp examService = new ExamServiceImp();
 			Submission submission = examService.findSubmissionById(submissionId,user);
-			String result = JSONObject.toJSONString(submission);
+			String exam = examService.findExamById(submission.getExamId());
+			String resultSubmission = JSONObject.toJSONString(submission);
+			String result = "{\"exam\":"+exam+",\"submission\":"+resultSubmission+"}";
+			
 			response.getWriter().write(result);
 		}
 		header.setResponseHeader(response);
@@ -78,6 +83,7 @@ public class MarkExamController extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		ResponseHeader header = new ResponseHeader();
+		JsonToObject jo = new JsonToObject();
 
 		// Login check.
 		SSOLogin ssoCheck = new SSOLogin();
@@ -90,9 +96,20 @@ public class MarkExamController extends HttpServlet {
 			if (!user.getRole().equals(Role.INSTRUCTOR)) {
 				response.getWriter().write("false"); // invalid user.
 			} else {
+				
+				String token = request.getHeader("token");
+				Submission submission = new Submission();
+				JSONObject SubmissionJsonObject = jo.ReqJsonToObject(request);
+				submission = JSON.toJavaObject(SubmissionJsonObject, Submission.class);
+				submission.setMarker(user);
+				
 				//mark a submission
 				ExamServiceImp markExam = new ExamServiceImp();
-				boolean success = markExam.markSubmission(request, user);
+				boolean success = markExam.markSubmission(submission);
+				LockManager lock = ExclusiveWriteLockManager.getInstance();
+				
+				//release the lock
+				lock.releaseLock(submission.getId(), "submissions", token);
 				response.getWriter().write(success + "");
 			}
 

@@ -21,7 +21,7 @@ const ExamBasicInfo = (props) => {
 						{examBasicInfo.status}
 					</Typography>
 				}
-				title={'Subject Code: ' + examBasicInfo.subjectCode + ' -  Subject: ' + examBasicInfo.subjectTitle}
+				title={'Subject: ' + examBasicInfo.subjectCode + ' -   ' + examBasicInfo.subjectTitle}
 			/>
 			<Divider />
 			<CardContent>

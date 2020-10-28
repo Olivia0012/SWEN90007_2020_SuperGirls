@@ -62,12 +62,10 @@ public class ExamServiceImp implements ExamService {
 	 * Edit existing exam
 	 */
 	@Override
-	public boolean updateExam(HttpServletRequest request) {
+	public boolean updateExam(Exam exam) {
 		UnitOfWork.newCurrent();
-		Exam exam = new Exam();
-		JSONObject examJsonObject = jo.ReqJsonToObject(request);
-		exam = JSON.toJavaObject(examJsonObject, Exam.class);
-
+		
+		
 		// update the exam
 		UnitOfWork.getCurrent().registerDirty(exam);
 
@@ -146,12 +144,9 @@ public class ExamServiceImp implements ExamService {
 	 * mark an exam submission
 	 */
 	@Override
-	public boolean markSubmission(HttpServletRequest request, User user) {
+	public boolean markSubmission(Submission submission) {
 		UnitOfWork.newCurrent();
-		Submission submission = new Submission();
-		JSONObject SubmissionJsonObject = jo.ReqJsonToObject(request);
-		submission = JSON.toJavaObject(SubmissionJsonObject, Submission.class);
-		submission.setMarker(user);
+		
 
 		// calculate the total mark
 		if (submission.getTotalMark() == 0) {
@@ -221,7 +216,7 @@ public class ExamServiceImp implements ExamService {
 
 			// create new submission and answers object
 			Submission newSub = new Submission();
-			newSub.setExam(exam);
+			newSub.setExamId(exam.getId());
 			newSub.setLock(false);
 			newSub.setStudent(user);
 
@@ -247,7 +242,7 @@ public class ExamServiceImp implements ExamService {
 		submission = JSON.toJavaObject(SubmissionJsonObject, Submission.class);
 		submission.setStudent(user);
 
-		Exam exam = examMapper.findById(submission.getExam().getId());
+		Exam exam = examMapper.findById(submission.getExamId());
 
 		// this exam cannot be submitted when exam has been closed.
 		if (!exam.getStatus().equals(ExamStatus.PUBLISHED)) {
@@ -293,11 +288,11 @@ public class ExamServiceImp implements ExamService {
 	@Override
 	public boolean addAnswers(Submission submission) {
 		UnitOfWork.newCurrent();
-		List<Question> questions = questionMapper.findQuestionByExamId(submission.getExam().getId());
+		List<Question> questions = questionMapper.findQuestionByExamId(submission.getExamId());
 
 		for (Question question : questions) {
 			Answer answer = new Answer();
-			answer.setQuestion(question);
+			answer.setQuestionId(question.getId());
 			answer.setSubmissionId(submission.getId());
 			UnitOfWork.getCurrent().registerNew(answer);
 		}

@@ -1,11 +1,25 @@
 import React from 'react';
-import { Link as RouterLink,useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import CryptoJS from 'crypto-js';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-import { Box, Button, Container, Grid, Link, TextField, Typography, makeStyles } from '@material-ui/core';
+import {
+	Box,
+	Button,
+	Container,
+	Grid,
+	Link,
+	TextField,
+	Typography,
+	makeStyles,
+	TableHead,
+	TableRow,
+	TableCell,
+	Table,
+	TableBody
+} from '@material-ui/core';
 import Page from 'src/components/Page';
 import { login } from '../../api/instructorAPI';
-const axios = require('axios');
 
 export let token = '';
 
@@ -29,36 +43,31 @@ const LoginView = () => {
 	const navigate = useNavigate();
 
 	const handleSubmit = async (auth) => {
-		//	let token;
-		await login(auth.email, auth.password).then((res) => {
-		//	alert(res.headers.token);
-			if (
-				res.headers.token !== 'undefined' &&
-				res.headers.token !== null &&
-				typeof res.headers.token !== 'undefined'
-			) {
-				localStorage.setItem('token', res.headers.token);
-				navigate('/oea', { replace: true });
-			} else {
-				alert('Login failed, please try again later.');
-			}
-
-			// 登录成功后，将token存储到localStorage中
-			//	storage.token = response.headers.token;
-			// 设置以后的请求配置：把token放在请求头中(不需要每次传入用户名和密码)
-		/*	axios.interceptors.request.use(
-				function(config) {
-					config.withCredentials = true;
-					config.headers = {
-						token: res.headers.token
-					};
-					return config;
-				},
-				function(error) {
-					return Promise.reject(error);
-				}
-			);*/
+		var key = '1538663015386630';
+		const secretKey = CryptoJS.enc.Utf8.parse(key);
+		let pwd = CryptoJS.AES.encrypt(auth.password, secretKey, {  
+			mode: CryptoJS.mode.ECB,  
+			padding: CryptoJS.pad.Pkcs7  
 		});
+		//	let token;
+		await login(auth.email, pwd); //.then(response=>{
+		/*	token = response.headers.token;
+			const userInfo = response;
+			console.log(token);
+			console.log(response.data);
+			if(response.data !== false){
+				const authUser = {
+					token:token,
+					user: userInfo.data
+				};
+				navigate('./oea', {
+					replace: true, state: authUser
+				});
+			//	window.location.href="./oea";
+			}else{
+				alert("Username or password is not correct, please try again.")
+			}
+		});*/
 	};
 
 	return (
@@ -136,17 +145,52 @@ const LoginView = () => {
 							</form>
 						)}
 					</Formik>
-					<Box mb={3} />
-					<Typography align="center" color="default" variant="body1">
-						Account for testing:
-					</Typography>
+					<Box mb={1} />
 					<Typography align="center" color="textSecondary" variant="body1">
-						<br />INSTRUCTOR<br />
-						Username: Edu <br />Password: 111
-						<br />
-						<br />STUDENT
-						<br />
-						Username: Olivia<br /> Password: 111
+						<br />Account for testing<br />
+						<Box>
+							<Table size="small">
+								<TableHead>
+									<TableRow>
+										<TableCell>Role</TableCell>
+										<TableCell>User Name</TableCell>
+										<TableCell>Password</TableCell>
+									</TableRow>
+								</TableHead>
+								<TableBody>
+									<TableRow>
+										<TableCell>ADMIN</TableCell>
+										<TableCell>admin</TableCell>
+										<TableCell>111</TableCell>
+									</TableRow>
+									<TableRow>
+										<TableCell>INSTRUCTOR</TableCell>
+										<TableCell>Edu</TableCell>
+										<TableCell>111</TableCell>
+									</TableRow>
+									<TableRow>
+										<TableCell />
+										<TableCell>Maria</TableCell>
+										<TableCell>111</TableCell>
+									</TableRow>
+									<TableRow>
+										<TableCell>STUDENT</TableCell>
+										<TableCell>Olivia</TableCell>
+										<TableCell>111</TableCell>
+									</TableRow>
+									<TableRow>
+										<TableCell />
+										<TableCell>Susan</TableCell>
+										<TableCell>111</TableCell>
+									</TableRow>
+									<TableRow>
+										<TableCell />
+										<TableCell>Lucy</TableCell>
+										<TableCell>111</TableCell>
+									</TableRow>
+								</TableBody>
+							</Table>
+						</Box>
 					</Typography>
 				</Container>
 			</Box>

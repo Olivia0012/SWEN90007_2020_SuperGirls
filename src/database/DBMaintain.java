@@ -73,7 +73,21 @@ public class DBMaintain {
                    " userid      INT    NOT NULL, " +
                    " subjectid      INT    NOT NULL)";
 	         
-	         stmt.executeUpdate(sql);
+	         // Create userandsubject table
+	         String sql6 = "CREATE TABLE users " +
+                   "(userid  SERIAL PRIMARY KEY     NOT NULL," +
+                   " username        VARCHAR, " +
+                   " password        VARCHAR, " +
+                   " role        VARCHAR )";
+	         
+	         // Create lock table
+	         String sql7 = "CREATE TABLE lock " +
+                   "(lockid  SERIAL PRIMARY KEY     NOT NULL," +
+                   " id        INT    NOT NULL, " +
+                   " tablename        VARCHAR, " +
+                   " owner        INT    NOT NULL )";
+	         
+	         stmt.executeUpdate(sql7);
 	         stmt.close();
 	         c.close();
 	         

@@ -112,10 +112,11 @@ const Results = ({ className, customers, ...rest }) => {
 
 	const AddNewExam = async () => {
 		if (openGreen) {
-			setDMOpen(false);
-			navigate(0);
+			window.location.href = './subjects';
 		} else {
+			console.log(values);
 			setLoading(true);
+			//	alert("Adding new exam!");
 			const newExam = {
 				createdTime: moment().format('YYYY-MM-DD HH:mm:ss') + '',
 				updatedTime: '',
@@ -132,7 +133,7 @@ const Results = ({ className, customers, ...rest }) => {
 					setLoading(false);
 					if (res.data == false) {
 						alert('Invalid session,Please login to continuee.');
-						navigate('/oea/subjects', { replace: true })
+						window.location.href = '../';
 					}
 					setOpenGreen(true);
 				})
@@ -140,6 +141,7 @@ const Results = ({ className, customers, ...rest }) => {
 					setLoading(false);
 					setOpen(true);
 					setError(error + '');
+					//			alert('Error from processDataAsycn() with async( When promise gets rejected ): ' + error);
 				});
 			console.log(a);
 		}
@@ -203,9 +205,10 @@ const Results = ({ className, customers, ...rest }) => {
 													) : (
 														<div />
 													)}
+													
 												</TableCell>
 												<TableCell align="center">
-													<Link onClick={()=>navigate('../exam/id=' + item.id, { replace: true })}>{item.title}</Link>
+													<Link href={'./exam/id=' + item.id}>{item.title}</Link>
 												</TableCell>
 												<TableCell>{item.status}</TableCell>
 												<TableCell>{item.creator.userName}</TableCell>

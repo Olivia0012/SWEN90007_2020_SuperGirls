@@ -11,7 +11,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import database.DatabaseConnection;
 import domain.DomainObject;
 import domain.Exam;
@@ -21,7 +20,7 @@ import shared.IdentityMap;
 
 /**
  * This class is the data mapper for subject.
- * */
+ */
 public class SubjectMapper extends DataMapper {
 
 	/**
@@ -29,40 +28,39 @@ public class SubjectMapper extends DataMapper {
 	 * 
 	 * @param obj = subject to be inserted
 	 * @return indication whether the insert is successful or not
-	 * */
+	 */
 	@Override
 	public int insert(DomainObject obj) {
 		Subject newSubject = (Subject) obj;
-		
+
 		String addNewSubjectStm = "INSERT INTO SUBJECT (SUBJECTNUM,SUBJECTTITLE) " + "VALUES (?,?);";
-		
+
 		try {
 			PreparedStatement stmt = DatabaseConnection.prepareInsert(addNewSubjectStm);
 			stmt.setString(1, newSubject.getSubjectCode());
 			stmt.setString(2, newSubject.getTitle());
-			
+
 			stmt.executeUpdate();
 			ResultSet keys = stmt.getGeneratedKeys();
 			keys.next();
 			int id = keys.getInt(1);
-			
+
 			newSubject.setId(id);
-			
+
 			IdentityMap<Subject> subjectMap = IdentityMap.getInstance(newSubject);
-			subjectMap.put( newSubject.getId(), newSubject);
+			subjectMap.put(newSubject.getId(), newSubject);
 			keys.close();
 			stmt.close();
 			return id;
-			
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return 0;
-		}finally {
+		} finally {
 			DatabaseConnection.closeConnection();
 		}
 
-		
 	}
 
 	/**
@@ -70,7 +68,7 @@ public class SubjectMapper extends DataMapper {
 	 * 
 	 * @param obj = subject to be updated
 	 * @return indication whether the update is successful or not
-	 * */
+	 */
 	@Override
 	public Boolean update(DomainObject obj) {
 		Subject subject = (Subject) obj;
@@ -83,7 +81,7 @@ public class SubjectMapper extends DataMapper {
 			stmt.setString(2, subject.getTitle());
 			stmt.setInt(3, subject.getId());
 			stmt.executeUpdate();
-						
+
 			IdentityMap<Subject> subjectMap = IdentityMap.getInstance(subject);
 			Subject subjectInMap = subjectMap.get(subject.getId());
 
@@ -97,17 +95,17 @@ public class SubjectMapper extends DataMapper {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
-		}finally {
+		} finally {
 			DatabaseConnection.closeConnection();
 		}
 	}
-	
+
 	/**
 	 * Delete a subject record in the subject table
 	 * 
 	 * @param obj = subject to be deleted
 	 * @return indication whether the delete is successful or not
-	 * */
+	 */
 	@Override
 	public Boolean delete(DomainObject obj) {
 		Subject subject = (Subject) obj;
@@ -118,7 +116,7 @@ public class SubjectMapper extends DataMapper {
 			PreparedStatement stmt = DatabaseConnection.prepare(deleteSubjectStm);
 			stmt.setInt(1, subject.getId());
 			stmt.executeUpdate();
-						
+
 			IdentityMap<Subject> subjectMap = IdentityMap.getInstance(subject);
 			Subject subjectInMap = subjectMap.get(subject.getId());
 			if (subjectInMap != null) {
@@ -131,24 +129,23 @@ public class SubjectMapper extends DataMapper {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
-		}finally {
+		} finally {
 			DatabaseConnection.closeConnection();
 		}
 	}
-
 
 	/**
 	 * find a subject record in the subject table
 	 * 
 	 * @param subjectId = target subject id
 	 * @return subject with the id.
-	 * */
+	 */
 	@Override
 	public Subject findById(int subjectId) {
-		
+
 		// find the subject in the identity map.
 		Subject subject = new Subject();
-		
+
 		IdentityMap<Subject> subjectMap = IdentityMap.getInstance(subject);
 		subject = subjectMap.get(subjectId);
 
@@ -157,7 +154,7 @@ public class SubjectMapper extends DataMapper {
 			List<Subject> result = new ArrayList<Subject>();
 			// query a subject by subjectId
 			String findSubjectbyIdStm = "SELECT * FROM subject WHERE subjectid = ?";
-			
+
 			try {
 				PreparedStatement stmt = DatabaseConnection.prepare(findSubjectbyIdStm);
 				stmt.setInt(1, subjectId);
@@ -167,7 +164,7 @@ public class SubjectMapper extends DataMapper {
 					Integer id = rs.getInt(1);
 					String subjectCode = rs.getString(2);
 					String subjectTitle = rs.getString(3);
-				//	ExamListProxyImp examList = new ExamListProxyImp();
+					// ExamListProxyImp examList = new ExamListProxyImp();
 					subject = new Subject(id, subjectCode, subjectTitle);
 					result.add(subject);
 				}
@@ -179,7 +176,7 @@ public class SubjectMapper extends DataMapper {
 				DatabaseConnection.closeConnection();
 			}
 			if (result.size() > 0) {
-				subjectMap.put( result.get(0).getId(), subject);
+				subjectMap.put(result.get(0).getId(), subject);
 				return subject;
 			}
 		}
@@ -191,19 +188,19 @@ public class SubjectMapper extends DataMapper {
 	 * 
 	 *
 	 * @return all the subject records.
-	 * */
+	 */
 	public List<Subject> FindAllSubject() {
 		Subject subject = new Subject();
 		// query all subjects
-		String queryAllSubjectStm = "SELECT * FROM subject"; 
+		String queryAllSubjectStm = "SELECT * FROM subject";
 		IdentityMap<Subject> subjectMap = IdentityMap.getInstance(subject);
 		List<Subject> result = new ArrayList<Subject>();
-		
+
 		try {
 			PreparedStatement stmt = DatabaseConnection.prepare(queryAllSubjectStm);
 
 			ResultSet rs = stmt.executeQuery();
-		//	Subject subject = new Subject();
+			// Subject subject = new Subject();
 
 			while (rs.next()) {
 				Integer id = rs.getInt("subjectId");
@@ -213,16 +210,16 @@ public class SubjectMapper extends DataMapper {
 				result.add(subject);
 			}
 
-			if(result.size() > 0) {
+			if (result.size() > 0) {
 				for (int i = 0; i < result.size(); i++) {
 					Subject s = subjectMap.get(result.get(i).getId());
 					if (s == null) {
 						subjectMap.put(result.get(i).getId(), result.get(i));
 					}
-					System.out.println(
-							result.get(i).getId() + "," + result.get(i).getTitle() + "," + result.get(i).getSubjectCode());
+					System.out.println(result.get(i).getId() + "," + result.get(i).getTitle() + ","
+							+ result.get(i).getSubjectCode());
 				}
-				
+
 			}
 			rs.close();
 			stmt.close();
@@ -235,22 +232,22 @@ public class SubjectMapper extends DataMapper {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * find all subjects record by userId
 	 * 
 	 *
 	 * @return all the enrolled subject records.
-	 * */
+	 */
 	public List<Subject> FindAllSubjectByUserId(int userId, Role role) {
 		Subject subject = new Subject();
 		IdentityMap<Subject> subjectMap = IdentityMap.getInstance(subject);
 		SubjectMapper subjectMapper = new SubjectMapper();
 		List<Subject> result = new ArrayList<Subject>();
 		ExamMapper examMapper = new ExamMapper();
-		
-		String queryAllSubjectStm = "SELECT * FROM userandsubject WHERE userid = ?"; 
-		
+
+		String queryAllSubjectStm = "SELECT * FROM userandsubject WHERE userid = ?";
+
 		// query all subjects' id by user Id in the subject and user relation table.
 		try {
 			PreparedStatement stmt = DatabaseConnection.prepare(queryAllSubjectStm);
@@ -259,20 +256,20 @@ public class SubjectMapper extends DataMapper {
 
 			while (rs.next()) {
 				Integer subjectId = rs.getInt("subjectid");
-				
+
 				// finding the subject by the subjectId.
 				Subject subjectResult = subjectMapper.findById(subjectId);
-				
+
 				// finding the exams by the subjectId.
-				List<Exam> examList = examMapper.FindAllExamsBySubjectId(subjectId,role);
-				
-				subject = new Subject(subjectId,subjectResult.getSubjectCode(),subjectResult.getTitle(),examList);
-			
+				List<Exam> examList = examMapper.FindAllExamsBySubjectId(subjectId, role);
+
+				subject = new Subject(subjectId, subjectResult.getSubjectCode(), subjectResult.getTitle(), examList);
+
 				result.add(subject);
 			}
-			
+
 			// adding the subjects into the identity map if they are not in the map.
-			if(result.size() > 0) {
+			if (result.size() > 0) {
 
 				for (int i = 0; i < result.size(); i++) {
 					Subject s = subjectMap.get(result.get(i).getId());
@@ -280,7 +277,7 @@ public class SubjectMapper extends DataMapper {
 						subjectMap.put(result.get(i).getId(), result.get(i));
 					}
 				}
-				
+
 			}
 			rs.close();
 			stmt.close();
@@ -293,7 +290,6 @@ public class SubjectMapper extends DataMapper {
 		}
 		return result;
 	}
-	
 
 	// Testing the subject mapper.
 	public static void main(String args[]) {
@@ -302,20 +298,18 @@ public class SubjectMapper extends DataMapper {
 		newSubject.setSubjectCode("SWEN90013");
 		newSubject.setTitle("Year Long Project");
 		// sm.insert(newSubject);
-	//	sm.findById(1);
-	//	sm.FindAllSubject();
-	//	sm.FindAllSubjectByUserId(4);
+		// sm.findById(1);
+		// sm.FindAllSubject();
+		// sm.FindAllSubjectByUserId(4);
 
 	}
-	
-	
-	
+
 	// find Row
-public ResultSet findRowById(int subjectId) {
-		
+	public ResultSet findRowById(int subjectId) {
+
 		// find the subject in the identity map.
 		Subject subject = new Subject();
-		
+
 		IdentityMap<Subject> subjectMap = IdentityMap.getInstance(subject);
 		subject = subjectMap.get(subjectId);
 
@@ -324,33 +318,33 @@ public ResultSet findRowById(int subjectId) {
 			List<Subject> result = new ArrayList<Subject>();
 			// query a subject by subjectId
 			String findSubjectbyIdStm = "SELECT * FROM subject WHERE subjectid = ?";
-			
+
 			try {
 				PreparedStatement stmt = DatabaseConnection.prepare(findSubjectbyIdStm);
 				stmt.setInt(1, subjectId);
 				ResultSet rs = stmt.executeQuery();
 
-		/*		while (rs.next()) {
-					Integer id = rs.getInt(1);
-					String subjectCode = rs.getString(2);
-					String subjectTitle = rs.getString(3);
-				//	ExamListProxyImp examList = new ExamListProxyImp();
-					subject = new Subject(id, subjectCode, subjectTitle);
-					result.add(subject);
-				}*/
+				/*
+				 * while (rs.next()) { Integer id = rs.getInt(1); String subjectCode =
+				 * rs.getString(2); String subjectTitle = rs.getString(3); // ExamListProxyImp
+				 * examList = new ExamListProxyImp(); subject = new Subject(id, subjectCode,
+				 * subjectTitle); result.add(subject); }
+				 */
 				stmt.close();
-				
+
 				return rs;
-				
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
 				DatabaseConnection.closeConnection();
 			}
-			
+
 		}
 		return null;
-		
+
 	}
+
+
 
 }

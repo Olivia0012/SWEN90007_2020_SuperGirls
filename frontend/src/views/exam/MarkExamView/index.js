@@ -17,7 +17,7 @@ import QuestionCard from './QuestionCard';
 import { getSubmission, markExam } from '../../../api/instructorAPI';
 import { viewResult } from '../../../api/examAPI';
 import routes from 'src/routes';
-import { useNavigate, useRoutes } from 'react-router-dom';
+import { useRoutes } from 'react-router-dom';
 import Loading from '../../../utils/loading';
 import moment from 'moment';
 
@@ -37,14 +37,13 @@ export const NewQuestionCon = createContext();
 
 const MarkExamView = () => {
 	const classes = useStyles();
-	const navigate = useNavigate();
 	const [ isLoading, setLoading ] = React.useState(false);
 	const [ data, setData ] = React.useState();
 	const [ submissionInfo, setSubmissionInfo ] = React.useState('');
 	const routeResult = useRoutes(routes);
 	const id = routeResult.props.value.params.submission;
 	const examId = routeResult.props.value.params.examId;
-
+	const [ status, setStatus ] = React.useState();
 	const [ answers, setAnswers ] = React.useState([]);
 
 	useEffect(() => {
@@ -57,28 +56,31 @@ const MarkExamView = () => {
 					result = response.data;
 					if (response.data == false) {
 						alert('Please login to continue.');
-						navigate('/', { replace: true });
+						window.location.replace('/');
 					}
 				});
 			} else
 				await viewResult(examId).then((response) => {
+					console.log(response);
 					result = response.data;
 					if (response.data == false) {
 						alert('Please login to continue.');
-						navigate('/', { replace: true });
+						window.location.replace('/');
 					}
 				});
 			console.log(result);
 			const a = result;
 			setData(result);
-			setAnswers(result.answers);
+			setAnswers(result.submission.answers);
+			setStatus(a.exam.status);
 			var readyData = {
 				subjectCode: a.exam.subject.title,
 				subjectTitle: a.exam.subject.subjectCode,
 				examTitle: a.exam.title,
-				student: a.student.userName,
-				subTime: a.subTime,
-				totalMark: a.totalMark
+				student: a.submission.student.userName,
+				subTime: a.submission.subTime,
+				totalMark: a.submission.totalMark,
+				status: a.exam.status
 			};
 			setSubmissionInfo(readyData);
 			setLoading(false);
@@ -112,26 +114,28 @@ const MarkExamView = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setLoading(true);
-		data.comment = comment;
-		data.markTime = moment().format('YYYY-MM-DD HH:mm:ss');
+		data.submission.comment = comment;
+		data.submission.markTime = moment().format('YYYY-MM-DD HH:mm:ss');
 		data.exam.questionList = null;
 		console.log(data);
-		await markExam(data)
-			.then((a) => {
-				console.log(a);
-				if (a.data !== false) {
-					setLoading(false);
-					alert('Saving mark Successfully!');
-					navigate('/oea/students/subject=' + data.exam.subject.id + '&exam=' + data.exam.id, {
-						replace: true
-					});
+		await markExam(data.submission)
+			.then((response) => {
+				setLoading(false);
+				if (response.data == false) {
+					alert('Please login to continue.');
+					window.location.replace('/');
 				} else {
-					alert('Save marks failed, please contact admin for help.');
+					alert('Saving mark Successfully!');
+					/*	window.location.replace( '/oea/students/subject=' +
+						data.exam.subject.id +
+						'&exam=' +
+						data.exam.id);*/
+					window.location.reload();
 				}
 			})
 			.catch((error) => {
 				setLoading(false);
-				alert('Error : ' + error);
+				alert('Error from processDataAsycn() with async( When promise gets rejected ): ' + error);
 			});
 	};
 
@@ -143,7 +147,7 @@ const MarkExamView = () => {
 					<SubmissionContent.Provider value={submissionInfo}>
 						<SubmissionInfo />
 					</SubmissionContent.Provider>
-					{data.answers.map((nq, index) => {
+					{data.exam.questionList.map((nq, index) => {
 						return (
 							<div key={index}>
 								<Box p={1} />
@@ -151,9 +155,10 @@ const MarkExamView = () => {
 									value={index}
 									mark={marks[index]}
 									handleMark={handleMark}
-									question={nq.question}
-									answer={nq}
-									marker={data.marker}
+									question={nq}
+									answer={data.submission.answers[index]}
+									marker={data.submission.marker}
+									status={status}
 								/>
 							</div>
 						);
@@ -167,8 +172,8 @@ const MarkExamView = () => {
 								fullWidth
 								multiline
 								rows={4}
-								disabled={data.marker && data.marker.userName}
-								defaultValue={data.comment}
+								disabled={status !== 'CLOSED' || typeof data.submission.marker !== 'undefined'}
+								defaultValue={data.submission.comment}
 								variant="outlined"
 								onChange={handleComment}
 							/>
@@ -176,7 +181,7 @@ const MarkExamView = () => {
 					</Card>
 					<Box p={2} />
 					<Grid item xs={12}>
-						<Collapse in={!data.marker || !data.marker.userName}>
+						<Collapse in={status === 'CLOSED' && typeof data.submission.marker === 'undefined'}>
 							<Button color="primary" fullWidth variant="contained" onClick={handleSubmit}>
 								Submit
 							</Button>
