@@ -68,7 +68,15 @@ public class TakeExamController extends HttpServlet {
 		} else {
 			// find this submission by the user's id and exam id
 			Submission submission = examService.findSubmissionByUserId_ExamId(user.getId(), examId);
-			String result = JSONObject.toJSONString(submission);
+			if(submission.getId() == 0) {
+				submission.setStudent(user);
+				submission.setTotalMark(0);
+				submission.setSubTime("");
+			}
+			String exam = examService.findExamById(examId);
+			String resultSubmission = JSONObject.toJSONString(submission);
+			String result = "{\"exam\":" + exam + ",\"submission\":" + resultSubmission + "}";
+
 			response.getWriter().write(result);
 		}
 		header.setResponseHeader(response);
@@ -96,8 +104,8 @@ public class TakeExamController extends HttpServlet {
 			} else {
 
 				ExamServiceImp takeExam = new ExamServiceImp(SSOLogin.uowList.get(token));
-				boolean success = takeExam.takeExam(request,user);
-				response.getWriter().write(success+"");
+				boolean success = takeExam.takeExam(request, user);
+				response.getWriter().write(success + "");
 
 			}
 
