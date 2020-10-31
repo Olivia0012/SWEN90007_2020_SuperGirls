@@ -58,7 +58,7 @@ public class AdminSubjectsController extends HttpServlet {
 	}
 
 	/**
-	 * This post function is used for creating new exam.
+	 * This post function is used for creating new subject.
 	 * 
 	 * 
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
