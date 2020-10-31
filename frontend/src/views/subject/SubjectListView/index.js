@@ -39,34 +39,32 @@ const SubjectListView = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			setLoading(true);
-			//	const token = location.state.token;
+		//	const token = location.state.token;
 			const subjects = await getSubjectsByUserId().then((response) => {
 				console.log(response);
 				const result = response.data;
-				if (response.data == false) {
-					alert('Please login to continue.');
-					navigate('/', { replace: true });
-					//	window.location.href="../";
-				} else {
-					// if the user is a student
-					if (response.data.user.role == 'STUDENT') {
-						console.log(response.data);
-						response.data.subjects.map((subject) => {
-							for (var i = subject.exams.length - 1; i >= 0; i--) {
-								console.log(i + '=' + subject.exams[i]);
-								if (subject.exams[i].status !== 'PUBLISHED' && subject.exams[i].status !== 'RELEASED') {
-									subject.exams.splice(i, 1);
-								}
-							}
-						});
-					}
-
-					setData(response.data);
-					setSubjects(response.data.subjects);
-					setLoading(false);
-					console.log(response.data);
-					console.log(isLoading);
+				if(response.data == false){
+					alert("Please login to continue.");
+					window.location.href="../";
 				}
+				// if the user is a student
+				if (response.data.user.role == 'STUDENT') {
+					console.log(response.data);
+					response.data.subjects.map((subject) => {
+						for (var i = subject.exams.length - 1; i >= 0; i--) {
+							console.log(i + '=' + subject.exams[i]);
+							if (subject.exams[i].status !== 'PUBLISHED' && subject.exams[i].status !== 'RELEASED') {
+								subject.exams.splice(i, 1);
+							}
+						}
+					});
+				}
+
+				setData(response.data);
+				setSubjects(response.data.subjects);
+				setLoading(false);
+				console.log(response.data);
+				console.log(isLoading);
 			});
 		};
 

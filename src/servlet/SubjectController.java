@@ -43,12 +43,13 @@ public class SubjectController extends HttpServlet {
 			throws ServletException, IOException {
 		// Login check.
 		User user = ssoCheck.checkLogin(request);
+		String token = request.getHeader("token");
 		
 		if(user == null) {
 			response.getWriter().write("false"); //invalid token.
 		}else {
 			 // finding all enrolled subjects for the user.
-		     SubjectServiceImp a = new SubjectServiceImp();
+		     SubjectServiceImp a = new SubjectServiceImp(SSOLogin.uowList.get(token));
 		     String subjects = a.findAllSubjectsByUserId(user.getId(), user.getRole());
 		     System.out.println("subjects； "+subjects);
 		     String result = "{\"user\":"+JSONObject.toJSONString(user)+",\"subjects\":"+subjects+"}";

@@ -44,15 +44,8 @@ const useStyles = makeStyles({
 function QuestionCard(props) {
 	const classes = useStyles();
 	const [ isLoading, setLoading ] = React.useState(false);
-	//	const question = useContext(QuestionContent);
-	//	let choices = [];
-	//	choices = question.question.choices;
 
-	const { handleMark, value, question, answer, marker } = props;
-
-	const c = parseInt(answer.anwer);
-
-	console.log(c === 1 ? true : false);
+	const { handleMark, value, question, answer, marker, status } = props;
 
 	const handleChange = (event) => {
 		const curMark = event.target.value;
@@ -67,8 +60,8 @@ function QuestionCard(props) {
 						label="Mark"
 						onChange={handleChange}
 						//	placeholder={answer.mark}
-						disabled={marker && marker.userName ? true:false}
-						defaultValue={answer.mark}
+						disabled={status !=='CLOSED'}
+						defaultValue={answer?answer.mark:0}
 						id="standard-start-adornment"
 						className={clsx(classes.margin, classes.textField)}
 						InputProps={{
@@ -90,7 +83,7 @@ function QuestionCard(props) {
 						<Box p={1} />
 						<Paper variant="outlined">
 							<Typography color="textPrimary" gutterBottom variant="body1">
-								{answer.answer}
+								{answer?answer.answer:''}
 								<br />
 								<br />
 							</Typography>
@@ -107,7 +100,7 @@ function QuestionCard(props) {
 											<RadioGroup
 												aria-label="gender"
 												name="gender1"
-												value={answer.answer == index ? index : ''}
+												value={answer && answer.answer == index ? index : ''}
 											>
 												<FormControlLabel value={index} control={<Radio />} label={choice} />
 											</RadioGroup>

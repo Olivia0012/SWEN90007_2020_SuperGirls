@@ -39,7 +39,7 @@ const TakeExam = () => {
 			setLoading(true);
 			const result = await getSubmission(submissionId);
 			//	console.log(JSON.parse(result.data));
-			setOriAnswers(result.data.answers);
+			setOriAnswers(result.data.submission.answers);
 			setData(result.data);
 			setLoading(false);
 		};
@@ -58,7 +58,7 @@ const TakeExam = () => {
 		const curData = [ ...answers ];
 		curData[index] = answer;
 		setAnswers(curData);
-		data.answers[index].answer = answer;
+		data.submission.answers[index].answer = answer;
 	};
 
 	const handleSubmit = async (e) => {
@@ -99,8 +99,8 @@ const TakeExam = () => {
 					setLoading(false);
 					alert('Error from processDataAsycn() with async( When promise gets rejected ): ' + error);
 				});*/
-			data.subTime = moment().format('YYYY-MM-DD HH:mm:ss');
-			await submitExam(data)
+			data.submission.subTime = moment().format('YYYY-MM-DD HH:mm:ss');
+			await submitExam(data.submission)
 			.then((response) => {
 				const result = response.data;
 				if (response.data == 'invalid') {
@@ -133,13 +133,13 @@ const TakeExam = () => {
 					<Box p={1} />
 					{data ? <ExamInfo examInfo={data.exam} /> : <div />}
 					{data ? (
-						oriAnswers.map((nq, index) => {
+						data.exam.questionList.map((nq, index) => {
 							return (
 								<div key={index}>
 									<Box p={1} />
 									<QuestionCard
 										value={index}
-										question={nq.question}
+										question={nq}
 										answer={answers[index]}
 										handleAnswer={handleAnswer}
 									/>

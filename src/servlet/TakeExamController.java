@@ -53,7 +53,8 @@ public class TakeExamController extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		ExamServiceImp examService = new ExamServiceImp();
+		String token = request.getHeader("token");
+		ExamServiceImp examService = new ExamServiceImp(SSOLogin.uowList.get(token));
 		String data = new String(request.getParameter("examId").getBytes("ISO-8859-1"), "UTF-8");
 		int examId = Integer.valueOf(data);
 
@@ -67,7 +68,15 @@ public class TakeExamController extends HttpServlet {
 		} else {
 			// find this submission by the user's id and exam id
 			Submission submission = examService.findSubmissionByUserId_ExamId(user.getId(), examId);
-			String result = JSONObject.toJSONString(submission);
+			if(submission.getId() == 0) {
+				submission.setStudent(user);
+				submission.setTotalMark(0);
+				submission.setSubTime("");
+			}
+			String exam = examService.findExamById(examId);
+			String resultSubmission = JSONObject.toJSONString(submission);
+			String result = "{\"exam\":" + exam + ",\"submission\":" + resultSubmission + "}";
+
 			response.getWriter().write(result);
 		}
 		header.setResponseHeader(response);
@@ -84,6 +93,7 @@ public class TakeExamController extends HttpServlet {
 		// Login check.
 		SSOLogin ssoCheck = new SSOLogin();
 		User user = ssoCheck.checkLogin(request);
+		String token = request.getHeader("token");
 
 		if (user == null) {
 			response.getWriter().write("invalid"); // invalid token.
@@ -93,9 +103,9 @@ public class TakeExamController extends HttpServlet {
 				response.getWriter().write("-1"); // invalid session.
 			} else {
 
-				ExamServiceImp takeExam = new ExamServiceImp();
-				boolean success = takeExam.takeExam(request,user);
-				response.getWriter().write(success+"");
+				ExamServiceImp takeExam = new ExamServiceImp(SSOLogin.uowList.get(token));
+				boolean success = takeExam.takeExam(request, user);
+				response.getWriter().write(success + "");
 
 			}
 

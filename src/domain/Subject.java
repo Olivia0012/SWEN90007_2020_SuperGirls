@@ -3,10 +3,8 @@
  */
 package domain;
 
-import java.sql.ResultSet;
 import java.util.List;
 
-import mapper.SubjectMapper;
 
 /**
  * @author manlo
@@ -16,6 +14,7 @@ public class Subject extends DomainObject {
 	private String title;
 	private String subjectCode;
 	private List<Exam> exams;
+	
 
 	public Subject(int Id, String title, String subjectCode) {
 		super(Id);
@@ -75,6 +74,8 @@ public class Subject extends DomainObject {
 	public void setExams(List<Exam> exams) {
 		this.exams = exams;
 	}
+
+	
 
 	
 

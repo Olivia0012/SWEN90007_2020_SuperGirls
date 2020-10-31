@@ -49,6 +49,7 @@ public class AddExamController extends HttpServlet {
 			throws ServletException, IOException {
 
 		ResponseHeader header = new ResponseHeader();
+		String token = request.getHeader("token");
 
 		// Login check.
 		SSOLogin ssoCheck = new SSOLogin();
@@ -57,7 +58,7 @@ public class AddExamController extends HttpServlet {
 		if (user == null) {
 			response.getWriter().write("false"); // invalid token.
 		} else {
-			ExamServiceImp addExam = new ExamServiceImp();
+			ExamServiceImp addExam = new ExamServiceImp(SSOLogin.uowList.get(token));
 			boolean success = addExam.addNewExam(request,user);
 			
 			response.getWriter().write(success+"");

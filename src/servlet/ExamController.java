@@ -61,6 +61,7 @@ public class ExamController extends HttpServlet {
 		// Login check.
 		SSOLogin ssoCheck = new SSOLogin();
 		User user = ssoCheck.checkLogin(request);
+		String token = request.getHeader("token");
 
 		if (user == null) {
 			response.getWriter().write("false"); // invalid token.
@@ -71,7 +72,7 @@ public class ExamController extends HttpServlet {
 			int examId = Integer.valueOf(data);
 
 			// find exam info
-			ExamServiceImp examService = new ExamServiceImp();
+			ExamServiceImp examService = new ExamServiceImp(SSOLogin.uowList.get(token));
 			String result = examService.findExamById(examId);
 
 			response.getWriter().write(result);
@@ -90,6 +91,7 @@ public class ExamController extends HttpServlet {
 			throws ServletException, IOException {
 
 		ResponseHeader header = new ResponseHeader();
+		String token = request.getHeader("token");
 
 		// Login check.
 		SSOLogin ssoCheck = new SSOLogin();
@@ -105,7 +107,7 @@ public class ExamController extends HttpServlet {
 			exam = JSON.toJavaObject(examJsonObject, Exam.class);
 
 			// add new submission into database
-			ExamServiceImp examService = new ExamServiceImp();
+			ExamServiceImp examService = new ExamServiceImp(SSOLogin.uowList.get(token));
 			
 			boolean success = examService.addSubmission(exam, user);
 			if(success) {

@@ -1,17 +1,20 @@
 package util;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
 import domain.User;
+import mapper.ExclusiveWriteLockManager;
+import mapper.LockManager;
+import shared.UnitOfWork;
 
 public class SSOLogin {
-	
-	private static Map<String,User> loginList = new HashMap<String,User>();
+
+	private static Map<String, User> loginList = new HashMap<String, User>();
+	public static Map<String, UnitOfWork> uowList = new HashMap<String, UnitOfWork>();
+	LockManager lock = ExclusiveWriteLockManager.getInstance();
 
 	/**
 	 * Authenticate the user
@@ -20,45 +23,40 @@ public class SSOLogin {
 	 */
 	public User checkLogin(HttpServletRequest request) {
 		String token = request.getHeader("token");
-		System.out.println("token: "+token);
+		System.out.println("token: " + token);
 		User user = SSOLogin.loginList.get(token);
-		if(user !=null)
-		 System.out.println("check key:"+token +" username:"+user.getUserName());
-		return user;
+		if (user == null) {
+			//release all locks held by this user
+			lock.releaseAllLocks(token);
+			
+			SSOLogin.loginList.remove(token, user);
+		}
 		
+		lock.releaseExpiredLocks();
+			
+
+		return user;
+
 	}
 
 	/**
 	 * @param add user to the login list
 	 */
 	public void login(String token, User user) {
-		
-		Iterator<Entry<String, User>> users = SSOLogin.loginList.entrySet().iterator(); 
-		while (users.hasNext()) { 
-		  Map.Entry<String, User> entry = (Map.Entry<String, User>) users.next(); 
-		 
-		  String key = (String)entry.getKey(); 
-		  User userInList = (User)entry.getValue(); 
-		  // delete the previous login user
-		  if(userInList.getId() == user.getId()) {
-			  System.out.println("login key:"+key);
-			//  SSOLogin.loginList.remove(key);
-			 
-			  break;
-		  }	  
-		}
-		
+		ThreadLocal current = new ThreadLocal();
+		UnitOfWork uow = new UnitOfWork(current);
+		SSOLogin.uowList.put(token, uow);
 		SSOLogin.loginList.put(token, user);
-		 System.out.println("login key:"+SSOLogin.loginList.get(token).getUserName() +" token:"+token);
-		
 	}
 
 	/**
 	 * @param loginList the loginList to set
 	 */
 	public void logout(String token, User user) {
-		 System.out.println("logout key:"+token +" username:"+user.getUserName());
+		//release all locks held by this user
+		lock.releaseAllLocks(token);
+		
 		SSOLogin.loginList.remove(token, user);
 	}
-	
+
 }

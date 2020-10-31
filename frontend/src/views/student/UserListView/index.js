@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Container, makeStyles } from '@material-ui/core';
-import { useRoutes,useNavigate} from 'react-router-dom';
+import { useRoutes } from 'react-router-dom';
 import Page from 'src/components/Page';
 import Results from './Results';
 import Toolbar from './Toolbar';
@@ -19,11 +19,10 @@ const useStyles = makeStyles((theme) => ({
 
 const StudentListView = () => {
 	const classes = useStyles();
-	const navigate = useNavigate();
 	const [ data, setData ] = useState();
 	const [ isLoading, setLoading ] = useState(false);
 	const routeResult = useRoutes(routes);
-	console.log(routeResult.props.value.params.subject);
+//	console.log(routeResult.props.value.params.subject);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -37,7 +36,7 @@ const StudentListView = () => {
 				const result = response.data;
 				if (response.data == false) {
 					alert('Please login to continue.');
-					navigate('/', { replace: true });
+					window.location.replace('/');
 				}
 				setData(result);
 				setLoading(false);
@@ -52,14 +51,10 @@ const StudentListView = () => {
 		<Page className={classes.root} title="Subjects">
 			{!isLoading && data ? (
 				<Container maxWidth={false}>
-					<Toolbar subject={data.subject} exam={data.exam} />
-					{
-						//data.map((item) => (
-						<Box mt={3}>
-							<Results customers={data.submissions} />
-						</Box>
-						//))
-					}
+					<Toolbar subject={data.subject} exam={data.exam.title} status={data.examState} />
+					<Box mt={3}>
+						<Results customers={data.submissions} exam={data.exam}/>
+					</Box>
 				</Container>
 			) : (
 				<Loading />

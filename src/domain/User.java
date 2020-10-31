@@ -1,18 +1,15 @@
 package domain;
-import java.util.List;
 
 import enumeration.Role;
-
 
 public class User extends DomainObject{
 	private String userName;
 	private String passWord;
 	private Role role;
-	private List<Subject> subjectList;
 	
 	
-	public User(int uId, String userName, String passWord, Role role) {
-		super(uId);
+	public User(int id, String userName, String passWord, Role role) {
+		super(id);
 		this.setUserName(userName);
 		this.setPassWord(passWord);
 		this.setRole(role);
@@ -63,20 +60,4 @@ public class User extends DomainObject{
 
 
 
-	/**
-	 * @return the subjectList
-	 */
-	public List<Subject> getSubjectList() {
-		return subjectList;
-	}
-
-
-	/**
-	 * @param subjectList the subjectList to set
-	 */
-	public void setSubjectList(List<Subject> subjectList) {
-		this.subjectList = subjectList;
-	}
-	
-	
 }

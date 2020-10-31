@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { Box, Button, Card, CardContent, CardHeader, Divider, makeStyles, Typography } from '@material-ui/core';
+import { Box, Grid, Card, CardContent, CardHeader, Divider, makeStyles, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
 	root: {},
@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Toolbar = (props, { className, ...rest }) => {
 	const classes = useStyles();
-	const { subject, exam } = props;
+	const { subject, exam, status } = props;
 
 	return (
 		<div className={clsx(classes.root, className)} {...rest}>
@@ -24,9 +24,18 @@ const Toolbar = (props, { className, ...rest }) => {
 					<CardHeader title={subject.title + ' - ' + subject.subjectCode} />
 					<Divider />
 					<CardContent>
-						<Typography color="textPrimary" gutterBottom variant="body1">
-							Exam Title : {exam}
-						</Typography>
+						<Grid container direction="row" justify="flex-start" alignItems="center" spacing={5}>
+							<Grid item>
+								<Typography color="textPrimary" gutterBottom variant="body1">
+									Exam Title : {exam}
+								</Typography>
+							</Grid>
+							<Grid item>
+								<Typography color="textPrimary" gutterBottom variant="body1">
+									Status : {status}
+								</Typography>
+							</Grid>
+						</Grid>
 					</CardContent>
 				</Card>
 			</Box>

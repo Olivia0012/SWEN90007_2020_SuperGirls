@@ -23,7 +23,6 @@ import domain.Submission;
 import domain.User;
 import enumeration.ExamStatus;
 import enumeration.Role;
-import shared.IdentityMap;
 
 /**
  * This class is for managing user table.
@@ -56,8 +55,8 @@ public class UserMapper extends DataMapper {
 
 			newUser.setId(id);
 
-			IdentityMap<User> userMap = IdentityMap.getInstance(newUser);
-			userMap.put(newUser.getId(), newUser);
+	//		IdentityMap1<User> userMap = IdentityMap1.getInstance(newUser);
+	//		userMap.put(newUser.getId(), newUser);
 			keys.close();
 			stmt.close();
 			return id;
@@ -67,7 +66,7 @@ public class UserMapper extends DataMapper {
 			e.printStackTrace();
 			return 0;
 		} finally {
-			DatabaseConnection.closeConnection();
+	//		DatabaseConnection.closeConnection();
 		}
 	}
 
@@ -89,10 +88,10 @@ public class UserMapper extends DataMapper {
 			stmt.setString(2, user.getPassWord());
 			stmt.executeUpdate();
 
-			IdentityMap<User> userMap = IdentityMap.getInstance(user);
+		//	IdentityMap1<User> userMap = IdentityMap1.getInstance(user);
 
 			// add the updated subject into subject identity map if it is not there.
-			userMap.put(user.getId(), user);
+	//		userMap.put(user.getId(), user);
 
 			stmt.close();
 			return true;
@@ -101,7 +100,7 @@ public class UserMapper extends DataMapper {
 			e.printStackTrace();
 			return false;
 		} finally {
-			DatabaseConnection.closeConnection();
+		//	DatabaseConnection.closeConnection();
 		}
 	}
 
@@ -122,11 +121,11 @@ public class UserMapper extends DataMapper {
 			stmt.setInt(1, user.getId());
 			stmt.executeUpdate();
 
-			IdentityMap<User> userMap = IdentityMap.getInstance(user);
+		/*	IdentityMap1<User> userMap = IdentityMap1.getInstance(user);
 			User userInMap = userMap.get(user.getId());
 			if (userInMap != null) {
 				userMap.put(user.getId(), null);
-			}
+			}*/
 
 			stmt.close();
 			return true;
@@ -135,7 +134,7 @@ public class UserMapper extends DataMapper {
 			e.printStackTrace();
 			return false;
 		} finally {
-			DatabaseConnection.closeConnection();
+		//	DatabaseConnection.closeConnection();
 		}
 	}
 
@@ -151,11 +150,11 @@ public class UserMapper extends DataMapper {
 		// find the subject in the identity map.
 		User user = new User();
 
-		IdentityMap<User> userMap = IdentityMap.getInstance(user);
-		user = userMap.get(userId);
+	//	IdentityMap1<User> userMap = IdentityMap1.getInstance(user);
+	//	user = userMap.get(userId);
 
 		// find from the DB when it is not in the identity map.
-		if (user == null) {
+	//	if (user == null) {
 			List<User> result = new ArrayList<User>();
 			// query a subject by subjectId
 			String findSubjectbyIdStm = "SELECT * FROM users WHERE userid = ?";
@@ -179,13 +178,13 @@ public class UserMapper extends DataMapper {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				DatabaseConnection.closeConnection();
+			//	DatabaseConnection.closeConnection();
 			}
-			if (result.size() > 0) {
+		/*	if (result.size() > 0) {
 				userMap.put(result.get(0).getId(), result.get(0));
 				return result.get(0);
-			}
-		}
+			}*/
+	//	}
 		return user;
 	}
 
@@ -195,13 +194,16 @@ public class UserMapper extends DataMapper {
 	 *
 	 * @return all the subject records.
 	 */
-	public List<User> FindAllInstructor() {
-		String queryAllUser = "select * from users"; // query all users
-
+	public List<User> FindAllUsers(Role type, int subjectId) {
+		String queryAllUser = ""; 
+		if(type != Role.ADMIN && subjectId != -1)
+			queryAllUser = "SELECT * FROM users WHERE userid NOT IN (SELECT userid FROM userandsubject WHERE subjectId = "+subjectId+") AND role = '"+type+"'";
+		else queryAllUser = "SELECT * FROM users";
+			
 		User user = new User();
 		// query all subjects
 
-		IdentityMap<User> userMap = IdentityMap.getInstance(user);
+//		IdentityMap1<User> userMap = IdentityMap1.getInstance(user);
 		List<User> result = new ArrayList<User>();
 
 		try {
@@ -220,7 +222,7 @@ public class UserMapper extends DataMapper {
 				result.add(user);
 			}
 
-			if (result.size() > 0) {
+	/*		if (result.size() > 0) {
 				for (int i = 0; i < result.size(); i++) {
 					User s = userMap.get(result.get(i).getId());
 					if (s == null) {
@@ -230,7 +232,7 @@ public class UserMapper extends DataMapper {
 							result.get(i).getId() + "," + result.get(i).getUserName() + "," + result.get(i).getRole());
 				}
 
-			}
+			}*/
 			rs.close();
 			stmt.close();
 		} catch (SQLException e) {
@@ -238,26 +240,78 @@ public class UserMapper extends DataMapper {
 			e.printStackTrace();
 			return null;
 		} finally {
-			DatabaseConnection.closeConnection();
+		//	DatabaseConnection.closeConnection();
 		}
 		return result;
 	}
+	
+	
+	public List<User> FindEnrolledUsers(Role type, int subjectId) {
+		String queryAllUser = ""; 
+		queryAllUser = "SELECT * FROM users WHERE userid IN (SELECT userid FROM userandsubject WHERE subjectId = "+subjectId+") AND role = '"+type+"'";
+			
+		User user = new User();
+		// query all subjects
+
+//		IdentityMap1<User> userMap = IdentityMap1.getInstance(user);
+		List<User> result = new ArrayList<User>();
+
+		try {
+			PreparedStatement stmt = DatabaseConnection.prepare(queryAllUser);
+
+			ResultSet rs = stmt.executeQuery();
+			// Subject subject = new Subject();
+
+			while (rs.next()) {
+				Integer id = rs.getInt(1);
+				String userName = rs.getString(2);
+				String password = rs.getString(3);
+				String role = rs.getString(4);
+
+				user = new User(id, userName, password, Role.valueOf(role));
+				result.add(user);
+			}
+
+		/*	if (result.size() > 0) {
+				for (int i = 0; i < result.size(); i++) {
+					User s = userMap.get(result.get(i).getId());
+					if (s == null) {
+						userMap.put(result.get(i).getId(), result.get(i));
+					}
+					System.out.println(
+							result.get(i).getId() + "," + result.get(i).getUserName() + "," + result.get(i).getRole());
+				}
+
+			}*/
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} finally {
+		//	DatabaseConnection.closeConnection();
+		}
+		return result;
+	}
+	
 
 	public static void main(String args[]) {
 		UserMapper sm = new UserMapper();
 		User newUser = new User();
-		newUser.setUserName("Olivia");
-		newUser.setPassWord("123");
+		newUser.setUserName("Amanda");
+		newUser.setPassWord("111");
+		newUser.setRole(Role.STUDENT);
 		// newUser.setRole(role);
-		// sm.insert(newUser);
-		sm.FindAllInstructor();
-		sm.findById(1);
+		sm.insert(newUser);
+	//	sm.FindAllUsers(Role.INSTRUCTOR,1);
+	//	sm.findById(1);
 
 	}
 
 	public User login(String userName, String passWord) {
 		User user = new User();
-		IdentityMap<User> userMap = IdentityMap.getInstance(user);
+	//	IdentityMap1<User> userMap = IdentityMap1.getInstance(user);
 
 		// find from the DB when it is not in the identity map.
 
@@ -277,7 +331,7 @@ public class UserMapper extends DataMapper {
 				String password = rs.getString(3);
 				String role = rs.getString(4);
 
-				user = new User(id, uName, password, Role.valueOf(role));
+				user = new User(id, userName, password, Role.valueOf(role));
 				result.add(user);
 			}
 			rs.close();
@@ -285,15 +339,11 @@ public class UserMapper extends DataMapper {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			DatabaseConnection.closeConnection();
+		//	DatabaseConnection.closeConnection();
 		}
 
 		if (result.size() > 0) {
-			User userInMapper = userMap.get(user.getId());
-			if (userInMapper == null) {
-				userMap.put(user.getId(), user);
-			}
-			return user;
+			return result.get(0);
 		} else
 			return null;
 
@@ -350,7 +400,7 @@ public class UserMapper extends DataMapper {
 			e.printStackTrace();
 			return null;
 		} finally {
-			DatabaseConnection.closeConnection();
+		//	DatabaseConnection.closeConnection();
 		}
 		return result;
 	}
@@ -397,7 +447,7 @@ public class UserMapper extends DataMapper {
 			e.printStackTrace();
 			return null;
 		} finally {
-			DatabaseConnection.closeConnection();
+		//	DatabaseConnection.closeConnection();
 		}
 		return result;
 	}

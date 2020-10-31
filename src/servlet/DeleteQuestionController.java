@@ -7,7 +7,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import domain.Question;
 import domain.User;
+import mapper.ExclusiveWriteLockManager;
+import mapper.LockManager;
+import mapper.QuestionMapper;
 import serviceImp.ExamServiceImp;
 import util.ResponseHeader;
 import util.SSOLogin;
@@ -39,6 +43,7 @@ public class DeleteQuestionController extends HttpServlet {
 
 		String data = new String(request.getParameter("questionId").getBytes("ISO-8859-1"), "UTF-8");
 		int questionId = Integer.valueOf(data);
+		String token = request.getHeader("token");
 
 		// Login check.
 		SSOLogin ssoCheck = new SSOLogin();
@@ -48,8 +53,15 @@ public class DeleteQuestionController extends HttpServlet {
 			response.getWriter().write("false"); // invalid token.
 		} else {
 			//delete the question
-			ExamServiceImp deleteQuestion = new ExamServiceImp();
+			ExamServiceImp deleteQuestion = new ExamServiceImp(SSOLogin.uowList.get(token));
+			QuestionMapper qm = new QuestionMapper();
+			Question q = qm.findById(questionId);
+			
 			boolean success = deleteQuestion.deleteQuestionById(questionId);
+			
+			//release the edit exam lock
+			LockManager lock = ExclusiveWriteLockManager.getInstance();
+			lock.releaseLock(q.getExamId(), "exam", request.getHeader("token"));
 
 			response.getWriter().write(success + "");
 

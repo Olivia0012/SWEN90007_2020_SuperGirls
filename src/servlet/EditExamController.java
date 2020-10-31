@@ -18,6 +18,8 @@ import domain.User;
 import enumeration.ExamStatus;
 import enumeration.Role;
 import mapper.ExamMapper;
+import mapper.ExclusiveWriteLockManager;
+import mapper.LockManager;
 import mapper.SubmissionMapper;
 import serviceImp.ExamServiceImp;
 import util.JsonToObject;
@@ -27,7 +29,7 @@ import util.SSOLogin;
 /**
  * Edit exam controller
  * 
- * GET method: update exam status POST method: update exam content
+ * GET method: update exam status ; POST method: update exam content
  */
 @WebServlet("/EditExamController")
 public class EditExamController extends HttpServlet {
@@ -51,6 +53,7 @@ public class EditExamController extends HttpServlet {
 		// Login check.
 		SSOLogin ssoCheck = new SSOLogin();
 		User user = ssoCheck.checkLogin(request);
+		String token = request.getHeader("token");
 
 		if (user == null) {
 			response.getWriter().write("false"); // invalid token.
@@ -59,7 +62,7 @@ public class EditExamController extends HttpServlet {
 			String data = new String(request.getParameter("id").getBytes("ISO-8859-1"), "UTF-8");
 
 			// update exam status.
-			ExamServiceImp a = new ExamServiceImp();
+			ExamServiceImp a = new ExamServiceImp(SSOLogin.uowList.get(token));
 			boolean success = a.publishExam(data);
 
 			response.getWriter().write(success+"");
@@ -79,20 +82,30 @@ public class EditExamController extends HttpServlet {
 		// Login check.
 		SSOLogin ssoCheck = new SSOLogin();
 		User user = ssoCheck.checkLogin(request);
+		String token = request.getHeader("token");
 
 		if (user == null) {
 			response.getWriter().write("false"); // invalid token.
 
 		} else {
-			// Only student can take the exam.
+			// Only instructor can edit exams.
 			if (!user.getRole().equals(Role.INSTRUCTOR)) {
 				response.getWriter().write("false"); // invalid session.
-
 			} else {
+				//get edited exam from request
+				Exam exam = new Exam();
+				JsonToObject jo = new JsonToObject();
+				JSONObject examJsonObject = jo.ReqJsonToObject(request);
+				exam = JSON.toJavaObject(examJsonObject, Exam.class);
+				
 				// Update exam
-				ExamServiceImp markExam = new ExamServiceImp();
-				boolean success = markExam.updateExam(request);
-
+				ExamServiceImp markExam = new ExamServiceImp(SSOLogin.uowList.get(token));
+				boolean success = markExam.updateExam(exam);
+				
+				//release the edit exam lock
+				LockManager lock = ExclusiveWriteLockManager.getInstance();
+				lock.releaseLock(exam.getId(), "exam", request.getHeader("token"));
+				
 				response.getWriter().write(success + "");
 			}
 

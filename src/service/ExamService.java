@@ -17,7 +17,7 @@ import domain.User;
 public interface ExamService {
 	
 	// Exam
-	public boolean updateExam(HttpServletRequest request);//update exam
+	public boolean updateExam(Exam exam);//update exam
 	public boolean publishExam(String examId); // edit exam status
 	
 	public boolean addNewExam(HttpServletRequest request,User user);//add new exam
@@ -32,7 +32,7 @@ public interface ExamService {
 	// Submission
 	public Submission findSubmissionById(int submissionId,User user);//find submission by its id
 	public Submission findSubmissionByUserId_ExamId(int userId, int examId);
-	public boolean markSubmission(HttpServletRequest request,User user);//mark a submission
+	public boolean markSubmission(Submission submission);//mark a submission
 	public boolean addSubmission(Exam exam, User user);//add a new submission
 	public boolean addAnswers(Submission submission);//add new answers for a submission
 	
