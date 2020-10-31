@@ -40,7 +40,7 @@ All deliverables will be uploaded and managed here.
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 ## Description
-### Online-Exam-Application: http://35.174.205.208:3000/
+### Online-Exam-Application: https://frontend-react-test-01.herokuapp.com/
 
 ### Patterns:
 
@@ -56,9 +56,7 @@ All deliverables will be uploaded and managed here.
 
 3. Object-to-relational behavioural design
 
-    [Unit of Work](https://github.com/Olivia0012/SWEN90007_2020_SuperGirls/blob/master/src/shared/UnitOfWork.java)
-
-    [Identity Map](https://github.com/Olivia0012/SWEN90007_2020_SuperGirls/blob/master/src/shared/IdentityMap.java)
+    [Unit of Work](https://github.com/Olivia0012/SWEN90007_2020_SuperGirls/tree/master/src/shared)
 
     Lazy load: question list in the Exam and answer list in the Submission.
 
@@ -68,6 +66,21 @@ All deliverables will be uploaded and managed here.
   
    Implemented with React: [frontend](http://35.174.205.208:3000/)
 
+5. Concurrency:
+
+    Pessimistic lock: 
+      [ExclusiveWriteLock](https://github.com/Olivia0012/SWEN90007_2020_SuperGirls/blob/master/src/mapper/ExclusiveWriteLockManager.java)
+      [editingExamLockController](https://github.com/Olivia0012/SWEN90007_2020_SuperGirls/blob/master/src/servlet/LockEditExamController.java)
+      [editingMarkLockController](https://github.com/Olivia0012/SWEN90007_2020_SuperGirls/blob/master/src/servlet/LockMarkExamController.java)
+
+6. Security:
+
+      [authentication](https://github.com/Olivia0012/SWEN90007_2020_SuperGirls/blob/master/src/util/SSOLogin.java)
+      
+      Authorization: checking the user role in every controller before handling the request, for example,  [admin request controller for viewing and add subjects](https://github.com/Olivia0012/SWEN90007_2020_SuperGirls/blob/master/src/servlet/AdminSubjectsController.java)
+
+      Secure Pipe:
+      [AESCrypto](https://github.com/Olivia0012/SWEN90007_2020_SuperGirls/blob/master/src/util/AESCrypto.java) 
 
 
 ## Environment:
@@ -346,5 +359,13 @@ of your project (and your final marks). See Appendix D for more details.
 
     
 ### 3. Part 3
-```
-```
+
+- [X] The application coded and deployed. The source code of your application must be committed to your Git repository. The application must be deployed in Heroku.
+- [X] You must create a tag in your Git repository for this deliverable in the following format:       SWEN90007_2020_Part3_<team name>. The tag must be created before the submission deadline as this will be used to assess your deliverable (no exceptions).
+- [X] A Software Architecture Design (SAD) report with the following items:
+    - [X] The updated class diagram of your application, with any updates made to it highlighted.
+    - [X] A description of all patterns used. The description must be contextualized, this means it must include details of how the pattern was implemented as part of your particular application design. A sequence diagram illustrating the use of the pattern in your application must also be included as part of your description.
+   - [X] An explanation and justification supporting your choice of concurrency pattern(s).
+   - [X] A link to your Heroku deployed App including data/information that we need in order to be able to test your application.
+- [X] The Git release tag.
+
