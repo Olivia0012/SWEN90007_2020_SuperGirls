@@ -16,19 +16,22 @@ import mapper.DataMapper;
 public class UnitOfWork {
 	private ThreadLocal current = new ThreadLocal();
 
-	private List<DomainObject> newObjects = new ArrayList<DomainObject>();
-	private List<DomainObject> dirtyObjects = new ArrayList<DomainObject>();
-	private List<DomainObject> deletedObjects = new ArrayList<DomainObject>();
+	private List<DomainObject> newObjects = null;
+	private List<DomainObject> dirtyObjects = null;
+	private List<DomainObject> deletedObjects = null;
 
 	public UnitOfWork(ThreadLocal current) {
 		setCurrent(current);
+		 newObjects = new ArrayList<DomainObject>();
+		 dirtyObjects = new ArrayList<DomainObject>();
+		 deletedObjects = new ArrayList<DomainObject>();
 	}
 
 	/**
 	 * @return the current
 	 */
-	public  UnitOfWork getCurrent() {
-		return (UnitOfWork) current.get();
+	public  ThreadLocal getCurrent() {
+		return current;
 	}
 
 	/**
@@ -36,6 +39,10 @@ public class UnitOfWork {
 	 */
 	public  void setCurrent(ThreadLocal current) {
 		current.set(current);
+		newObjects = new ArrayList<DomainObject>();
+		dirtyObjects = new ArrayList<DomainObject>();
+		deletedObjects = new ArrayList<DomainObject>();
+		
 	}
 
 

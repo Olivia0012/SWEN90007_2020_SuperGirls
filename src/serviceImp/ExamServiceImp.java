@@ -42,7 +42,9 @@ public class ExamServiceImp implements ExamService {
 		submissionMapper = new SubmissionMapper();
 		answerMapper = new AnswerMapper();
 		questionMapper = new QuestionMapper();
+		current.setCurrent(current.getCurrent());
 		this.current = current;
+		
 	}
 
 	/**

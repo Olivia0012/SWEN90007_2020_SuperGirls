@@ -104,6 +104,7 @@ public class MarkExamController extends HttpServlet {
 				
 				//release the lock
 				lock.releaseLock(submission.getId(), "submissions", token);
+				
 				response.getWriter().write(success + "");
 			}
 

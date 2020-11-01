@@ -95,6 +95,7 @@ Database: PostgreSql
 ```
 .
 ├── LICENSE
+├── Procfile
 ├── README.md
 ├── WebContent
 │   ├── META-INF
@@ -105,8 +106,57 @@ Database: PostgreSql
 │   │   │   └── postgresql-42.2.14.jar
 │   │   └── web.xml
 │   └── test.jsp
+├── build
+│   └── classes
+│       ├── database
+│       │   └── DatabaseConnection.class
+│       ├── domain
+│       │   ├── Admin.class
+│       │   ├── Answer.class
+│       │   ├── DomainObject.class
+│       │   ├── Exam.class
+│       │   ├── Instructor.class
+│       │   ├── Question.class
+│       │   ├── Student.class
+│       │   ├── Subject.class
+│       │   ├── Submission.class
+│       │   └── User.class
+│       ├── enumeration
+│       │   ├── ExamStatus.class
+│       │   ├── QuestionType.class
+│       │   └── Role.class
+│       ├── mapper
+│       │   ├── AnswerMapper.class
+│       │   ├── DataMapper.class
+│       │   ├── ExamMapper.class
+│       │   ├── QuestionMapper.class
+│       │   ├── SubjectMapper.class
+│       │   ├── SubmissionMapper.class
+│       │   └── UserMapper.class
+│       ├── service
+│       │   ├── CreateNewExam.class
+│       │   ├── CreateNewExamImp.class
+│       │   ├── ViewExam.class
+│       │   └── ViewExamImp.class
+│       ├── servlet
+│       │   ├── ExamController.class
+│       │   └── HelloServlet.class
+│       └── shared
+│           ├── IdentityMap.class
+│           ├── LazyLoad.class
+│           └── UnitOfWork.class
 ├── docs
 │   ├── Part2_Figures
+│   │   ├── Figure\ 1\ Domain\ Model.png
+│   │   ├── Figure\ 2\ �\200\2344+1�\200\235\ Framework.png
+│   │   ├── Figure\ 3\ UML\ Class\ Diagram\ Relationships.png
+│   │   ├── Figure\ 4\ Class\ Diagram.png
+│   │   ├── Figure\ 5\ Sequence\ Diagram\ of\ Instructor.png
+│   │   ├── Figure\ 6\ Sequence\ Diagram\ of\ Student.png
+│   │   ├── Figure\ 7\ Component\ Diagram.png
+│   │   ├── Figure\ 8-1\ Deployment\ Diagram.png
+│   │   ├── Figure\ 8-2\ Deployment\ Diagram.png
+│   │   └── Figure\ 9\ Use\ Case\ Diagram.png
 │   ├── architecture
 │   │   └── SWEN90007_CIS-TMPLT-ARCH-1.docx
 │   ├── meetings
@@ -114,16 +164,24 @@ Database: PostgreSql
 │   │   ├── Week\ 2\ Minutes_Aug\ 10_Team\ Super\ Girls.pdf
 │   │   ├── Week\ 3\ Minutes_Aug\ 17_Team\ Super\ Girls.pdf
 │   │   ├── Week\ 4\ Minutes_Aug\ 24_Team\ Super\ Girls.pdf
-│   │   └── Week\ 5\ Minutes_Aug\ 31_Team\ Super\ Girls.pdf
-│   └── part1
-│       ├── README.md
-│       ├── SWEN90007_2020_Part1_SuperGirls.pdf
-│       ├── [01.00-D05]SWEN90007_2020_Part1_SuperGirls.doc
-│       └── [01.00-D06]SWEN90007_2020_Part1_SuperGirls(1).doc
+│   │   ├── Week\ 5\ Minutes_Aug\ 31_Team\ Super\ Girls.pdf
+│   │   ├── Week\ 6\ Minutes_Sep\ 07_Team\ Super\ Girls.pdf
+│   │   ├── Week\ 7\ Minutes_Sep\ 14_Team\ Super\ Girls.pdf
+│   │   ├── Week\ 8\ Minutes_Sep\ 21_Team\ Super\ Girls.pdf
+│   │   └── Week\ 9\ Minutes_Sep\ 28_Team\ Super\ Girls.pdf
+│   ├── part1
+│   │   ├── README.md
+│   │   ├── SWEN90007_2020_Part1_SuperGirls.pdf
+│   │   ├── [01.00-D05]SWEN90007_2020_Part1_SuperGirls.doc
+│   │   └── [01.00-D06]SWEN90007_2020_Part1_SuperGirls(1).doc
+│   └── part2
+│       └── SWEN90007_2020_Part2_SuperGirls.pdf
 ├── frontend
+│   ├── LICENSE
 │   ├── LICENSE.md
 │   ├── README.md
 │   ├── jsconfig.json
+│   ├── nginx.conf
 │   ├── package-lock.json
 │   ├── package.json
 │   ├── public
@@ -157,10 +215,13 @@ Database: PostgreSql
 │   │       │   ├── undraw_page_not_found_su7k.svg
 │   │       │   └── undraw_resume_folder_2_arse.svg
 │   │       └── logo.svg
+│   ├── server.js
+│   ├── setupProxy.js
 │   ├── src
 │   │   ├── App.js
 │   │   ├── api
-│   │   │   └── examAPI.js
+│   │   │   ├── examAPI.js
+│   │   │   └── instructorAPI.js
 │   │   ├── components
 │   │   │   ├── GlobalStyles.js
 │   │   │   ├── Logo.js
@@ -170,6 +231,12 @@ Database: PostgreSql
 │   │   │   └── Google.js
 │   │   ├── index.js
 │   │   ├── layouts
+│   │   │   ├── DashboardAdmin
+│   │   │   │   ├── NavBar
+│   │   │   │   │   ├── NavItem.js
+│   │   │   │   │   └── index.js
+│   │   │   │   ├── TopBar.js
+│   │   │   │   └── index.js
 │   │   │   ├── DashboardLayout
 │   │   │   │   ├── NavBar
 │   │   │   │   │   ├── NavItem.js
@@ -183,44 +250,81 @@ Database: PostgreSql
 │   │   │   └── chartjs.js
 │   │   ├── routes.js
 │   │   ├── serviceWorker.js
+│   │   ├── setupProxy.js
 │   │   ├── theme
 │   │   │   ├── index.js
 │   │   │   ├── shadows.js
 │   │   │   └── typography.js
+│   │   ├── util
+│   │   │   └── GetJson.java
 │   │   ├── utils
-│   │   │   └── getInitials.js
+│   │   │   ├── getInitials.js
+│   │   │   ├── loading.js
+│   │   │   └── setAuthToken.js
 │   │   └── views
+│   │       ├── admin
+│   │       │   ├── SubjectManagement
+│   │       │   │   ├── Results.js
+│   │       │   │   ├── SubjectManagement.js
+│   │       │   │   ├── Toolbar.js
+│   │       │   │   └── UserTransferList.js
+│   │       │   └── UserManagement
+│   │       │       ├── Results.js
+│   │       │       ├── Toolbar.js
+│   │       │       └── UserManagement.js
+│   │       ├── auth
+│   │       │   ├── LoginView.js
+│   │       │   └── RegisterView.js
 │   │       ├── exam
 │   │       │   ├── EditExamView
-│   │       │   │   ├── BlogDetailComponent.js
 │   │       │   │   ├── ExamBasicInfo.js
-│   │       │   │   ├── Password.js
+│   │       │   │   ├── NewQuestion.js
+│   │       │   │   └── index.js
+│   │       │   ├── ExamView
+│   │       │   │   ├── ExamBasicInfo.js
+│   │       │   │   ├── NewQuestion.js
 │   │       │   │   ├── QuestionCard.js
 │   │       │   │   └── index.js
-│   │       │   └── ExamView
-│   │       │       ├── BlogDetailComponent.js
-│   │       │       ├── ExamBasicInfo.js
-│   │       │       ├── NewQuestion.js
-│   │       │       ├── Password.js
+│   │       │   ├── MarkExamView
+│   │       │   │   ├── QuestionCard.js
+│   │       │   │   ├── SubmissionInfo.js
+│   │       │   │   └── index.js
+│   │       │   └── TakeExam
+│   │       │       ├── ExamInfo.js
 │   │       │       ├── QuestionCard.js
 │   │       │       └── index.js
-│   │       └── student
-│   │           └── UserListView
+│   │       ├── student
+│   │       │   └── UserListView
+│   │       │       ├── Results.js
+│   │       │       ├── Toolbar.js
+│   │       │       ├── data.js
+│   │       │       └── index.js
+│   │       └── subject
+│   │           └── SubjectListView
 │   │               ├── Results.js
+│   │               ├── ResultsforStudent.js
 │   │               ├── Toolbar.js
-│   │               ├── data.js
+│   │               ├── data.json
 │   │               └── index.js
+│   ├── tree.text
 │   └── yarn.lock
+├── pom.xml
 ├── src
 │   ├── database
-│   │   └── DatabaseConnection.java
+│   │   ├── ConnectionPool.java
+│   │   ├── DBMaintain.java
+│   │   ├── DatabaseConnection.java
+│   │   └── QueryExecutor.java
 │   ├── domain
-│   │   ├── Admin.java
 │   │   ├── Answer.java
 │   │   ├── DomainObject.java
 │   │   ├── Exam.java
 │   │   ├── Instructor.java
+│   │   ├── InstructorList.java
+│   │   ├── InstructorListImp.java
+│   │   ├── InstructorListProxyImp.java
 │   │   ├── Question.java
+│   │   ├── Relationship.java
 │   │   ├── Student.java
 │   │   ├── Subject.java
 │   │   ├── Submission.java
@@ -233,23 +337,510 @@ Database: PostgreSql
 │   │   ├── AnswerMapper.java
 │   │   ├── DataMapper.java
 │   │   ├── ExamMapper.java
+│   │   ├── ExclusiveWriteLockManager.java
+│   │   ├── LockManager.java
 │   │   ├── QuestionMapper.java
+│   │   ├── RelationshipMapper.java
 │   │   ├── SubjectMapper.java
 │   │   ├── SubmissionMapper.java
 │   │   └── UserMapper.java
 │   ├── service
-│   │   ├── CreateNewExam.java
-│   │   ├── CreateNewExamImp.java
-│   │   ├── ViewExam.java
-│   │   └── ViewExamImp.java
+│   │   ├── ExamService.java
+│   │   ├── StudentService.java
+│   │   ├── SubjectService.java
+│   │   ├── SubmissionService.java
+│   │   └── UserService.java
+│   ├── serviceImp
+│   │   ├── ExamServiceImp.java
+│   │   ├── StudentServiceImp.java
+│   │   ├── SubjectServiceImp.java
+│   │   ├── SubmissionServiceImp.java
+│   │   └── UserServiceImp.java
 │   ├── servlet
+│   │   ├── AddExamController.java
+│   │   ├── AdminSubjectsController.java
+│   │   ├── AdminUserInSubjectController.java
+│   │   ├── AdminUsersController.java
+│   │   ├── DeleteExamController.java
+│   │   ├── DeleteQuestionController.java
+│   │   ├── EditExamController.java
 │   │   ├── ExamController.java
-│   │   └── HelloServlet.java
-│   └── shared
-│       ├── IdentityMap.java
-│       ├── LazyLoad.java
-│       └── UnitOfWork.java
+│   │   ├── InstructorEditMarkController.java
+│   │   ├── LockEditExamController.java
+│   │   ├── LockMarkExamController.java
+│   │   ├── LoginController.java
+│   │   ├── LogoutController.java
+│   │   ├── MarkExamController.java
+│   │   ├── StudentController.java
+│   │   ├── SubjectController.java
+│   │   └── TakeExamController.java
+│   ├── shared
+│   │   └── UnitOfWork.java
+│   └── util
+│       ├── AESCrypto.java
+│       ├── JsonToObject.java
+│       ├── ResponseHeader.java
+│       └── SSOLogin.java
+├── system.properties
 ├── target
+│   ├── classes
+│   │   ├── database
+│   │   │   ├── ConnectionPool.class
+│   │   │   ├── DBMaintain.class
+│   │   │   ├── DatabaseConnection.class
+│   │   │   └── QueryExecutor.class
+│   │   ├── domain
+│   │   │   ├── Answer.class
+│   │   │   ├── DomainObject.class
+│   │   │   ├── Exam.class
+│   │   │   ├── Instructor.class
+│   │   │   ├── InstructorList.class
+│   │   │   ├── InstructorListImp.class
+│   │   │   ├── InstructorListProxyImp.class
+│   │   │   ├── Question.class
+│   │   │   ├── Relationship.class
+│   │   │   ├── Student.class
+│   │   │   ├── Subject.class
+│   │   │   ├── Submission.class
+│   │   │   └── User.class
+│   │   ├── enumeration
+│   │   │   ├── ExamStatus.class
+│   │   │   ├── QuestionType.class
+│   │   │   └── Role.class
+│   │   ├── mapper
+│   │   │   ├── AnswerMapper.class
+│   │   │   ├── DataMapper.class
+│   │   │   ├── ExamMapper.class
+│   │   │   ├── ExclusiveWriteLockManager.class
+│   │   │   ├── LockManager.class
+│   │   │   ├── QuestionMapper.class
+│   │   │   ├── RelationshipMapper.class
+│   │   │   ├── SubjectMapper.class
+│   │   │   ├── SubmissionMapper.class
+│   │   │   └── UserMapper.class
+│   │   ├── service
+│   │   │   ├── ExamService.class
+│   │   │   ├── StudentService.class
+│   │   │   ├── SubjectService.class
+│   │   │   ├── SubmissionService.class
+│   │   │   └── UserService.class
+│   │   ├── serviceImp
+│   │   │   ├── ExamServiceImp.class
+│   │   │   ├── StudentServiceImp.class
+│   │   │   ├── SubjectServiceImp.class
+│   │   │   ├── SubmissionServiceImp.class
+│   │   │   └── UserServiceImp.class
+│   │   ├── servlet
+│   │   │   ├── AddExamController.class
+│   │   │   ├── AdminSubjectsController.class
+│   │   │   ├── AdminUserInSubjectController.class
+│   │   │   ├── AdminUsersController.class
+│   │   │   ├── DeleteExamController.class
+│   │   │   ├── DeleteQuestionController.class
+│   │   │   ├── EditExamController.class
+│   │   │   ├── ExamController.class
+│   │   │   ├── InstructorEditMarkController.class
+│   │   │   ├── LockEditExamController.class
+│   │   │   ├── LockMarkExamController.class
+│   │   │   ├── LoginController.class
+│   │   │   ├── LogoutController.class
+│   │   │   ├── MarkExamController.class
+│   │   │   ├── StudentController.class
+│   │   │   ├── SubjectController.class
+│   │   │   └── TakeExamController.class
+│   │   ├── shared
+│   │   │   └── UnitOfWork.class
+│   │   └── util
+│   │       ├── AESCrypto.class
+│   │       ├── JsonToObject.class
+│   │       ├── ResponseHeader.class
+│   │       └── SSOLogin.class
+│   ├── m2e-wtp
+│   │   └── web-resources
+│   │       └── META-INF
+│   │           ├── MANIFEST.MF
+│   │           └── maven
+│   │               └── SWEN90007_2020_SuperGirls
+│   │                   └── SWEN90007_2020_SuperGirls
+│   │                       ├── pom.properties
+│   │                       └── pom.xml
+│   └── test-classes
+├── test
+│   └── SWEN90007-CIS-SW-TSTD.doc
+└── tree.text
+
+82 directories, 292 files
+.
+├── LICENSE
+├── Procfile
+├── README.md
+├── WebContent
+│   ├── META-INF
+│   │   └── MANIFEST.MF
+│   ├── WEB-INF
+│   │   ├── lib
+│   │   │   ├── fastjson-1.1.6.jar
+│   │   │   └── postgresql-42.2.14.jar
+│   │   └── web.xml
+│   └── test.jsp
+├── build
+│   └── classes
+│       ├── database
+│       │   └── DatabaseConnection.class
+│       ├── domain
+│       │   ├── Admin.class
+│       │   ├── Answer.class
+│       │   ├── DomainObject.class
+│       │   ├── Exam.class
+│       │   ├── Instructor.class
+│       │   ├── Question.class
+│       │   ├── Student.class
+│       │   ├── Subject.class
+│       │   ├── Submission.class
+│       │   └── User.class
+│       ├── enumeration
+│       │   ├── ExamStatus.class
+│       │   ├── QuestionType.class
+│       │   └── Role.class
+│       ├── mapper
+│       │   ├── AnswerMapper.class
+│       │   ├── DataMapper.class
+│       │   ├── ExamMapper.class
+│       │   ├── QuestionMapper.class
+│       │   ├── SubjectMapper.class
+│       │   ├── SubmissionMapper.class
+│       │   └── UserMapper.class
+│       ├── service
+│       │   ├── CreateNewExam.class
+│       │   ├── CreateNewExamImp.class
+│       │   ├── ViewExam.class
+│       │   └── ViewExamImp.class
+│       ├── servlet
+│       │   ├── ExamController.class
+│       │   └── HelloServlet.class
+│       └── shared
+│           ├── IdentityMap.class
+│           ├── LazyLoad.class
+│           └── UnitOfWork.class
+├── docs
+│   ├── Part2_Figures
+│   │   ├── Figure\ 1\ Domain\ Model.png
+│   │   ├── Figure\ 2\ �\200\2344+1�\200\235\ Framework.png
+│   │   ├── Figure\ 3\ UML\ Class\ Diagram\ Relationships.png
+│   │   ├── Figure\ 4\ Class\ Diagram.png
+│   │   ├── Figure\ 5\ Sequence\ Diagram\ of\ Instructor.png
+│   │   ├── Figure\ 6\ Sequence\ Diagram\ of\ Student.png
+│   │   ├── Figure\ 7\ Component\ Diagram.png
+│   │   ├── Figure\ 8-1\ Deployment\ Diagram.png
+│   │   ├── Figure\ 8-2\ Deployment\ Diagram.png
+│   │   └── Figure\ 9\ Use\ Case\ Diagram.png
+│   ├── architecture
+│   │   └── SWEN90007_CIS-TMPLT-ARCH-1.docx
+│   ├── meetings
+│   │   ├── README.md
+│   │   ├── Week\ 2\ Minutes_Aug\ 10_Team\ Super\ Girls.pdf
+│   │   ├── Week\ 3\ Minutes_Aug\ 17_Team\ Super\ Girls.pdf
+│   │   ├── Week\ 4\ Minutes_Aug\ 24_Team\ Super\ Girls.pdf
+│   │   ├── Week\ 5\ Minutes_Aug\ 31_Team\ Super\ Girls.pdf
+│   │   ├── Week\ 6\ Minutes_Sep\ 07_Team\ Super\ Girls.pdf
+│   │   ├── Week\ 7\ Minutes_Sep\ 14_Team\ Super\ Girls.pdf
+│   │   ├── Week\ 8\ Minutes_Sep\ 21_Team\ Super\ Girls.pdf
+│   │   └── Week\ 9\ Minutes_Sep\ 28_Team\ Super\ Girls.pdf
+│   ├── part1
+│   │   ├── README.md
+│   │   ├── SWEN90007_2020_Part1_SuperGirls.pdf
+│   │   ├── [01.00-D05]SWEN90007_2020_Part1_SuperGirls.doc
+│   │   └── [01.00-D06]SWEN90007_2020_Part1_SuperGirls(1).doc
+│   └── part2
+│       └── SWEN90007_2020_Part2_SuperGirls.pdf
+├── frontend
+│   ├── LICENSE
+│   ├── LICENSE.md
+│   ├── README.md
+│   ├── jsconfig.json
+│   ├── nginx.conf
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── public
+│   │   ├── _redirects
+│   │   ├── favicon.ico
+│   │   ├── index.html
+│   │   ├── manifest.json
+│   │   └── static
+│   │       ├── images
+│   │       │   ├── auth.jpeg
+│   │       │   ├── avatars
+│   │       │   │   ├── avatar_1.png
+│   │       │   │   ├── avatar_10.png
+│   │       │   │   ├── avatar_11.png
+│   │       │   │   ├── avatar_2.png
+│   │       │   │   ├── avatar_3.png
+│   │       │   │   ├── avatar_4.png
+│   │       │   │   ├── avatar_5.png
+│   │       │   │   ├── avatar_6.png
+│   │       │   │   ├── avatar_7.png
+│   │       │   │   ├── avatar_8.png
+│   │       │   │   └── avatar_9.png
+│   │       │   ├── not_found.png
+│   │       │   ├── products
+│   │       │   │   ├── product_1.png
+│   │       │   │   ├── product_2.png
+│   │       │   │   ├── product_3.png
+│   │       │   │   ├── product_4.png
+│   │       │   │   ├── product_5.png
+│   │       │   │   └── product_6.png
+│   │       │   ├── undraw_page_not_found_su7k.svg
+│   │       │   └── undraw_resume_folder_2_arse.svg
+│   │       └── logo.svg
+│   ├── server.js
+│   ├── setupProxy.js
+│   ├── src
+│   │   ├── App.js
+│   │   ├── api
+│   │   │   ├── examAPI.js
+│   │   │   └── instructorAPI.js
+│   │   ├── components
+│   │   │   ├── GlobalStyles.js
+│   │   │   ├── Logo.js
+│   │   │   └── Page.js
+│   │   ├── icons
+│   │   │   ├── Facebook.js
+│   │   │   └── Google.js
+│   │   ├── index.js
+│   │   ├── layouts
+│   │   │   ├── DashboardAdmin
+│   │   │   │   ├── NavBar
+│   │   │   │   │   ├── NavItem.js
+│   │   │   │   │   └── index.js
+│   │   │   │   ├── TopBar.js
+│   │   │   │   └── index.js
+│   │   │   ├── DashboardLayout
+│   │   │   │   ├── NavBar
+│   │   │   │   │   ├── NavItem.js
+│   │   │   │   │   └── index.js
+│   │   │   │   ├── TopBar.js
+│   │   │   │   └── index.js
+│   │   │   └── MainLayout
+│   │   │       ├── TopBar.js
+│   │   │       └── index.js
+│   │   ├── mixins
+│   │   │   └── chartjs.js
+│   │   ├── routes.js
+│   │   ├── serviceWorker.js
+│   │   ├── setupProxy.js
+│   │   ├── theme
+│   │   │   ├── index.js
+│   │   │   ├── shadows.js
+│   │   │   └── typography.js
+│   │   ├── util
+│   │   │   └── GetJson.java
+│   │   ├── utils
+│   │   │   ├── getInitials.js
+│   │   │   ├── loading.js
+│   │   │   └── setAuthToken.js
+│   │   └── views
+│   │       ├── admin
+│   │       │   ├── SubjectManagement
+│   │       │   │   ├── Results.js
+│   │       │   │   ├── SubjectManagement.js
+│   │       │   │   ├── Toolbar.js
+│   │       │   │   └── UserTransferList.js
+│   │       │   └── UserManagement
+│   │       │       ├── Results.js
+│   │       │       ├── Toolbar.js
+│   │       │       └── UserManagement.js
+│   │       ├── auth
+│   │       │   ├── LoginView.js
+│   │       │   └── RegisterView.js
+│   │       ├── exam
+│   │       │   ├── EditExamView
+│   │       │   │   ├── ExamBasicInfo.js
+│   │       │   │   ├── NewQuestion.js
+│   │       │   │   └── index.js
+│   │       │   ├── ExamView
+│   │       │   │   ├── ExamBasicInfo.js
+│   │       │   │   ├── NewQuestion.js
+│   │       │   │   ├── QuestionCard.js
+│   │       │   │   └── index.js
+│   │       │   ├── MarkExamView
+│   │       │   │   ├── QuestionCard.js
+│   │       │   │   ├── SubmissionInfo.js
+│   │       │   │   └── index.js
+│   │       │   └── TakeExam
+│   │       │       ├── ExamInfo.js
+│   │       │       ├── QuestionCard.js
+│   │       │       └── index.js
+│   │       ├── student
+│   │       │   └── UserListView
+│   │       │       ├── Results.js
+│   │       │       ├── Toolbar.js
+│   │       │       ├── data.js
+│   │       │       └── index.js
+│   │       └── subject
+│   │           └── SubjectListView
+│   │               ├── Results.js
+│   │               ├── ResultsforStudent.js
+│   │               ├── Toolbar.js
+│   │               ├── data.json
+│   │               └── index.js
+│   ├── tree.text
+│   └── yarn.lock
+├── pom.xml
+├── src
+│   ├── database
+│   │   ├── ConnectionPool.java
+│   │   ├── DBMaintain.java
+│   │   ├── DatabaseConnection.java
+│   │   └── QueryExecutor.java
+│   ├── domain
+│   │   ├── Answer.java
+│   │   ├── DomainObject.java
+│   │   ├── Exam.java
+│   │   ├── Instructor.java
+│   │   ├── InstructorList.java
+│   │   ├── InstructorListImp.java
+│   │   ├── InstructorListProxyImp.java
+│   │   ├── Question.java
+│   │   ├── Relationship.java
+│   │   ├── Student.java
+│   │   ├── Subject.java
+│   │   ├── Submission.java
+│   │   └── User.java
+│   ├── enumeration
+│   │   ├── ExamStatus.java
+│   │   ├── QuestionType.java
+│   │   └── Role.java
+│   ├── mapper
+│   │   ├── AnswerMapper.java
+│   │   ├── DataMapper.java
+│   │   ├── ExamMapper.java
+│   │   ├── ExclusiveWriteLockManager.java
+│   │   ├── LockManager.java
+│   │   ├── QuestionMapper.java
+│   │   ├── RelationshipMapper.java
+│   │   ├── SubjectMapper.java
+│   │   ├── SubmissionMapper.java
+│   │   └── UserMapper.java
+│   ├── service
+│   │   ├── ExamService.java
+│   │   ├── StudentService.java
+│   │   ├── SubjectService.java
+│   │   ├── SubmissionService.java
+│   │   └── UserService.java
+│   ├── serviceImp
+│   │   ├── ExamServiceImp.java
+│   │   ├── StudentServiceImp.java
+│   │   ├── SubjectServiceImp.java
+│   │   ├── SubmissionServiceImp.java
+│   │   └── UserServiceImp.java
+│   ├── servlet
+│   │   ├── AddExamController.java
+│   │   ├── AdminSubjectsController.java
+│   │   ├── AdminUserInSubjectController.java
+│   │   ├── AdminUsersController.java
+│   │   ├── DeleteExamController.java
+│   │   ├── DeleteQuestionController.java
+│   │   ├── EditExamController.java
+│   │   ├── ExamController.java
+│   │   ├── InstructorEditMarkController.java
+│   │   ├── LockEditExamController.java
+│   │   ├── LockMarkExamController.java
+│   │   ├── LoginController.java
+│   │   ├── LogoutController.java
+│   │   ├── MarkExamController.java
+│   │   ├── StudentController.java
+│   │   ├── SubjectController.java
+│   │   └── TakeExamController.java
+│   ├── shared
+│   │   └── UnitOfWork.java
+│   └── util
+│       ├── AESCrypto.java
+│       ├── JsonToObject.java
+│       ├── ResponseHeader.java
+│       └── SSOLogin.java
+├── system.properties
+├── target
+│   ├── classes
+│   │   ├── database
+│   │   │   ├── ConnectionPool.class
+│   │   │   ├── DBMaintain.class
+│   │   │   ├── DatabaseConnection.class
+│   │   │   └── QueryExecutor.class
+│   │   ├── domain
+│   │   │   ├── Answer.class
+│   │   │   ├── DomainObject.class
+│   │   │   ├── Exam.class
+│   │   │   ├── Instructor.class
+│   │   │   ├── InstructorList.class
+│   │   │   ├── InstructorListImp.class
+│   │   │   ├── InstructorListProxyImp.class
+│   │   │   ├── Question.class
+│   │   │   ├── Relationship.class
+│   │   │   ├── Student.class
+│   │   │   ├── Subject.class
+│   │   │   ├── Submission.class
+│   │   │   └── User.class
+│   │   ├── enumeration
+│   │   │   ├── ExamStatus.class
+│   │   │   ├── QuestionType.class
+│   │   │   └── Role.class
+│   │   ├── mapper
+│   │   │   ├── AnswerMapper.class
+│   │   │   ├── DataMapper.class
+│   │   │   ├── ExamMapper.class
+│   │   │   ├── ExclusiveWriteLockManager.class
+│   │   │   ├── LockManager.class
+│   │   │   ├── QuestionMapper.class
+│   │   │   ├── RelationshipMapper.class
+│   │   │   ├── SubjectMapper.class
+│   │   │   ├── SubmissionMapper.class
+│   │   │   └── UserMapper.class
+│   │   ├── service
+│   │   │   ├── ExamService.class
+│   │   │   ├── StudentService.class
+│   │   │   ├── SubjectService.class
+│   │   │   ├── SubmissionService.class
+│   │   │   └── UserService.class
+│   │   ├── serviceImp
+│   │   │   ├── ExamServiceImp.class
+│   │   │   ├── StudentServiceImp.class
+│   │   │   ├── SubjectServiceImp.class
+│   │   │   ├── SubmissionServiceImp.class
+│   │   │   └── UserServiceImp.class
+│   │   ├── servlet
+│   │   │   ├── AddExamController.class
+│   │   │   ├── AdminSubjectsController.class
+│   │   │   ├── AdminUserInSubjectController.class
+│   │   │   ├── AdminUsersController.class
+│   │   │   ├── DeleteExamController.class
+│   │   │   ├── DeleteQuestionController.class
+│   │   │   ├── EditExamController.class
+│   │   │   ├── ExamController.class
+│   │   │   ├── InstructorEditMarkController.class
+│   │   │   ├── LockEditExamController.class
+│   │   │   ├── LockMarkExamController.class
+│   │   │   ├── LoginController.class
+│   │   │   ├── LogoutController.class
+│   │   │   ├── MarkExamController.class
+│   │   │   ├── StudentController.class
+│   │   │   ├── SubjectController.class
+│   │   │   └── TakeExamController.class
+│   │   ├── shared
+│   │   │   └── UnitOfWork.class
+│   │   └── util
+│   │       ├── AESCrypto.class
+│   │       ├── JsonToObject.class
+│   │       ├── ResponseHeader.class
+│   │       └── SSOLogin.class
+│   ├── m2e-wtp
+│   │   └── web-resources
+│   │       └── META-INF
+│   │           ├── MANIFEST.MF
+│   │           └── maven
+│   │               └── SWEN90007_2020_SuperGirls
+│   │                   └── SWEN90007_2020_SuperGirls
+│   │                       ├── pom.properties
+│   │                       └── pom.xml
 │   └── test-classes
 ├── test
 │   └── SWEN90007-CIS-SW-TSTD.doc
