@@ -152,13 +152,13 @@ public class ExamServiceImp implements ExamService {
 		
 
 		// calculate the total mark
-		if (submission.getTotalMark() == 0) {
+	//	if (submission.getTotalMark() == 0) {
 			float totalMark = 0;
 			for (Answer an : submission.getAnswers()) {
 				totalMark += an.getMark();
 			}
 			submission.setTotalMark(totalMark);
-		}
+	//	}
 
 		current.registerDirty(submission);
 
