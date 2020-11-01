@@ -27,6 +27,8 @@ public class SubjectServiceImp implements SubjectService {
 
 	public SubjectServiceImp(UnitOfWork current) {
 		this.current = current;
+		current.setCurrent(current.getCurrent());
+		this.current = current;
 	}
 
 	@Override

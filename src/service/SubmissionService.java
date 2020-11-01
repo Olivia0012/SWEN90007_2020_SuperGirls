@@ -2,6 +2,10 @@ package service;
 
 import javax.servlet.http.HttpServletRequest;
 
+import domain.Submission;
+
 public interface SubmissionService {
-	public boolean updateSubmission(HttpServletRequest request);
+	
+
+	boolean updateSubmission(Submission submission);
 }

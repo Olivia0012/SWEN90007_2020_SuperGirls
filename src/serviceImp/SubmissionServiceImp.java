@@ -16,14 +16,13 @@ public class SubmissionServiceImp implements SubmissionService{
 	
 	public SubmissionServiceImp(UnitOfWork current) {
 		this.current = current;
+		current.setCurrent(current.getCurrent());
+		this.current = current;
 	}
 
 	@Override
-	public boolean updateSubmission(HttpServletRequest request) {
+	public boolean updateSubmission(Submission submission) {
 	//	UnitOfWork.newCurrent();
-		Submission submission = new Submission();
-		JSONObject submissionJsonObject = jo.ReqJsonToObject(request);
-		submission = JSON.toJavaObject(submissionJsonObject, Submission.class);
 
 		// update the submission
 		current.registerDirty(submission);

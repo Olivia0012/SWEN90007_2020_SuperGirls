@@ -9,9 +9,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 
+import domain.Submission;
 import domain.User;
 import enumeration.Role;
+import mapper.ExclusiveWriteLockManager;
+import mapper.LockManager;
 import serviceImp.SubjectServiceImp;
 import serviceImp.SubmissionServiceImp;
 import util.JsonToObject;
@@ -68,8 +73,19 @@ public class InstructorEditMarkController extends HttpServlet {
 			response.getWriter().write("false"); // not instructor.
 		} else {
 			SubmissionServiceImp addExam = new SubmissionServiceImp(SSOLogin.uowList.get(token));
-			boolean success = addExam.updateSubmission(request);
-
+			
+			Submission submission = new Submission();
+			
+			JsonToObject jo = new JsonToObject();
+			JSONObject submissionJsonObject = jo.ReqJsonToObject(request);
+			submission = JSON.toJavaObject(submissionJsonObject, Submission.class);
+			
+			boolean success = addExam.updateSubmission(submission);
+			
+			LockManager lock = ExclusiveWriteLockManager.getInstance();
+			
+			//release the lock
+			lock.releaseLock(submission.getId(), "submissions", token);
 			response.getWriter().write(success + "");
 
 		}

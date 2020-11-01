@@ -98,8 +98,10 @@ public class UserServiceImp implements UserService {
 		User user = new User();
 		user = JSON.toJavaObject(userJsonObject, User.class);
 		
-		System.out.println(user.getId()+user.getUserName()+user.getPassWord()+user.getRole());
+	//	System.out.println(user.getId()+user.getUserName()+user.getPassWord()+user.getRole());
 
+		current.setCurrent(current.getCurrent());
+	//	this.current = current;
 		current.registerNew(user);
 
 		return current.commit();
