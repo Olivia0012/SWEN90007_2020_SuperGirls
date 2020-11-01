@@ -91,7 +91,7 @@ public class DBMaintain {
                    " owner        INT    NOT NULL, "+
                    " time        VARCHAR) ";
 	         
-	         stmt.executeUpdate(sql7);
+	         stmt.executeUpdate(sql);
 	         stmt.close();
 	         c.close();
 	         

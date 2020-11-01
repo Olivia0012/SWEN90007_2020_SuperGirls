@@ -12,6 +12,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import domain.User;
+import mapper.ExclusiveWriteLockManager;
+import mapper.LockManager;
 import service.UserService;
 import serviceImp.SubjectServiceImp;
 import serviceImp.UserServiceImp;
@@ -53,6 +55,10 @@ public class SubjectController extends HttpServlet {
 		     String subjects = a.findAllSubjectsByUserId(user.getId(), user.getRole());
 		     System.out.println("subjects； "+subjects);
 		     String result = "{\"user\":"+JSONObject.toJSONString(user)+",\"subjects\":"+subjects+"}";
+		     LockManager lock = ExclusiveWriteLockManager.getInstance();
+				
+			 //release the lock
+			 lock.releaseAllLocks(token);
 		     response.getWriter().write(result);
 		}
 		header.setResponseHeader(response);
