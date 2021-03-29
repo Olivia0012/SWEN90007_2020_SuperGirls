@@ -24,14 +24,14 @@ All deliverables will be uploaded and managed here.
     <td align="center"><a href="https://github.com/lucyliu13"><img src="https://avatars2.githubusercontent.com/u/64895984?v=4" width="100px;" alt=""/><br /><sub><b>Xueling Liu</b></sub></a><br /><a href="https://github.com/Olivia0012/SWEN90007_2020_SuperGirls/commits?author=lucyliu13" title="Code"></a></td>
   </tr>
   <tr>
-    <td align="center">1054195</td>
-    <td align="center">1049113</td>
-    <td align="center">1095044</td>
+    <td align="center"> - </td>
+    <td align="center"> - </td>
+    <td align="center"> - </td>
   </tr>
   <tr>
-    <td align="center">lu.wang4@student.unimelb.edu.au</td>
-    <td align="center">jianjingy@student.unimelb.edu.au</td>
-    <td align="center">xuelingl1@student.unimelb.edu.au</td>
+    <td align="center"> - </td>
+    <td align="center"> - </td>
+    <td align="center"> - </td>
   </tr>
 </table>
 
